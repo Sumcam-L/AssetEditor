@@ -40,6 +40,23 @@ internal static class DocumentSwitchTrace
 			PaintTimingLog.Write("NativeSwitchTrace end generation={0}", generation);
 	}
 
+	internal static void TraceTabStrip(string phase, string context)
+	{
+		long generation = Volatile.Read(ref s_activeGeneration);
+		if (generation == 0)
+			return;
+
+		try
+		{
+			PaintTimingLog.Write("TabStripTrace generation={0}, phase={1}, {2}",
+				generation, phase ?? "null", context ?? string.Empty);
+		}
+		catch
+		{
+			// Diagnostics must never affect tab painting.
+		}
+	}
+
 	internal static void Trace(
 		Control control,
 		string role,

@@ -16,3 +16,5 @@ using System.Runtime.Versioning;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: InternalsVisibleTo("DocumentSwitchNativeTraceRepro")]
+[assembly: InternalsVisibleTo("DocumentTabPaintTraceRepro")]
+[assembly: InternalsVisibleTo("Firaxis.Theme")]
