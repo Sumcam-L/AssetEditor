@@ -15,3 +15,4 @@ using System.Runtime.Versioning;
 [assembly: Guid("2f7d6e29-a1b2-4ed4-9848-8a6b96518192")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyVersion("1.0.0.0")]
+[assembly: InternalsVisibleTo("DocumentSwitchNativeTraceRepro")]
