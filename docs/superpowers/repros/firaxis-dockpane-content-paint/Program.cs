@@ -31,6 +31,14 @@ internal static class Program
             Application.DoEvents();
 
             DockPane pane = content.DockHandler.Pane;
+            Color expectedBackground = dockPanel.Theme.ColorPalette.MainWindowActive.Background;
+            if (pane.BackColor.ToArgb() != expectedBackground.ToArgb())
+            {
+                Console.Error.WriteLine("FAIL: FiraxisDockPane erase background does not match the theme environment background.");
+                Console.Error.WriteLine("Expected: {0}", expectedBackground);
+                Console.Error.WriteLine("Actual:   {0}", pane.BackColor);
+                return 1;
+            }
             Rectangle contentRect = GetContentRectangle(pane);
             if (contentRect.Width <= 2 || contentRect.Height <= 2)
             {

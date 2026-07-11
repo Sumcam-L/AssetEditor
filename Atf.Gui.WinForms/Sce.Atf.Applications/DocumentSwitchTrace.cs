@@ -28,6 +28,12 @@ internal static class DocumentSwitchTrace
 		return generation;
 	}
 
+	internal static long BeginOrReuse(string reason)
+	{
+		long generation = Volatile.Read(ref s_activeGeneration);
+		return generation != 0 ? generation : Begin(reason);
+	}
+
 	internal static void End(long generation)
 	{
 		if (Interlocked.CompareExchange(ref s_activeGeneration, 0, generation) == generation)

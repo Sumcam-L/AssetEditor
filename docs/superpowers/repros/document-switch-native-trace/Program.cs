@@ -42,6 +42,13 @@ internal static class Program
                     return Fail("native trace entries were written outside the gate");
 
                 PaintTimingLog.Clear();
+                long earlyGeneration = DocumentSwitchTrace.BeginOrReuse("outer-visible-before-active-change");
+                long reusedGeneration = DocumentSwitchTrace.BeginOrReuse("active-content-changed");
+                if (earlyGeneration == 0 || reusedGeneration != earlyGeneration)
+                    return Fail("an early trace generation was not reused by active-content processing");
+                DocumentSwitchTrace.End(earlyGeneration);
+
+                PaintTimingLog.Clear();
                 long generation = DocumentSwitchTrace.Begin("repro");
                 if (!DocumentSwitchTrace.IsActive)
                     return Fail("trace gate was not active after Begin");
