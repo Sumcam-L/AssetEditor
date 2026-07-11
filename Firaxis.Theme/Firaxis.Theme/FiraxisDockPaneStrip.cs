@@ -8,12 +8,19 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Firaxis.CivTech;
+using Sce.Atf.Applications;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Firaxis.Theme;
 
 internal class FiraxisDockPaneStrip : DockPaneStripBase
 {
+	private const int WmPaint = 0x000F;
+	private const int WmEraseBackground = 0x0014;
+
+	private IDockContent m_tracedActiveContent;
+	private IDockContent m_tracedPreviousContent;
+
 	private class TabFiraxis : Tab
 	{
 		private int m_tabX;
@@ -601,20 +608,115 @@ internal class FiraxisDockPaneStrip : DockPaneStripBase
 
 	protected override void OnPaint(PaintEventArgs e)
 	{
-		base.OnPaint(e);
-		CalculateTabs();
-		if (base.Appearance == DockPane.AppearanceStyle.Document && base.DockPane.ActiveContent != null && EnsureDocumentTabVisible(base.DockPane.ActiveContent, repaint: false))
+		TraceActiveContentChange();
+		TraceTabStrip("paint-begin", e.ClipRectangle);
+		try
 		{
+			base.OnPaint(e);
 			CalculateTabs();
+			if (base.Appearance == DockPane.AppearanceStyle.Document && base.DockPane.ActiveContent != null && EnsureDocumentTabVisible(base.DockPane.ActiveContent, repaint: false))
+			{
+				CalculateTabs();
+			}
+			DrawTabStrip(e.Graphics);
 		}
-		DrawTabStrip(e.Graphics);
+		finally
+		{
+			TraceTabStrip("paint-end", e.ClipRectangle);
+		}
 	}
 
 	protected override void OnRefreshChanges()
 	{
+		IDockContent previousContent = m_tracedActiveContent;
+		bool activeContentChanged = TraceActiveContentChange();
+		TraceTabStrip("refresh", null);
 		SetInertButtons();
 		base.Height = MeasureHeight();
+		if (activeContentChanged && base.Appearance == DockPane.AppearanceStyle.Document)
+			RepaintChangedDocumentTabs(previousContent, base.DockPane.ActiveContent);
 		Invalidate();
+	}
+
+	protected override void WndProc(ref Message m)
+	{
+		bool tracePaint = m.Msg == WmPaint || m.Msg == WmEraseBackground;
+		if (tracePaint)
+			TraceTabStrip("native-before", null, m.Msg);
+		try
+		{
+			base.WndProc(ref m);
+		}
+		finally
+		{
+			if (tracePaint)
+				TraceTabStrip("native-after", null, m.Msg);
+		}
+	}
+
+	private bool TraceActiveContentChange()
+	{
+		IDockContent current = base.DockPane.ActiveContent;
+		if (ReferenceEquals(m_tracedActiveContent, current))
+			return false;
+
+		m_tracedPreviousContent = m_tracedActiveContent;
+		m_tracedActiveContent = current;
+		if (DocumentSwitchTrace.IsActive)
+			TraceTabStrip("active-change", null);
+		return true;
+	}
+
+	private void RepaintChangedDocumentTabs(IDockContent previous, IDockContent current)
+	{
+		CalculateTabs();
+		Rectangle repaintRectangle = GetTraceRectangle(previous);
+		repaintRectangle = Rectangle.Union(repaintRectangle, GetTraceRectangle(current));
+		repaintRectangle.Intersect(TabsRectangle);
+		if (repaintRectangle.IsEmpty)
+			return;
+
+		Invalidate(DrawHelper.RtlTransform(this, repaintRectangle));
+		Update();
+	}
+
+	private void TraceTabStrip(string phase, Rectangle? clip, int message = 0)
+	{
+		if (!DocumentSwitchTrace.IsActive)
+			return;
+
+		DocumentSwitchTrace.TraceTabStrip(phase, string.Format(
+			"message={0}, clip={1}, bounds={2}, old={3}, new={4}, oldRect={5}, newRect={6}",
+			message == WmPaint ? "WM_PAINT" : message == WmEraseBackground ? "WM_ERASEBKGND" : "none",
+			clip.HasValue ? clip.Value.ToString() : "none", ClientRectangle,
+			GetTraceIdentity(m_tracedPreviousContent), GetTraceIdentity(m_tracedActiveContent),
+			GetTraceRectangle(m_tracedPreviousContent), GetTraceRectangle(m_tracedActiveContent)));
+	}
+
+	private Rectangle GetTraceRectangle(IDockContent content)
+	{
+		if (content == null)
+			return Rectangle.Empty;
+		for (int i = 0; i < base.Tabs.Count; i++)
+		{
+			if (ReferenceEquals(base.Tabs[i].Content, content))
+				return GetTabRectangle(i);
+		}
+		return Rectangle.Empty;
+	}
+
+	private static string GetTraceIdentity(IDockContent content)
+	{
+		if (content == null)
+			return "null";
+		try
+		{
+			return string.Format("{0}:{1}", content.DockHandler.Form.Name, content.DockHandler.TabText);
+		}
+		catch
+		{
+			return "unavailable";
+		}
 	}
 
 	public override GraphicsPath GetOutline(int index)

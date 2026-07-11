@@ -16,6 +16,7 @@ internal static class Program
         using (Form host = new Form())
         using (DockPanel dockPanel = new DockPanel())
         using (DockContent content = new DockContent())
+        using (DockContent secondContent = new DockContent())
         {
             host.StartPosition = FormStartPosition.Manual;
             host.Bounds = new Rectangle(100, 100, 800, 600);
@@ -28,9 +29,30 @@ internal static class Program
             content.Name = "Geometries";
             content.Text = "Geometries";
             content.Show(dockPanel, DockState.Document);
+            secondContent.Name = "Properties";
+            secondContent.Text = "Properties";
+            secondContent.Show(dockPanel, DockState.Document);
             Application.DoEvents();
 
             DockPane pane = content.DockHandler.Pane;
+			pane.ActiveContent = content;
+			Application.DoEvents();
+			int immediateTabPaints = 0;
+			pane.TabStripControl.Paint += delegate { immediateTabPaints++; };
+			pane.ActiveContent = secondContent;
+			if (immediateTabPaints == 0)
+			{
+				Console.Error.WriteLine("FAIL: document tab activation returned before repainting the old and new tab states.");
+				return 1;
+			}
+            Color expectedBackground = dockPanel.Theme.ColorPalette.MainWindowActive.Background;
+            if (pane.BackColor.ToArgb() != expectedBackground.ToArgb())
+            {
+                Console.Error.WriteLine("FAIL: FiraxisDockPane erase background does not match the theme environment background.");
+                Console.Error.WriteLine("Expected: {0}", expectedBackground);
+                Console.Error.WriteLine("Actual:   {0}", pane.BackColor);
+                return 1;
+            }
             Rectangle contentRect = GetContentRectangle(pane);
             if (contentRect.Width <= 2 || contentRect.Height <= 2)
             {

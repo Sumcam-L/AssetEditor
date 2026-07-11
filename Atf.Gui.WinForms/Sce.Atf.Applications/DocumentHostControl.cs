@@ -6,11 +6,18 @@ namespace Sce.Atf.Applications;
 
 internal sealed class DocumentHostControl : UserControl
 {
+	private readonly IDisposable m_logicalControlObserver;
+
     public DocumentHostControl(Control logicalControl)
     {
         LogicalControl = logicalControl ?? throw new ArgumentNullException(nameof(logicalControl));
         Dock = DockStyle.Fill;
         Tag = logicalControl.Tag;
+		m_logicalControlObserver = DocumentSwitchTrace.Observe(
+			LogicalControl,
+			"logical-control",
+			() => "document=" + GetTraceIdentity(LogicalControl),
+			() => HasAttachedLogicalControl && Parent != null && Parent.Visible);
     }
 
     public Control LogicalControl { get; }
@@ -69,4 +76,25 @@ internal sealed class DocumentHostControl : UserControl
         LogicalControl.Visible = false;
         Controls.Remove(LogicalControl);
     }
+
+	protected override void WndProc(ref Message message)
+	{
+		DocumentSwitchTrace.Trace(this, "inner-host", "before", ref message,
+			() => "document=" + GetTraceIdentity(LogicalControl), () => Visible && Parent != null && Parent.Visible);
+		base.WndProc(ref message);
+		DocumentSwitchTrace.Trace(this, "inner-host", "after", ref message,
+			() => "document=" + GetTraceIdentity(LogicalControl), () => Visible && Parent != null && Parent.Visible);
+	}
+
+	protected override void Dispose(bool disposing)
+	{
+		if (disposing)
+			m_logicalControlObserver.Dispose();
+		base.Dispose(disposing);
+	}
+
+	private static string GetTraceIdentity(Control control)
+	{
+		return control.GetType().FullName + "#" + System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(control).ToString("X");
+	}
 }

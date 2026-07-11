@@ -44,21 +44,30 @@ public class FiraxisDockPane : DockPane
 	public FiraxisDockPane(IDockContent content, DockState visibleState, bool show)
 		: base(content, visibleState, show)
 	{
+		ApplyThemeBackground();
 	}
 
 	public FiraxisDockPane(IDockContent content, FloatWindow floatWindow, bool show)
 		: base(content, floatWindow, show)
 	{
+		ApplyThemeBackground();
 	}
 
 	public FiraxisDockPane(IDockContent content, DockPane previousPane, DockAlignment alignment, double proportion, bool show)
 		: base(content, previousPane, alignment, proportion, show)
 	{
+		ApplyThemeBackground();
 	}
 
 	public FiraxisDockPane(IDockContent content, Rectangle floatWindowBounds, bool show)
 		: base(content, floatWindowBounds, show)
 	{
+		ApplyThemeBackground();
+	}
+
+	private void ApplyThemeBackground()
+	{
+		BackColor = DockPanel.Theme.ColorPalette.MainWindowActive.Background;
 	}
 
 	protected override void OnPaint(PaintEventArgs e)

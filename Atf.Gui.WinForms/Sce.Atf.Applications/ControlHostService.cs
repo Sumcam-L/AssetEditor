@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using Sce.Atf.Adaptation;
@@ -88,6 +89,8 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		private const int WM_PAINT = 15;
 
 		private const int WM_ERASEBKGND = 20;
+		private const int WM_WINDOWPOSCHANGING = 0x0046;
+		private const uint SWP_SHOWWINDOW = 0x0040;
 
 		private readonly ControlHostService m_controlHostService;
 
@@ -130,11 +133,43 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 
 		protected override void WndProc(ref Message m)
 		{
+			if (m.Msg == WM_WINDOWPOSCHANGING && IsShowingWindow(m.LParam))
+				m_controlHostService.BeginDocumentSwitchTraceFromVisibleHost(this);
+			DocumentSwitchTrace.Trace(this, "outer-host", "before", ref m,
+				m_controlHostService.GetDocumentTraceContext, () => m_controlHostService.IsActiveDocumentSurface(this));
 			if (ShouldTracePaint && (m.Msg == WM_PAINT || m.Msg == WM_ERASEBKGND))
 			{
 				PaintTimingLog.Write("ControlHostDockContent: name={0}, msg={1}, visible={2}, child={3}, childVisible={4}, childBounds={5}, containsFocus={6}", TraceName, m.Msg, Visible, TraceChildName, TraceChildVisible, TraceChildBounds, ContainsFocus);
 			}
 			base.WndProc(ref m);
+			DocumentSwitchTrace.Trace(this, "outer-host", "after", ref m,
+				m_controlHostService.GetDocumentTraceContext, () => m_controlHostService.IsActiveDocumentSurface(this));
+		}
+
+		private static bool IsShowingWindow(IntPtr windowPosition)
+		{
+			if (windowPosition == IntPtr.Zero)
+				return false;
+			try
+			{
+				return (Marshal.PtrToStructure<WindowPosition>(windowPosition).Flags & SWP_SHOWWINDOW) != 0;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct WindowPosition
+		{
+			public IntPtr Hwnd;
+			public IntPtr HwndInsertAfter;
+			public int X;
+			public int Y;
+			public int Width;
+			public int Height;
+			public uint Flags;
 		}
 
 		protected override void OnVisibleChanged(EventArgs e)
@@ -230,6 +265,9 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 
 	private readonly Dictionary<DockPane, DocumentHostControl> m_activeDocumentHostsByPane = new Dictionary<DockPane, DocumentHostControl>();
 
+	private readonly Dictionary<DockPane, IDisposable> m_documentPaneTraceObservers = new Dictionary<DockPane, IDisposable>();
+	private readonly IDisposable m_dockPanelTraceObserver;
+
 	private readonly List<DockContent> m_unregisteredContents = new List<DockContent>();
 
 	private readonly ActiveCollection<ControlInfo> m_controls;
@@ -241,6 +279,8 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 	private readonly DockPanel m_dockPanel;
 
 	private DockContent m_activeDockContent;
+
+	private long m_documentSwitchTraceGeneration;
 
 	private bool m_activateCurrentDockContentPending;
 
@@ -420,6 +460,8 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		m_controls.ItemRemoved += controls_ItemRemoved;
 		m_mainForm = mainForm;
 		m_dockPanel = new DockPanel();
+		m_dockPanelTraceObserver = DocumentSwitchTrace.Observe(
+			m_dockPanel, "dock-panel", GetDocumentTraceContext, () => true);
 		m_dockPanel.Dock = DockStyle.Fill;
 		m_dockPanel.DockBackColor = mainForm.BackColor;
 		m_dockPanel.ShowDocumentIcon = true;
@@ -976,6 +1018,13 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		DockContent dockContent = m_dockPanel.ActiveContent as DockContent;
 		if (dockContent == m_activeDockContent)
 			return;
+		DockContent previousDockContent = m_activeDockContent;
+		if (dockContent != null && dockContent.DockState == DockState.Document)
+		{
+			m_documentSwitchTraceGeneration = DocumentSwitchTrace.BeginOrReuse(string.Format(
+				"old={0}, new={1}", GetDocumentTraceIdentity(previousDockContent), GetDocumentTraceIdentity(dockContent)));
+			ObserveDocumentPane(dockContent.Pane);
+		}
 		long tDeact = 0, tAct = 0, tOther = 0;
 		var swTotal = Stopwatch.StartNew();
 
@@ -996,7 +1045,10 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		{
 			var sw = Stopwatch.StartNew();
 			if (deferDocumentActivate)
-				m_dockPanel.BeginInvoke((Action)(() => ActivateClientIfStillActive(dockContent)));
+			{
+				long traceGeneration = m_documentSwitchTraceGeneration;
+				m_dockPanel.BeginInvoke((Action)(() => ActivateClientIfStillActive(dockContent, traceGeneration)));
+			}
 			else
 				ActivateClient(AttachDocumentHostIfNeeded(dockContent));
 			tAct = sw.ElapsedMilliseconds;
@@ -1020,7 +1072,7 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 				swTotal.ElapsedMilliseconds, tDeact, tAct, tOther);
 	}
 
-	private void ActivateClientIfStillActive(DockContent dockContent)
+	private void ActivateClientIfStillActive(DockContent dockContent, long traceGeneration = 0)
 	{
 		if (!m_dockPanel.IsDisposed && dockContent == m_activeDockContent && dockContent.Controls.Count > 0)
 		{
@@ -1034,7 +1086,46 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			ActivateClient(logicalControl);
 			if (sw.ElapsedMilliseconds > 0)
 				PaintTimingLog.Write("DeferredActivateClient: {0}ms", sw.ElapsedMilliseconds);
+			if (traceGeneration != 0 && !m_dockPanel.IsDisposed && m_dockPanel.IsHandleCreated)
+				m_dockPanel.BeginInvoke((Action)(() => DocumentSwitchTrace.End(traceGeneration)));
 		}
+	}
+
+	private void ObserveDocumentPane(DockPane pane)
+	{
+		if (pane == null || !pane.IsHandleCreated || m_documentPaneTraceObservers.ContainsKey(pane))
+			return;
+		m_documentPaneTraceObservers.Add(pane, DocumentSwitchTrace.Observe(
+			pane, "dock-pane", GetDocumentTraceContext,
+			() => m_activeDockContent != null && m_activeDockContent.Pane == pane));
+	}
+
+	private void BeginDocumentSwitchTraceFromVisibleHost(DockContent dockContent)
+	{
+		if (dockContent == null || dockContent.DockState != DockState.Document)
+			return;
+		m_documentSwitchTraceGeneration = DocumentSwitchTrace.BeginOrReuse(
+			"outer-visible-before-active-change target=" + GetDocumentTraceIdentity(dockContent));
+		ObserveDocumentPane(dockContent.Pane);
+	}
+
+	private string GetDocumentTraceContext()
+	{
+		return "document=" + GetDocumentTraceIdentity(m_activeDockContent);
+	}
+
+	private bool IsActiveDocumentSurface(DockContent dockContent)
+	{
+		return dockContent != null && dockContent == m_activeDockContent;
+	}
+
+	private static string GetDocumentTraceIdentity(DockContent dockContent)
+	{
+		if (dockContent == null)
+			return "null";
+		Control logicalControl = dockContent.Controls.Count > 0 ? GetLogicalControl(dockContent.Controls[0]) : null;
+		return (logicalControl?.GetType().FullName ?? dockContent.GetType().FullName) + "#" +
+			RuntimeHelpers.GetHashCode(logicalControl ?? (object)dockContent).ToString("X");
 	}
 
 	private void ActivateCurrentDockContent()
@@ -1801,6 +1892,12 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		{
 			if (disposing)
 			{
+				DocumentSwitchTrace.End(m_documentSwitchTraceGeneration);
+				m_documentSwitchTraceGeneration = 0;
+				m_dockPanelTraceObserver.Dispose();
+				foreach (IDisposable observer in m_documentPaneTraceObservers.Values)
+					observer.Dispose();
+				m_documentPaneTraceObservers.Clear();
 				m_commandService.UnregisterCommand(StandardCommand.UILock, this);
 				m_commandService.UnregisterCommand(StandardCommand.WindowTileVertical, this);
 				m_commandService.UnregisterCommand(StandardCommand.WindowTileHorizontal, this);

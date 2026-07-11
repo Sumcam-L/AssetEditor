@@ -24,6 +24,7 @@
       <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
     <ProjectReference Include="..\Firaxis.CivTech\Firaxis.CivTech.csproj" />
+    <ProjectReference Include="..\Atf.Gui.WinForms\Atf.Gui.WinForms.csproj" />
     
 </ItemGroup>
     <ItemGroup>
