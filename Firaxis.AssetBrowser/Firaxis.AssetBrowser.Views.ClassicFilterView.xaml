@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Firaxis.AssetBrowser.Views.ClassicFilterView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:abvm="clr-namespace:Firaxis.AssetBrowser.ViewModels" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" xmlns:views="clr-namespace:Firaxis.AssetBrowser.Views">
+  <DockPanel>
+    <DockPanel Name="searchByPanel" Dock="Top">
+      <TextBlock Name="searchByLabel" Text="Search By:" DockPanel.Dock="Left" Margin="0 0 3 0" VerticalAlignment="Center" />
+      <ComboBox Name="searchByOptions" DockPanel.Dock="Right" ItemsSource="{Binding FilterByChoices}" SelectedItem="{Binding FilterByChoice}" />
+    </DockPanel>
+    <TextBlock Name="classLabel" Text="Class(es):" DockPanel.Dock="Top" Visibility="{Binding IsClassFilteringEnabled, Converter={StaticResource BoolToVis}}" />
+    <TextBlock Name="classFilter" HorizontalAlignment="Left" FontWeight="SemiBold" DockPanel.Dock="Top" Text="{Binding ClassFilterDisplay}" Visibility="{Binding IsClassFilteringEnabled, Converter={StaticResource BoolToVis}}" />
+    <TextBlock Name="projectLabel" Text="Projects:" DockPanel.Dock="Top" />
+    <ItemsControl Name="projectVisibility" ItemTemplate="{StaticResource projectVisibilityTemplate}" FlowDirection="LeftToRight" HorizontalAlignment="Left" DockPanel.Dock="Top" ItemsSource="{Binding Projects}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <WrapPanel Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+    </ItemsControl>
+    <ListBox Name="assetTypeListbox" SelectionMode="Extended" ItemContainerStyle="{StaticResource boldListboxSelection}" MinWidth="50" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" DockPanel.Dock="Top" ItemsSource="{Binding AssetTypes}" />
+  </DockPanel>
+</UserControl>

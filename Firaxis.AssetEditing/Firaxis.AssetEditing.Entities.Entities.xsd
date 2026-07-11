@@ -1,0 +1,559 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="Entities"
+  xmlns="Entities"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ft="FieldTypes"
+  xmlns:bt="BaseTypes">
+
+  <xs:import namespace="BaseTypes" schemaLocation="../Base/BaseTypes.xsd" />
+  <xs:import namespace="FieldTypes" schemaLocation="../Fields/FieldTypes.xsd" />
+  
+  <xs:complexType name="EntitySourceFilePathType">
+    <xs:sequence>
+      <xs:element name="Path" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TextureExportSettingsType">
+	<xs:sequence>
+	  <xs:element name="PixelFormat" type="xs:string" />
+	  <xs:element name="FilterType" type="xs:string" />
+	  <xs:element name="UseMips" type="xs:boolean" />
+	  <xs:element name="NumManualMips" type="xs:integer" />
+	  <xs:element name="CompleteMipChain" type="xs:boolean" />
+	  <xs:element name="ValueClampMin" type="xs:float" />
+	  <xs:element name="ValueClampMax" type="xs:float" />
+	  <xs:element name="SupportScale" type="xs:float" />
+	  <xs:element name="GammaIn" type="xs:float" />
+	  <xs:element name="GammaOut" type="xs:float" />
+	  <xs:element name="SlabWidth" type="xs:unsignedInt" />
+	  <xs:element name="SlabHeight" type="xs:unsignedInt" />
+	  <xs:element name="ColorKeyX" type="xs:unsignedInt" />
+	  <xs:element name="ColorKeyY" type="xs:unsignedInt" />
+	  <xs:element name="ColorKeyZ" type="xs:unsignedInt" />
+	  <xs:element name="ExportMode" type="xs:string" />
+	  <xs:element name="SampleFromTopLevel" type="xs:boolean" />
+	</xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InstanceEntityType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:element name="Tags" type="bt:TextElementType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="CookParameters" type="CookParametersSetType" />
+      <xs:element name="ClassName" type="xs:string"/>
+      <xs:element name="DataFiles" type="bt:DataFileType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TextureEntityType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="SourceFilePath" type="EntitySourceFilePathType"/>
+          <xs:element name="SourceObjectName" type="xs:string"/>
+          <xs:element name="ImportedTime" type="xs:dateTime"/>
+          <xs:element name="ExportedTime" type="xs:dateTime"/>
+          <xs:element name="ExportSettings" type="TextureExportSettingsType"/>
+          <xs:element name="Height" type="xs:unsignedInt"/>
+          <xs:element name="Width" type="xs:unsignedInt"/>
+	        <xs:element name="Depth" type="xs:unsignedInt"/>
+	        <xs:element name="NumMips" type="xs:unsignedInt"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="MaterialInstanceType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FireFXInstanceType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="ScriptText" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="AnimationEntityType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="SourceFilePath" type="EntitySourceFilePathType"/>
+          <xs:element name="SourceObjectName" type="xs:string"/>
+          <xs:element name="ImportedTime" type="xs:dateTime"/>
+          <xs:element name="ExportedTime" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="GeoPrimGroupType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="FirstPrimIndex" type="xs:unsignedInt"/>
+      <xs:element name="PrimCount" type="xs:unsignedInt" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="GeoMeshType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="BoundBoneCount" type="xs:unsignedInt"/>
+      <xs:element name="PrimitiveCount" type="xs:unsignedInt" />
+      <xs:element name="VertexCount" type="xs:unsignedInt" />
+	  <xs:element name="PrimGroups" type="GeoPrimGroupType" minOccurs="0" maxOccurs ="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="GeoModelType">
+    <xs:sequence>
+	  <xs:element name="GeometryMeshes" type="GeoMeshType" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element name="Bones" type="bt:TextElementType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="GeometryEntityType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="SourceFilePath" type="EntitySourceFilePathType"/>
+          <xs:element name="SourceObjectName" type="xs:string"/>
+          <xs:element name="ImportedTime" type="xs:dateTime"/>
+          <xs:element name="ExportedTime" type="xs:dateTime"/>
+          <xs:element name="GeoModelType" type="GeoModelType" />
+          <xs:element name="VertexCount" type="xs:unsignedLong" />
+          <xs:element name="PrimitiveCount" type="xs:unsignedLong" />
+          <xs:element name="BoneCount" type="xs:unsignedLong" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="AnalyticLightEntityType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="SourceFilePath" type="EntitySourceFilePathType"/>
+          <xs:element name="SourceObjectName" type="xs:string"/>
+          <xs:element name="ImportedTime" type="xs:dateTime"/>
+          <xs:element name="ExportedTime" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="ParticleEffectEntityType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="SourceFilePath" type="EntitySourceFilePathType"/>
+          <xs:element name="SourceObjectName" type="xs:string"/>
+          <xs:element name="ImportedTime" type="xs:dateTime"/>
+          <xs:element name="ExportedTime" type="xs:dateTime"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="DSGEntityType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="AnimationSlots" type="bt:TextElementType" minOccurs="0" maxOccurs="unbounded" />
+          <xs:element name="TimelineSlots" type="bt:TextElementType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LegacyTriggerType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="FXName" type="xs:string" />
+      <xs:element name="AttachmentPointName" type="xs:string" />
+      <xs:element name="StartTime" type="xs:float" />
+      <xs:element name="Duration" type="xs:float" />
+      <xs:element name="CollectionName" type="xs:string" />
+      <xs:element name="TrackIndex" type="xs:integer" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TriggerType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="StartTime" type="xs:float" />
+      <xs:element name="TrackIndex" type="xs:integer" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SoundTriggerType">
+    <xs:complexContent>
+      <xs:extension base="TriggerType">
+        <xs:sequence>
+          <xs:element name="AudioEvent" type="xs:string" />
+          <xs:element name="AttachmentPointName" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TransferTriggerType">
+    <xs:complexContent>
+      <xs:extension base="TriggerType">
+        <xs:sequence>
+          <xs:element name="TargetTrigger" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ActionTriggerType">
+    <xs:complexContent>
+      <xs:extension base="TriggerType">
+        <xs:sequence>
+          <xs:element name="Action" type="xs:string" />
+          <xs:element name="AttachmentPointName" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="AssetFXTriggerType">
+    <xs:complexContent>
+      <xs:extension base="TriggerType">
+        <xs:sequence>
+          <xs:element name="VFXAsset" type="xs:string" />
+          <xs:element name="AttachmentPointName" type="xs:string" />
+          <xs:element name="Duration" type="xs:float" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ArtDefFXTriggerType">
+    <xs:complexContent>
+      <xs:extension base="TriggerType">
+        <xs:sequence>
+          <xs:element name="VFXElement" type="xs:string" />
+          <xs:element name="VFXCollection" type="xs:string" />
+          <xs:element name="AttachmentPointName" type="xs:string" />
+          <xs:element name="Duration" type="xs:float" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LightTriggerType">
+    <xs:complexContent>
+      <xs:extension base="TriggerType">
+        <xs:sequence>
+          <xs:element name="LightAsset" type="xs:string" />
+          <xs:element name="AttachmentPointName" type="xs:string" />
+          <xs:element name="Duration" type="xs:float" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TimelineType">
+    <xs:sequence>
+	    <xs:element name="Name" type="xs:string" />
+	    <xs:element name="Description" type="xs:string" />
+	    <xs:element name="AnimationName" type="xs:string" />
+	    <xs:element name="Duration" type="xs:float" default="1" />
+	    <xs:element name="Triggers" type="TriggerType" minOccurs="0" maxOccurs="unbounded" />
+	    <xs:element name="Tracks" type="TrackType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="LegacyTriggers" type="LegacyTriggerType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TrackType">
+    <xs:sequence>
+	    <xs:element name="Name" type="xs:string" />
+	    <xs:element name="Index" type="xs:integer" />
+		</xs:sequence>
+  </xs:complexType>
+	
+  <xs:complexType name="AnimationBindingType">
+    <xs:sequence>
+	  <xs:element name="SlotName" type="xs:string" />
+	  <xs:element name="AnimationName" type="xs:string" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TimelineBindingType">
+    <xs:sequence>
+	  <xs:element name="SlotName" type="xs:string" />
+	  <xs:element name="TimelineName" type="xs:string" />
+    <xs:element name="Duration" type="xs:float" default="1" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="PrimGroupStateType">
+    <xs:sequence>
+	  <xs:element name="MeshName" type="xs:string" />
+	  <xs:element name="GroupName" type="xs:string" />
+	  <xs:element name="StateName" type="xs:string" />
+	  <xs:element name="CookParameters" type="ft:FieldValueType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ModelInstanceType">
+    <xs:sequence>
+	  <xs:element name="Name" type="xs:string" />
+	  <xs:element name="GeoName" type="xs:string" />
+	  <xs:element name="PrimGroupStates" type="PrimGroupStateType" minOccurs="0" maxOccurs="unbounded" />
+	  <xs:element name="VertexCount" type="xs:unsignedLong" />
+	  <xs:element name="PrimitiveCount" type="xs:unsignedLong" />
+	  <xs:element name="BoneCount" type="xs:unsignedLong" />
+	</xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="FloatVector3Type">
+    <xs:restriction base="ft:FloatListType">
+      <xs:length value="3"></xs:length>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="AttachmentPointType">
+    <xs:sequence>
+	  <xs:element name="Name" type="xs:string" />
+	  <xs:element name="BoneName" type="xs:string" />
+	  <xs:element name="ModelInstanceName" type="xs:string" />
+    <xs:element name="Position" type="FloatVector3Type" />
+    <xs:element name="Orientation" type="FloatVector3Type" />
+    <xs:element name="Scale" type="xs:float" />
+    <xs:element name="CookParameters" type="CookParametersSetType" />
+	</xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SplineVertexType">
+    <xs:sequence>
+      <xs:element name="Position" type="FloatVector3Type" />
+      <xs:element name="LeftUserTangent" type="FloatVector3Type" />
+      <xs:element name="RightUserTangent" type="FloatVector3Type" />
+      <xs:element name="SharpCorner" type="xs:boolean" />
+      <xs:element name="UseUserTangents" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SplineVertexSetType">
+    <xs:sequence>
+      <xs:element name="SplineVertex" type="SplineVertexType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SplineType">
+    <xs:sequence>
+			<xs:element name="ClassName" type="xs:string" />
+			<xs:element name="Name" type="xs:string" />
+      <xs:element name="ClosedLoop" type="xs:boolean" />
+      <xs:element name="Vertices" type="SplineVertexSetType" />
+      <xs:element name="CookParameters" type="CookParametersSetType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParticleEffectReferenceType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LightReferenceType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="LightSetType">
+    <xs:sequence>
+      <xs:element name="LightBinding" type="LightReferenceType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AnimationBindingSetType">
+    <xs:sequence>
+      <xs:element name="AnimationBinding" type="AnimationBindingType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="AttachmentPointSetType">
+    <xs:sequence>
+      <xs:element name="AttachmentPoint" type="AttachmentPointType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SplineSetType">
+    <xs:sequence>
+      <xs:element name="Spline" type="SplineType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="TimelineSetType">
+    <xs:sequence>
+      <xs:element name="Timeline" type="TimelineType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TimelineBindingSetType">
+    <xs:sequence>
+      <xs:element name="TimelineBinding" type="TimelineBindingType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GeometrySetType">
+    <xs:sequence>
+      <xs:element name="ModelInstance" type="ModelInstanceType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ParticleEffectSetType">
+    <xs:sequence>
+      <xs:element name="ParticleEffect" type="ParticleEffectReferenceType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CookParametersSetType">
+    <xs:sequence>
+      <xs:element name="CookParameter" type="ft:FieldValueType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="BehaviorReferenceType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="BehaviorSetType">
+    <xs:sequence>
+      <xs:element name="Behavior" type="BehaviorReferenceType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="GeometryReferenceType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="GeometryReferenceSetType">
+    <xs:sequence>
+      <xs:element name="GeometryReferences" type="GeometryReferenceType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="AssetType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:element name="Tags" type="bt:TextElementType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="CookParameterSet" type="CookParametersSetType" />
+      <xs:element name="ClassName" type="xs:string"/>
+      <xs:element name="DataFiles" type="bt:DataFileType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="DSG" type="xs:string" />
+	  <xs:element name="BehaviorSet" type="BehaviorSetType" />
+			<xs:element name="SplineSet" type="SplineSetType" />
+			<xs:element name="TimelineSet" type="TimelineSetType" />
+      <xs:element name="AnimationBindingSet" type="AnimationBindingSetType"/>
+      <xs:element name="TimelineBindingSet" type="TimelineBindingSetType" />
+      <xs:element name="GeometrySet" type="GeometrySetType" />
+      <xs:element name="AttachmentPointSet" type="AttachmentPointSetType"/>
+      <xs:element name="ParticleEffectSet" type="ParticleEffectSetType" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="BehaviorType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:element name="Tags" type="bt:TextElementType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="CookParameterSet" type="CookParametersSetType" />
+      <xs:element name="ClassName" type="xs:string"/>
+      <xs:element name="DataFiles" type="bt:DataFileType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="DSG" type="xs:string" />
+	  <xs:element name="BehaviorSet" type="BehaviorSetType" />
+	  <xs:element name="GeometryReferenceSet" type="GeometryReferenceSetType" />
+      <xs:element name="TimelineSet" type="TimelineSetType" />
+      <xs:element name="AnimationBindingSet" type="AnimationBindingSetType"/>
+      <xs:element name="TimelineBindingSet" type="TimelineBindingSetType" />
+      <xs:element name="AttachmentPointSet" type="AttachmentPointSetType"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="LightDirectionTagType">
+    <xs:sequence>
+	  <xs:element name="Name" type="xs:string" />
+	  <xs:element name="CastsShadows" type="xs:boolean" />
+	  <xs:element name="XPosition" type="xs:float" />
+      <xs:element name="YPosition" type="xs:float" />
+	  <xs:element name="ZPosition" type="xs:float" />
+	  <xs:element name="Diameter" type="xs:float" />
+	  <xs:element name="AngularFalloff" type="xs:float" />
+	  <xs:element name="Red" type="xs:float" />
+      <xs:element name="Green" type="xs:float" />
+	  <xs:element name="Blue" type="xs:float" />
+	  <xs:element name="U" type="xs:float" />
+	  <xs:element name="V" type="xs:float" />
+	  <xs:element name="LightIntensity" type="xs:float" />
+	  <xs:element name="LightColor" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="LightDirectionTagSetType">
+    <xs:sequence>
+      <xs:element name="LightDirectionTags" type="LightDirectionTagType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="EnvironmentLightEntityType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="SourceFilePath" type="EntitySourceFilePathType"/>
+          <xs:element name="SourceObjectName" type="xs:string"/>
+          <xs:element name="ImportedTime" type="xs:dateTime"/>
+          <xs:element name="ExportedTime" type="xs:dateTime"/>
+          <xs:element name="LightDirectionTags" type="LightDirectionTagSetType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="LightRigEntityType">
+    <xs:complexContent>
+      <xs:extension base="InstanceEntityType">
+        <xs:sequence>
+          <xs:element name="DSG" type="xs:string" />
+          <xs:element name="AnimationBindingSet" type="AnimationBindingSetType"/>
+          <xs:element name="EnvironmentLightSet" type="LightSetType"  />
+          <xs:element name="AnalyticLightSet" type="LightSetType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:element name="MaterialInstance" type="MaterialInstanceType"/>
+  <xs:element name="FireFXInstance" type="FireFXInstanceType"/>
+  <xs:element name="TextureEntity" type="TextureEntityType"/>
+  <xs:element name="AnimationEntity" type="AnimationEntityType"/>
+  <xs:element name="GeometryEntity" type="GeometryEntityType"/>
+  <xs:element name="AnalyticLightEntity" type="AnalyticLightEntityType"/>
+  <xs:element name="ParticleEffectEntity" type="ParticleEffectEntityType"/>
+  <xs:element name="DSGEntity" type="DSGEntityType"/>
+  <xs:element name="AssetEntity" type="AssetType"/>
+  <xs:element name="BehaviorEntity" type="BehaviorType"/>
+  <xs:element name="EnvironmentLightEntity" type="EnvironmentLightEntityType"/>
+  <xs:element name="LightRigEntity" type="LightRigEntityType"/>
+
+</xs:schema>

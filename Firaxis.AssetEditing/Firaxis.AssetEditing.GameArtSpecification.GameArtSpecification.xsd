@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="GameArtSpecification"
+  xmlns="GameArtSpecification"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="RelativePathType">
+    <xs:sequence>
+	  <xs:element name="RelativePath" type="xs:string" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="LibraryReferenceType">
+    <xs:sequence>
+	  <xs:element name="LibraryName" type="xs:string" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="RelativePathContainerType">
+    <xs:sequence>
+	  <xs:element name="RelativePaths" type="RelativePathType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="LibraryReferenceContainerType">
+    <xs:sequence>
+	  <xs:element name="LibraryReferences" type="LibraryReferenceType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="GameArtIDType">
+    <xs:sequence>
+	  <xs:element name="GameName" type="xs:string" />
+	  <xs:element name="GameArtID" type="xs:string" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="RequiredGameArtIDContainerType">
+    <xs:sequence>
+	  <xs:element name="RequiredGameArtIDs" type="GameArtIDType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+  </xs:complexType>
+
+    <xs:complexType name="GameLibraryType">
+    <xs:sequence>
+      <xs:element name="LibraryName" type="xs:string" />
+      <xs:element name="RelativePaths" type="RelativePathContainerType" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ArtConsumerType">
+    <xs:sequence>
+      <xs:element name="ConsumerName" type="xs:string" />
+	  <xs:element name="LoadsLibraries" type="xs:boolean" />
+      <xs:element name="RelativePaths" type="RelativePathContainerType" />
+	  <xs:element name="LibraryReferences" type="LibraryReferenceContainerType" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ArtConsumerContainerType">
+    <xs:sequence>
+	  <xs:element name="ArtConsumers" type="ArtConsumerType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="GameLibraryContainerType">
+    <xs:sequence>
+	  <xs:element name="GameLibraries" type="GameLibraryType" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="GameArtSpecificationType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="ID" type="xs:string"/>
+      <xs:element name="ArtConsumers" type="ArtConsumerContainerType"/>
+	  <xs:element name="GameLibraries" type="GameLibraryContainerType"/>
+      <xs:element name="RequiredGameArtIDs" type="RequiredGameArtIDContainerType"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:element name="GameArtSpecification" type="GameArtSpecificationType"/>
+
+</xs:schema>

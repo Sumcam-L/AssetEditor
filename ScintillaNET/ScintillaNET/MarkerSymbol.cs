@@ -1,0 +1,36 @@
+namespace ScintillaNET;
+
+public enum MarkerSymbol
+{
+	Circle = 0,
+	RoundRect = 1,
+	Arrow = 2,
+	SmallRect = 3,
+	ShortArrow = 4,
+	Empty = 5,
+	ArrowDown = 6,
+	Minus = 7,
+	Plus = 8,
+	VLine = 9,
+	LCorner = 10,
+	TCorner = 11,
+	BoxPlus = 12,
+	BoxPlusConnected = 13,
+	BoxMinus = 14,
+	BoxMinusConnected = 15,
+	LCornerCurve = 16,
+	TCornerCurve = 17,
+	CirclePlus = 18,
+	CirclePlusConnected = 19,
+	CircleMinus = 20,
+	CircleMinusConnected = 21,
+	Background = 22,
+	DotDotDot = 23,
+	Arrows = 24,
+	FullRect = 26,
+	LeftRect = 27,
+	Available = 28,
+	Underline = 29,
+	RgbaImage = 30,
+	Bookmark = 31
+}

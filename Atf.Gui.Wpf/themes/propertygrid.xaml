@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:l="clr-namespace:Sce.Atf.Wpf.Controls.PropertyEditing" xmlns:c="clr-namespace:Sce.Atf.Wpf.Controls" xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase" xmlns:vc="clr-namespace:Sce.Atf.Wpf.ValueConverters">
+  <ControlTemplate x:Key="ExpanderToggleButton" TargetType="{x:Type ToggleButton}">
+    <Border Width="16" Height="16" Background="#00FFFFFF" Padding="5,5,5,5">
+      <Path Name="ExpandPath" Fill="#00FFFFFF" Stroke="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Data="M0,0 L0,6 L6,0">
+        <UIElement.RenderTransform>
+          <RotateTransform Angle="135" CenterX="3" CenterY="3" />
+        </UIElement.RenderTransform>
+      </Path>
+    </Border>
+    <ControlTemplate.Triggers>
+      <Trigger Property="UIElement.IsMouseOver" Value="True">
+        <Setter TargetName="ExpandPath" Value="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Property="Shape.Stroke" />
+        <Setter TargetName="ExpandPath" Property="Shape.Fill" Value="#00FFFFFF" />
+      </Trigger>
+      <Trigger Property="ToggleButton.IsChecked" Value="True">
+        <Setter TargetName="ExpandPath" Property="UIElement.RenderTransform">
+          <Setter.Value>
+            <RotateTransform Angle="180" CenterX="3" CenterY="3" />
+          </Setter.Value>
+        </Setter>
+        <Setter TargetName="ExpandPath" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Property="Shape.Fill" />
+        <Setter TargetName="ExpandPath" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" Property="Shape.Stroke" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+  <Style x:Key="ExpanderStyle" TargetType="{x:Type Expander}" BasedOn="{StaticResource {x:Type Expander}}">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+    <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Expander}">
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border Name="Border" Background="{TemplateBinding Control.Background}" BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="0">
+              <StackPanel Orientation="Horizontal">
+                <ToggleButton Width="20" OverridesDefaultStyle="True" Template="{StaticResource ExpanderToggleButton}" IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                <ContentPresenter Grid.Column="1" Margin="4" RecognizesAccessKey="True" ContentSource="Header" />
+              </StackPanel>
+            </Border>
+            <Border Name="ExpandSite" Visibility="Collapsed" Grid.Row="1" Background="#00FFFFFF">
+              <ContentPresenter HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" Margin="{TemplateBinding Control.Padding}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" Focusable="False" />
+            </Border>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Expander.IsExpanded" Value="True">
+              <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Property="Foreground" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Key="GroupStyle" TargetType="{x:Type GroupItem}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type GroupItem}">
+          <Expander Style="{StaticResource ExpanderStyle}" IsExpanded="{Binding Path=Items[0].IsExpanded, Mode=TwoWay}">
+            <HeaderedContentControl.Header>
+              <Border BorderThickness="0" Padding="0">
+                <TextBlock FontWeight="Bold" Text="{Binding Name}" />
+              </Border>
+            </HeaderedContentControl.Header>
+            <ContentControl.Content>
+              <ItemsPresenter />
+            </ContentControl.Content>
+          </Expander>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <DataTemplate x:Key="PropertyNameTemplate">
+    <TextBlock VerticalAlignment="Top" Text="{Binding Descriptor.DisplayName}">
+      <FrameworkElement.ToolTip>
+        <ToolTip Content="{Binding Descriptor.Description}">
+          <FrameworkElement.Style>
+            <Style TargetType="{x:Type ToolTip}">
+              <Style.Triggers>
+                <DataTrigger Value="" Binding="{Binding Descriptor.Description}">
+                  <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </FrameworkElement.Style>
+        </ToolTip>
+      </FrameworkElement.ToolTip>
+    </TextBlock>
+  </DataTemplate>
+  <Style x:Key="ListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="BorderBrush" Value="{x:Static SystemColors.ControlBrush}" />
+    <Setter Property="ListBoxItem.IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+          <Border Name="Bd" BorderThickness="{TemplateBinding Border.BorderThickness}" Padding="{TemplateBinding Control.Padding}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" SnapsToDevicePixels="True">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="{Binding LabelWidth, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=l:PropertyGrid}, Converter={vc:DoubleToGridLengthConverter}}" />
+                <ColumnDefinition Width="7" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Border Name="labelBd" Grid.Column="1" BorderThickness="0" Padding="0,0,2,0">
+                <ContentPresenter Content="{TemplateBinding ContentControl.Content}" ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="Top" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" ContentTemplate="{StaticResource PropertyNameTemplate}" />
+              </Border>
+              <GridSplitter Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderThickness="3,0,3,0" BorderBrush="#00FFFFFF" />
+              <ContentPresenter Grid.Column="3" Content="{TemplateBinding ContentControl.Content}" ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" Margin="4,0,2,0" ContentTemplateSelector="{Binding EditorTemplateSelector, RelativeSource={RelativeSource AncestorType=l:PropertyGrid}}" />
+            </Grid>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Selector.IsSelected" Value="True">
+              <Setter TargetName="labelBd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Property="Panel.Background" />
+              <Setter TargetName="labelBd" Property="TextElement.Foreground" Value="{DynamicResource ResourceKey={x:Static SystemColors.HighlightTextBrushKey}}" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="Selector.IsSelected" Value="True" />
+                <Condition Property="Selector.IsSelectionActive" Value="False" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="labelBd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Property="Panel.Background" />
+              <Setter TargetName="labelBd" Property="TextElement.Foreground" Value="{DynamicResource ResourceKey={x:Static SystemColors.ControlTextBrushKey}}" />
+            </MultiTrigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="TextElement.Foreground" Value="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Key="ListBoxStyle" TargetType="{x:Type ListBox}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ListBox}">
+          <ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+            <Border Name="Bd" BorderThickness="0" Background="{TemplateBinding Panel.Background}" SnapsToDevicePixels="True">
+              <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+            </Border>
+          </ScrollViewer>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Key="{x:Type l:PropertyGrid}" TargetType="{x:Type l:PropertyGrid}">
+    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="1" />
+    <Setter Property="UIElement.SnapsToDevicePixels" Value="True" />
+    <Setter Property="l:PropertyGrid.ListBoxItemsPanel">
+      <Setter.Value>
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel />
+        </ItemsPanelTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="l:PropertyGrid.ListBoxItemContainerStyle" Value="{StaticResource ListBoxItemStyle}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type l:PropertyGrid}">
+          <Border BorderThickness="{TemplateBinding Control.BorderThickness}" BorderBrush="{TemplateBinding Control.BorderBrush}" Background="{TemplateBinding Control.Background}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="3" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <ContentPresenter Content="{TemplateBinding l:PropertyGrid.HeaderProperty}" Visibility="{Binding HeaderProperty, Converter={vc:ItemNullToVisibilityConverter}}" ContentTemplateSelector="{Binding EditorTemplateSelector, RelativeSource={RelativeSource AncestorType=l:PropertyGrid}}" />
+              <l:PropertyGridToolBar Grid.Row="1" Properties="{TemplateBinding l:PropertyGrid.Properties}" Style="{TemplateBinding l:PropertyGrid.ToolBarStyle}" />
+              <ListBox Name="PART_Selector" Grid.Row="2" VirtualizingPanel.IsVirtualizing="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False" HorizontalContentAlignment="Stretch" IsSynchronizedWithCurrentItem="True" ItemContainerStyle="{TemplateBinding l:PropertyGrid.ListBoxItemContainerStyle}" ItemsSource="{TemplateBinding l:PropertyGrid.Properties}" Padding="{TemplateBinding Control.Padding}" ItemsPanel="{TemplateBinding l:PropertyGrid.ListBoxItemsPanel}" Style="{StaticResource ListBoxStyle}">
+                <ItemsControl.GroupStyle>
+                  <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
+                </ItemsControl.GroupStyle>
+              </ListBox>
+              <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" Height="3" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Visibility="{TemplateBinding l:PropertyGrid.PropertyDetailsVisibility}" />
+              <StackPanel Grid.Row="4" Visibility="{TemplateBinding l:PropertyGrid.PropertyDetailsVisibility}" DataContext="{Binding SelectedProperty, RelativeSource={RelativeSource AncestorType={x:Type l:PropertyGrid}}}">
+                <TextBlock FontWeight="Bold" Margin="4" Text="{Binding Descriptor.DisplayName}" />
+                <TextBlock TextWrapping="WrapWithOverflow" Margin="4,0,4,4" Text="{Binding Descriptor.Description}" />
+              </StackPanel>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <DataTemplate x:Key="InactiveEditorTemplate">
+    <TextBlock VerticalAlignment="Stretch" Text="{Binding Value, Converter={vc:DisplayStringConverter}}" />
+  </DataTemplate>
+  <DataTemplate x:Key="{x:Static l:PropertyGrid.DefaultTextEditorTemplateKey}">
+    <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding}">
+      <FrameworkElement.Style>
+        <Style TargetType="{x:Type ContentControl}">
+          <Setter Property="ContentTemplate">
+            <Setter.Value>
+              <DataTemplate>
+                <TextBox BorderThickness="0" Padding="-2,0,0,0" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Margin="0" Text="{Binding Value, Mode=TwoWay}" />
+              </DataTemplate>
+            </Setter.Value>
+          </Setter>
+          <Style.Triggers>
+            <DataTrigger Value="False" Binding="{Binding IsSelected}">
+              <Setter Property="ContentTemplate" Value="{StaticResource InactiveEditorTemplate}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </FrameworkElement.Style>
+    </ContentControl>
+  </DataTemplate>
+  <DataTemplate x:Key="{x:Static l:PropertyGrid.ComboEditorTemplateKey}">
+    <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding}">
+      <FrameworkElement.Style>
+        <Style TargetType="{x:Type ContentControl}">
+          <Setter Property="ContentTemplate">
+            <Setter.Value>
+              <DataTemplate>
+                <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="4,0,4,0" ItemsSource="{Binding StandardValues}" SelectedValue="{Binding Value}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding Converter={vc:DisplayStringConverter}}" />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ComboBox>
+              </DataTemplate>
+            </Setter.Value>
+          </Setter>
+          <Style.Triggers>
+            <DataTrigger Value="False" Binding="{Binding IsSelected}">
+              <Setter Property="ContentTemplate" Value="{StaticResource InactiveEditorTemplate}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </FrameworkElement.Style>
+    </ContentControl>
+  </DataTemplate>
+  <DataTemplate x:Key="{x:Static l:PropertyGrid.StandardValuesEditorTemplateKey}">
+    <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding}">
+      <FrameworkElement.Style>
+        <Style TargetType="{x:Type ContentControl}">
+          <Setter Property="ContentTemplate">
+            <Setter.Value>
+              <DataTemplate>
+                <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="4,0,4,0" ItemsSource="{Binding EditorContext.StandardValues}" SelectedValue="{Binding Value}" IsEnabled="{Binding Path=HasItems, Mode=OneWay, RelativeSource={RelativeSource Self}}" />
+              </DataTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </FrameworkElement.Style>
+    </ContentControl>
+  </DataTemplate>
+  <DataTemplate x:Key="{x:Static l:PropertyGrid.ReadOnlyTemplateKey}">
+    <TextBlock VerticalAlignment="Stretch" IsEnabled="False" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Text="{Binding Value, Converter={vc:DisplayStringConverter}}" />
+  </DataTemplate>
+  <DataTemplate x:Key="{x:Static l:PropertyGrid.BoolEditorTemplateKey}">
+    <CheckBox VerticalAlignment="Center" IsChecked="{Binding Value, Mode=TwoWay}" IsEnabled="{Binding IsWriteable, Mode=OneTime}" />
+  </DataTemplate>
+</ResourceDictionary>

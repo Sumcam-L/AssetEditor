@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="UtilityTools.Views.ObjectParameterAssignmentFromSourceView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:views="clr-namespace:UtilityTools.Views;assembly=UtilityTools">
+  <DockPanel LastChildFill="False">
+    <FrameworkElement.Resources>
+      <ResourceDictionary>
+        <Color x:Key="LightGrayBackgroundColor">#FF858585</Color>
+        <Color x:Key="GrayBackgroundColor">#FF707070</Color>
+        <Color x:Key="DarkGrayColor">#FF464646</Color>
+        <Color x:Key="DarkGrayColorTwo">#FF4C4C4C</Color>
+        <Color x:Key="WhiteTextColor">#FFFFFFFF</Color>
+        <SolidColorBrush x:Key="LightGrayBackgroundBrush" Color="{StaticResource LightGrayBackgroundColor}" />
+        <SolidColorBrush x:Key="GrayBackgroundBrush" Color="{StaticResource GrayBackgroundColor}" />
+        <SolidColorBrush x:Key="DarkGrayBrush" Color="{StaticResource DarkGrayColor}" />
+        <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="{StaticResource DarkGrayColorTwo}" />
+        <SolidColorBrush x:Key="WhiteTextBrush" Color="{StaticResource WhiteTextColor}" />
+        <Style x:Key="BaseLabelStyle" TargetType="{x:Type Label}">
+          <Setter Property="HorizontalAlignment" Value="Left" />
+          <Setter Property="Margin" Value="0" />
+          <Setter Property="MinWidth" Value="50" />
+          <Setter Property="Foreground" Value="{StaticResource WhiteTextBrush}" />
+          <Setter Property="FontFamily" Value="Segoe UI" />
+          <Setter Property="FontSize" Value="12" />
+        </Style>
+        <Style x:Key="WarningLabelStyle" BasedOn="{StaticResource BaseLabelStyle}" TargetType="{x:Type Label}">
+          <Style.Triggers>
+            <DataTrigger Value="False" Binding="{Binding AutoMatchFound}">
+              <Setter Property="Foreground" Value="#FFFFFF00" />
+            </DataTrigger>
+            <DataTrigger Value="True" Binding="{Binding AutoMatchFound}">
+              <Setter Property="Foreground" Value="#FFFFFFFF" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+      </ResourceDictionary>
+    </FrameworkElement.Resources>
+    <Label Style="{StaticResource WarningLabelStyle}" DockPanel.Dock="Left" Content="{Binding ParameterName}" MinWidth="{Binding DataContext.ParameterLabelWidth, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+    <TextBox Name="objectNameTextbox" DockPanel.Dock="Left" Margin="2 0 3 0 " Text="{Binding ObjectValue}" IsEnabled="{Binding ObjectValueEnabled}" MinWidth="{Binding DataContext.EntityNameEntryWidth, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+    <ComboBox DockPanel.Dock="Left" Margin="2 0 3 0 " ItemsSource="{Binding Sources}" SelectedItem="{Binding SelectedSourceObject}" MinWidth="{Binding DataContext.SourceObjectDropdownWidth, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" IsEnabled="{Binding SourceObjectNamesEnabled}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding DisplayName}" />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ComboBox>
+    <ComboBox DockPanel.Dock="Left" Margin="2 0 3 0 " ItemsSource="{Binding ClassNames}" SelectedItem="{Binding SelectedClassName}" MinWidth="{Binding DataContext.ClassesDropdownWidth, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" IsEnabled="{Binding ClassNamesEnabled}" />
+    <CheckBox Name="overwriteCheckbox" Content="Check Out" TextBlock.Foreground="#FFFFFFFF" DockPanel.Dock="Left" Margin="2 0 3 0" IsChecked="{Binding Overwrite}" IsEnabled="{Binding OverwriteEnabled}" Visibility="{Binding EntityAlreadyExists, Converter={StaticResource BoolToVis}}" />
+  </DockPanel>
+</UserControl>

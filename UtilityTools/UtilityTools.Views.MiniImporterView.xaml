@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="UtilityTools.Views.MiniImporterView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:UtilViews="clr-namespace:UtilityTools.Views" Background="#FF707070" MinWidth="400" Height="300" SizeToContent="WidthAndHeight" Title="Mini Importer">
+  <DockPanel LastChildFill="False">
+    <FrameworkElement.Resources>
+      <ResourceDictionary>
+        <Color x:Key="LightGrayBackgroundColor">#FF858585</Color>
+        <Color x:Key="GrayBackgroundColor">#FF707070</Color>
+        <Color x:Key="DarkGrayColor">#FF464646</Color>
+        <Color x:Key="DarkGrayColorTwo">#FF4C4C4C</Color>
+        <Color x:Key="WhiteTextColor">#FFFFFFFF</Color>
+        <SolidColorBrush x:Key="LightGrayBackgroundBrush" Color="{StaticResource LightGrayBackgroundColor}" />
+        <SolidColorBrush x:Key="GrayBackgroundBrush" Color="{StaticResource GrayBackgroundColor}" />
+        <SolidColorBrush x:Key="DarkGrayBrush" Color="{StaticResource DarkGrayColor}" />
+        <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="{StaticResource DarkGrayColorTwo}" />
+        <SolidColorBrush x:Key="WhiteTextBrush" Color="{StaticResource WhiteTextColor}" />
+        <Style x:Key="BaseLabelStyle" TargetType="{x:Type Label}">
+          <Setter Property="HorizontalAlignment" Value="Left" />
+          <Setter Property="Margin" Value="0" />
+          <Setter Property="MinWidth" Value="50" />
+          <Setter Property="Foreground" Value="{StaticResource WhiteTextBrush}" />
+        </Style>
+        <DataTemplate x:Key="SourceObjectTemplate">
+          <UtilViews:MiniSourceObjectView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        </DataTemplate>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+      </ResourceDictionary>
+    </FrameworkElement.Resources>
+    <DockPanel Dock="Top" LastChildFill="False" Background="#FF4c4c4c">
+      <Label Style="{StaticResource BaseLabelStyle}" Content="Entity Type: " DockPanel.Dock="Left" VerticalAlignment="Center" FontWeight="SemiBold" />
+      <TextBlock DockPanel.Dock="Left" Foreground="#FFFFFFFF" VerticalAlignment="Center" Text="{Binding NewEntityTypeName}" />
+    </DockPanel>
+    <DockPanel Dock="Top" LastChildFill="False" Background="#FF4c4c4c">
+      <Label Style="{StaticResource BaseLabelStyle}" Content="Exporting Class: " DockPanel.Dock="Left" VerticalAlignment="Center" FontWeight="SemiBold" />
+      <ComboBox DockPanel.Dock="Left" VerticalAlignment="Center" ItemsSource="{Binding AvailableClassNames}" SelectedItem="{Binding SelectedAssignableClass}" />
+      <Button Content="Apply to Selected" Margin="5 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Left" Command="{Binding AssignClassToChildrenCommand}" />
+    </DockPanel>
+    <DockPanel Dock="Top" LastChildFill="False" Background="#FF4c4c4c">
+      <TextBlock Text="Entity Name:" Width="160" DockPanel.Dock="Left" Margin="15 5 0 5" Foreground="#FFFFFFFF" FontWeight="SemiBold" />
+      <TextBlock Text="Entity Class:" Width="100" DockPanel.Dock="Right" Margin="5 5 0 5" Foreground="#FFFFFFFF" FontWeight="SemiBold" />
+    </DockPanel>
+    <DockPanel Dock="Top" LastChildFill="False">
+      <Button DockPanel.Dock="Left" Content="Sort by Name" Margin="3,5,0,2" Padding="5 1 5 1" Command="{Binding SortSourcesCommand}" Visibility="{Binding SourcesExist, Converter={StaticResource BoolToVis}}" />
+    </DockPanel>
+    <DockPanel Dock="Top" LastChildFill="False">
+      <CheckBox DockPanel.Dock="Left" Content=" Select/Deselect All" Margin="3,5,0,2" IsChecked="True" Foreground="#FFFFFFFF" Command="{Binding SelectAllCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Visibility="{Binding SourcesExist, Converter={StaticResource BoolToVis}}" />
+      <CheckBox DockPanel.Dock="Right" Content=" Overwrite All" Margin="0,5,112,2" IsChecked="False" Foreground="#FFFFFFFF" Command="{Binding OverwriteAllCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Visibility="{Binding SourcesExist, Converter={StaticResource BoolToVis}}" />
+    </DockPanel>
+    <ScrollViewer DockPanel.Dock="Top" MaxHeight="700" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <ItemsControl ItemTemplate="{StaticResource SourceObjectTemplate}" Width="Auto" Margin="0 5" HorizontalAlignment="Stretch" ItemsSource="{Binding SourceObjects}" />
+    </ScrollViewer>
+    <Button DockPanel.Dock="Top" Content="+ Add Source File..." Margin="10" Width="120" HorizontalAlignment="Left" Command="{Binding OpenFileCommand}" />
+    <DockPanel Dock="Bottom" LastChildFill="False" HorizontalAlignment="Right">
+      <Button DockPanel.Dock="Left" Content="Import" Margin="5" Command="{Binding OKCommand}" />
+      <Button DockPanel.Dock="Left" Content="Cancel" Margin="5" Command="{Binding CancelCommand}" />
+    </DockPanel>
+  </DockPanel>
+</Window>

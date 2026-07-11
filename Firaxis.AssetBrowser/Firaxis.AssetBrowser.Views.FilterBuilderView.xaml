@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Firaxis.AssetBrowser.Views.FilterBuilderView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" xmlns:views="clr-namespace:Firaxis.AssetBrowser.Views;assembly=Firaxis.AssetBrowser">
+  <DockPanel Margin="0 2 0 2" LastChildFill="True" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+    <Label Name="FilterLabel" Margin="5 0 5 0" MinWidth="40" DockPanel.Dock="Left" Content="{Binding FilterName}" />
+    <Button DockPanel.Dock="Right" Content="Remove" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding RemoveFilterCommand}" />
+    <Button DockPanel.Dock="Right" Content="Clear" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ClearFilterCommand}" />
+    <ComboBox Name="InputChoicesComboBox" DockPanel.Dock="Left" MinWidth="60" IsEditable="True" IsReadOnly="False" StaysOpenOnEdit="True" ItemsSource="{Binding PossibleItems}" SelectedItem="{Binding SelectedItem}" KeyDown="InputChoicesComboBox_KeyDown" />
+  </DockPanel>
+</UserControl>

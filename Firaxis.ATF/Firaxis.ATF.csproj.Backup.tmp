@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>Firaxis.ATF</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <UseWindowsForms>True</UseWindowsForms>
+    <UseWPF>True</UseWPF>
+    <TargetFramework>net462</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Firaxis.ATF.Resources.Dark.skn" />
+    <None Remove="Firaxis.ATF.Resources.Light.skn" />
+    <None Remove="Firaxis.ATF.Resources.file_refresh.png" />
+    <None Remove="Firaxis.ATF.Resources.arrow_left.png" />
+    <None Remove="Firaxis.ATF.Resources.arrow_right.png" />
+    <None Remove="Firaxis.ATF.Resources.ObjectClear16.png" />
+    <None Remove="Firaxis.ATF.Resources.Splashscreenvert.png" />
+    <None Remove="Firaxis.ATF.Resources.None.png" />
+    <None Remove="Firaxis.ATF.Resources.EnableTuner.ico" />
+    <None Remove="Firaxis.ATF.Resources.Hotload.ico" />
+    <None Remove="Firaxis.ATF.Resources.DisableTuner.ico" />
+    <None Remove="Firaxis.ATF.Resources.OpenSource.ico" />
+    <None Remove="Firaxis.ATF.Resources.GotoFile.ico" />
+    <None Remove="Firaxis.ATF.Resources.AddItem.ico" />
+    <None Remove="Firaxis.ATF.Resources.AnalyticLight.ico" />
+    <None Remove="Firaxis.ATF.Resources.Animation.ico" />
+    <None Remove="Firaxis.ATF.Resources.Animations.ico" />
+    <None Remove="Firaxis.ATF.Resources.ArrowDown.ico" />
+    <None Remove="Firaxis.ATF.Resources.ArrowUp.ico" />
+    <None Remove="Firaxis.ATF.Resources.ArtDef.ico" />
+    <None Remove="Firaxis.ATF.Resources.Asset.ico" />
+    <None Remove="Firaxis.ATF.Resources.Attachments.ico" />
+    <None Remove="Firaxis.ATF.Resources.Base.ico" />
+    <None Remove="Firaxis.ATF.Resources.Behavior.ico" />
+    <None Remove="Firaxis.ATF.Resources.Camera.ico" />
+    <None Remove="Firaxis.ATF.Resources.CookParameters.ico" />
+    <None Remove="Firaxis.ATF.Resources.Copy.ico" />
+    <None Remove="Firaxis.ATF.Resources.Cut.ico" />
+    <None Remove="Firaxis.ATF.Resources.Delete.ico" />
+    <None Remove="Firaxis.ATF.Resources.FixReferences.ico" />
+    <None Remove="Firaxis.ATF.Resources.Geometry.ico" />
+    <None Remove="Firaxis.ATF.Resources.HUD.ico" />
+    <None Remove="Firaxis.ATF.Resources.ImportExisting.ico" />
+    <None Remove="Firaxis.ATF.Resources.Lighting.ico" />
+    <None Remove="Firaxis.ATF.Resources.LockUI.ico" />
+    <None Remove="Firaxis.ATF.Resources.Move.ico" />
+    <None Remove="Firaxis.ATF.Resources.NewFile.ico" />
+    <None Remove="Firaxis.ATF.Resources.OpenArtDef.ico" />
+    <None Remove="Firaxis.ATF.Resources.OpenEntity.ico" />
+    <None Remove="Firaxis.ATF.Resources.OpenXLP.ico" />
+    <None Remove="Firaxis.ATF.Resources.Particles.ico" />
+    <None Remove="Firaxis.ATF.Resources.Paste.ico" />
+    <None Remove="Firaxis.ATF.Resources.Redo.ico" />
+    <None Remove="Firaxis.ATF.Resources.Reimport.ico" />
+    <None Remove="Firaxis.ATF.Resources.RemoveItem.ico" />
+    <None Remove="Firaxis.ATF.Resources.Rotate.ico" />
+    <None Remove="Firaxis.ATF.Resources.Save.ico" />
+    <None Remove="Firaxis.ATF.Resources.SaveAll.ico" />
+    <None Remove="Firaxis.ATF.Resources.Scale.ico" />
+    <None Remove="Firaxis.ATF.Resources.Spline.ico" />
+    <None Remove="Firaxis.ATF.Resources.Undo.ico" />
+    <None Remove="Firaxis.ATF.Resources.UnlockUI.ico" />
+    <None Remove="Firaxis.ATF.Resources.AddExistingEntity.ico" />
+    <None Remove="Firaxis.ATF.Resources.AddNewEntity.ico" />
+    <None Remove="Firaxis.ATF.Resources.ShowGrid.ico" />
+    <None Remove="Firaxis.ATF.Resources.ShowText.ico" />
+    <None Remove="Firaxis.ATF.Resources.VerboseEngine.ico" />
+    <None Remove="Firaxis.ATF.Resources.VerboseTool.ico" />
+    <None Remove="Firaxis.ATF.Resources.Civ6.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Dark.skn" LogicalName="Firaxis.ATF.Resources.Dark.skn" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Light.skn" LogicalName="Firaxis.ATF.Resources.Light.skn" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.file_refresh.png" LogicalName="Firaxis.ATF.Resources.file_refresh.png" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.arrow_left.png" LogicalName="Firaxis.ATF.Resources.arrow_left.png" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.arrow_right.png" LogicalName="Firaxis.ATF.Resources.arrow_right.png" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.ObjectClear16.png" LogicalName="Firaxis.ATF.Resources.ObjectClear16.png" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Splashscreenvert.png" LogicalName="Firaxis.ATF.Resources.Splashscreenvert.png" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.None.png" LogicalName="Firaxis.ATF.Resources.None.png" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.EnableTuner.ico" LogicalName="Firaxis.ATF.Resources.EnableTuner.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Hotload.ico" LogicalName="Firaxis.ATF.Resources.Hotload.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.DisableTuner.ico" LogicalName="Firaxis.ATF.Resources.DisableTuner.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.OpenSource.ico" LogicalName="Firaxis.ATF.Resources.OpenSource.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.GotoFile.ico" LogicalName="Firaxis.ATF.Resources.GotoFile.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.AddItem.ico" LogicalName="Firaxis.ATF.Resources.AddItem.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.AnalyticLight.ico" LogicalName="Firaxis.ATF.Resources.AnalyticLight.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Animation.ico" LogicalName="Firaxis.ATF.Resources.Animation.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Animations.ico" LogicalName="Firaxis.ATF.Resources.Animations.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.ArrowDown.ico" LogicalName="Firaxis.ATF.Resources.ArrowDown.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.ArrowUp.ico" LogicalName="Firaxis.ATF.Resources.ArrowUp.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.ArtDef.ico" LogicalName="Firaxis.ATF.Resources.ArtDef.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Asset.ico" LogicalName="Firaxis.ATF.Resources.Asset.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Attachments.ico" LogicalName="Firaxis.ATF.Resources.Attachments.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Base.ico" LogicalName="Firaxis.ATF.Resources.Base.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Behavior.ico" LogicalName="Firaxis.ATF.Resources.Behavior.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Camera.ico" LogicalName="Firaxis.ATF.Resources.Camera.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.CookParameters.ico" LogicalName="Firaxis.ATF.Resources.CookParameters.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Copy.ico" LogicalName="Firaxis.ATF.Resources.Copy.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Cut.ico" LogicalName="Firaxis.ATF.Resources.Cut.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Delete.ico" LogicalName="Firaxis.ATF.Resources.Delete.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.FixReferences.ico" LogicalName="Firaxis.ATF.Resources.FixReferences.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Geometry.ico" LogicalName="Firaxis.ATF.Resources.Geometry.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.HUD.ico" LogicalName="Firaxis.ATF.Resources.HUD.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.ImportExisting.ico" LogicalName="Firaxis.ATF.Resources.ImportExisting.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Lighting.ico" LogicalName="Firaxis.ATF.Resources.Lighting.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.LockUI.ico" LogicalName="Firaxis.ATF.Resources.LockUI.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Move.ico" LogicalName="Firaxis.ATF.Resources.Move.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.NewFile.ico" LogicalName="Firaxis.ATF.Resources.NewFile.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.OpenArtDef.ico" LogicalName="Firaxis.ATF.Resources.OpenArtDef.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.OpenEntity.ico" LogicalName="Firaxis.ATF.Resources.OpenEntity.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.OpenXLP.ico" LogicalName="Firaxis.ATF.Resources.OpenXLP.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Particles.ico" LogicalName="Firaxis.ATF.Resources.Particles.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Paste.ico" LogicalName="Firaxis.ATF.Resources.Paste.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Redo.ico" LogicalName="Firaxis.ATF.Resources.Redo.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Reimport.ico" LogicalName="Firaxis.ATF.Resources.Reimport.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.RemoveItem.ico" LogicalName="Firaxis.ATF.Resources.RemoveItem.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Rotate.ico" LogicalName="Firaxis.ATF.Resources.Rotate.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Save.ico" LogicalName="Firaxis.ATF.Resources.Save.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.SaveAll.ico" LogicalName="Firaxis.ATF.Resources.SaveAll.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Scale.ico" LogicalName="Firaxis.ATF.Resources.Scale.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Spline.ico" LogicalName="Firaxis.ATF.Resources.Spline.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Undo.ico" LogicalName="Firaxis.ATF.Resources.Undo.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.UnlockUI.ico" LogicalName="Firaxis.ATF.Resources.UnlockUI.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.AddExistingEntity.ico" LogicalName="Firaxis.ATF.Resources.AddExistingEntity.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.AddNewEntity.ico" LogicalName="Firaxis.ATF.Resources.AddNewEntity.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.ShowGrid.ico" LogicalName="Firaxis.ATF.Resources.ShowGrid.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.ShowText.ico" LogicalName="Firaxis.ATF.Resources.ShowText.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.VerboseEngine.ico" LogicalName="Firaxis.ATF.Resources.VerboseEngine.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.VerboseTool.ico" LogicalName="Firaxis.ATF.Resources.VerboseTool.ico" />
+    <EmbeddedResource Include="Firaxis.ATF.Resources.Civ6.ico" LogicalName="Firaxis.ATF.Resources.Civ6.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Design" />
+    <ProjectReference Include="..\Firaxis.CivTech\Firaxis.CivTech.csproj" />
+    <ProjectReference Include="..\Firaxis.Error\Firaxis.Error.csproj" />
+    <ProjectReference Include="..\Atf.Core\Atf.Core.csproj" />
+    <ProjectReference Include="..\Firaxis.Utility\Firaxis.Utility.csproj" />
+    <ProjectReference Include="..\Firaxis.Threading\Firaxis.Threading.csproj" />
+    <ProjectReference Include="..\Atf.Gui.WinForms\Atf.Gui.WinForms.csproj" />
+    <ProjectReference Include="..\Atf.Gui\Atf.Gui.csproj" />
+    <ProjectReference Include="..\Firaxis.MVVMBase\Firaxis.MVVMBase.csproj" />
+    <ProjectReference Include="..\Firaxis.AssetBrowser\Firaxis.AssetBrowser.csproj" />
+    <ProjectReference Include="..\Firaxis.AssetCloudFramework\Firaxis.AssetCloudFramework.csproj" />
+    <ProjectReference Include="..\Firaxis.VersionControl\Firaxis.VersionControl.csproj" />
+    <ProjectReference Include="..\Firaxis.Controls\Firaxis.Controls.csproj" />
+    <ProjectReference Include="..\Firaxis.ContentExporters\Firaxis.ContentExporters.csproj" />
+    <ProjectReference Include="..\DatabaseWrapper\DatabaseWrapper.csproj" />
+    <ProjectReference Include="..\Firaxis.Net\Firaxis.Net.csproj" />
+    <ProjectReference Include="..\Firaxis.MathEx\Firaxis.MathEx.csproj" />
+    <ProjectReference Include="..\Firaxis.Collections\Firaxis.Collections.csproj" />
+    <ProjectReference Include="..\Firaxis.Asset\Firaxis.Asset.csproj" />
+    <ProjectReference Include="..\Firaxis.Granny\Firaxis.Granny.csproj" />
+    <ProjectReference Include="..\Firaxis.Theme\Firaxis.Theme.csproj" />
+  </ItemGroup>
+</Project>

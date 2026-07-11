@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Sce.Atf.Wpf.Controls.OutputView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:l="clr-namespace:Sce.Atf.Wpf" xmlns:m="clr-namespace:Sce.Atf.Wpf.Markup" xmlns:b="clr-namespace:Sce.Atf.Wpf.Behaviors" xmlns:atf="clr-namespace:Sce.Atf;assembly=Atf.Core" xmlns:ct="clr-namespace:Sce.Atf.Wpf.Controls" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" AllowDrop="False">
+  <UIElement.CommandBindings>
+    <CommandBinding Command="ApplicationCommands.Copy" Executed="CtrlCCopyCmdExecuted" CanExecute="CtrlCCopyCmdCanExecute" />
+  </UIElement.CommandBindings>
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <Style x:Key="NonResizeColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+        <Setter Property="b:ThemeStyleBehavior.AutoMergeStyle" Value="True" />
+        <Setter Property="b:GridViewColumnHeaderBehavior.IsResizable" Value="True" />
+      </Style>
+      <l:CommandReference x:Key="ClearAllRef" Command="{Binding ClearAllCommand}" />
+      <ContextMenu x:Key="SharedInstanceContextMenu">
+        <MenuItem Command="ApplicationCommands.Copy" Header="{m:Loc Copy to Clipboard}" />
+        <MenuItem Command="{StaticResource ClearAllRef}" Header="{m:Loc Clear All}" />
+      </ContextMenu>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <DockPanel>
+    <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+      <ToggleButton Width="18" Height="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="1" IsChecked="{Binding ShowErrors}" ToolTip="{m:Loc Errors}">
+        <ct:Icon SourceKey="{x:Static l:Resources.DialogErrorImageKey}" SnapsToDevicePixels="True" />
+      </ToggleButton>
+      <ToggleButton Width="18" Height="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="1" IsChecked="{Binding ShowWarnings}" ToolTip="{m:Loc Warnings}">
+        <ct:Icon SourceKey="{x:Static l:Resources.DialogWarningImageKey}" SnapsToDevicePixels="True" />
+      </ToggleButton>
+      <ToggleButton Width="18" Height="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="1" IsChecked="{Binding ShowInfo}" ToolTip="{m:Loc Info}">
+        <ct:Icon SourceKey="{x:Static l:Resources.DialogInformationImageKey}" SnapsToDevicePixels="True" />
+      </ToggleButton>
+      <Separator />
+      <Button Width="18" Height="18" ToolTip="{m:Loc Clear All}" Command="{Binding ClearAllCommand}">
+        <ct:Icon SourceKey="{x:Static l:Resources.ClearImageKey}" SnapsToDevicePixels="True" />
+      </Button>
+    </ToolBar>
+    <ct:StylableListView x:Name="lb" DockPanel.Dock="Top" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ItemsSource="{Binding OutputItems}">
+      <ListView.View>
+        <GridView AllowsColumnReorder="False">
+          <GridViewColumn Width="24" HeaderContainerStyle="{StaticResource NonResizeColumnHeaderStyle}">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <ct:Icon Width="12" Height="12" Margin="0,2,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" SnapsToDevicePixels="True" Source="{x:Static l:Resources.DialogInformationImageKey}" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn Width="60" Header="{m:Loc Time}">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock VerticalAlignment="Top" Text="{Binding Path=Time, StringFormat={}{0:HH:mm:ss}, Mode=OneTime}" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+          <GridViewColumn Width="400" Header="{m:Loc Message}">
+            <GridViewColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock VerticalAlignment="Top" Text="{Binding Path=Message, Mode=OneTime}" />
+              </DataTemplate>
+            </GridViewColumn.CellTemplate>
+          </GridViewColumn>
+        </GridView>
+      </ListView.View>
+      <ItemsControl.ItemContainerStyle>
+        <Style BasedOn="{StaticResource {x:Static GridView.GridViewItemContainerStyleKey}}" TargetType="{x:Type ListViewItem}">
+          <Setter Property="b:ThemeStyleBehavior.AutoMergeStyle" Value="True" />
+          <Setter Property="VerticalContentAlignment" Value="Top" />
+          <Setter Property="FrameworkElement.ContextMenu" Value="{StaticResource SharedInstanceContextMenu}" />
+          <Style.Triggers>
+            <DataTrigger Value="Error" Binding="{Binding MessageType}">
+              <Setter Property="Foreground" Value="#FFFF0000" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </ItemsControl.ItemContainerStyle>
+      <i:Interaction.Behaviors>
+        <b:ListBoxScrollToEndBehavior />
+      </i:Interaction.Behaviors>
+    </ct:StylableListView>
+  </DockPanel>
+</UserControl>

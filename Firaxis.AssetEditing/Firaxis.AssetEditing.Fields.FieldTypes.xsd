@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="FieldTypes"
+  xmlns="FieldTypes"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:simpleType name="FloatListType">
+    <xs:list itemType="xs:float"></xs:list>
+  </xs:simpleType>
+
+  <xs:complexType name="FieldValueType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FloatFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="xs:float" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="IntFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="xs:integer" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BoolFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="xs:boolean" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="StringFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RGBFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="Coord2DValueType">
+    <xs:restriction base="FloatListType">
+      <xs:length value="2"></xs:length>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Coord2DFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="Coord2DValueType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="Coord3DValueType">
+    <xs:restriction base="FloatListType">
+      <xs:length value="3"></xs:length>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="Coord3DFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="Coord3DValueType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="BLPFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="EntryName" type="xs:string" />
+		  <xs:element name="XLPPath" type="xs:string" />
+		  <xs:element name="BLPPackage" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ArtDefRefValueType">
+    <xs:sequence>
+      <xs:element name="ElementName" type="xs:string" />
+      <xs:element name="CollectionName" type="xs:string" />
+	  <xs:element name="ArtDefPath" type="xs:string" />
+	  <xs:element name="TemplateName" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ArtDefRefFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="ArtDefRefValueType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ObjectValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Class" type="xs:string" />
+          <xs:element name="ObjectName" type="xs:string" />
+          <xs:element name="ObjectType" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TupleFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" minOccurs="0" maxOccurs="unbounded" type="FieldValueType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CollectionFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" minOccurs="0" maxOccurs="unbounded" type="FieldValueType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CurveSegmentType">
+  </xs:complexType>
+
+  <xs:complexType name="ConstantCurveSegmentType">
+    <xs:complexContent>
+      <xs:extension base="CurveSegmentType">
+        <xs:sequence>
+          <xs:element name="ConstantValue" type="xs:float" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LinearCurveSegmentType">
+    <xs:complexContent>
+      <xs:extension base="CurveSegmentType">
+        <xs:sequence>
+          <xs:element name="FirstValue" type="xs:float" />
+          <xs:element name="LastValue" type="xs:float" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="CurveSegmentDefinitionType">
+    <xs:sequence>
+      <xs:element name="StartingPoint" type="xs:float" />
+      <xs:element name="CurveSegment" type="CurveSegmentType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CurveType">
+    <xs:sequence>
+      <xs:element name="CurveSegments" minOccurs="0" maxOccurs="unbounded" type="CurveSegmentDefinitionType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CurveFieldValueType">
+    <xs:complexContent>
+      <xs:extension base="FieldValueType">
+        <xs:sequence>
+          <xs:element name="Value" type="CurveType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+</xs:schema>

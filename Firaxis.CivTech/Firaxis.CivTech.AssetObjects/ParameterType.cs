@@ -1,0 +1,20 @@
+namespace Firaxis.CivTech.AssetObjects;
+
+public enum ParameterType
+{
+	PT_FLOAT,
+	PT_BOOLEAN,
+	PT_INT,
+	PT_RGB,
+	PT_ENUM,
+	PT_OBJECT,
+	PT_COORD2D,
+	PT_COORD3D,
+	PT_BLP_ENTRY,
+	PT_ARTDEF_REFERENCE,
+	PT_STRING,
+	PT_COLLECTION,
+	PT_CURVE,
+	PT_TUPLE,
+	PT_COUNT
+}

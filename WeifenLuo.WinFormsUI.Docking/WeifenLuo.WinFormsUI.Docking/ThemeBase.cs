@@ -1,0 +1,168 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace WeifenLuo.WinFormsUI.Docking;
+
+public abstract class ThemeBase : Component
+{
+	private Color _dockBackColor;
+
+	private bool _showAutoHideContentOnHover;
+
+	private Dictionary<ToolStrip, KeyValuePair<ToolStripRenderMode, ToolStripRenderer>> _stripBefore = new Dictionary<ToolStrip, KeyValuePair<ToolStripRenderMode, ToolStripRenderer>>();
+
+	private KeyValuePair<ToolStripManagerRenderMode, ToolStripRenderer> _managerBefore;
+
+	public DockPanelSkin Skin { get; protected set; }
+
+	public DockPanelColorPalette ColorPalette { get; protected set; }
+
+	public IImageService ImageService { get; protected set; }
+
+	public IPaintingService PaintingService { get; protected set; }
+
+	protected ToolStripRenderer ToolStripRenderer { get; set; }
+
+	public Measures Measures { get; } = new Measures();
+
+	public bool ShowAutoHideContentOnHover { get; protected set; } = true;
+
+	public DockPanelExtender Extender { get; private set; }
+
+	protected ThemeBase()
+	{
+		Extender = new DockPanelExtender();
+	}
+
+	public void ApplyTo(ToolStrip toolStrip)
+	{
+		if (toolStrip == null)
+		{
+			return;
+		}
+		_stripBefore[toolStrip] = new KeyValuePair<ToolStripRenderMode, ToolStripRenderer>(toolStrip.RenderMode, toolStrip.Renderer);
+		if (ToolStripRenderer != null)
+		{
+			toolStrip.Renderer = ToolStripRenderer;
+		}
+		if (!Win32Helper.IsRunningOnMono)
+		{
+			return;
+		}
+		foreach (ToolStripDropDownItem item in toolStrip.Items.OfType<ToolStripDropDownItem>())
+		{
+			ItemResetOwnerHack(item);
+		}
+	}
+
+	private void ItemResetOwnerHack(ToolStripDropDownItem item)
+	{
+		ToolStripItem ownerItem = item.DropDown.OwnerItem;
+		item.DropDown.OwnerItem = null;
+		item.DropDown.OwnerItem = ownerItem;
+		foreach (ToolStripDropDownItem item2 in item.DropDownItems.OfType<ToolStripDropDownItem>())
+		{
+			ItemResetOwnerHack(item2);
+		}
+	}
+
+	public void ApplyToToolStripManager()
+	{
+		_managerBefore = new KeyValuePair<ToolStripManagerRenderMode, ToolStripRenderer>(ToolStripManager.RenderMode, ToolStripManager.Renderer);
+	}
+
+	public void ApplyTo(DockPanel dockPanel)
+	{
+		if (dockPanel.Panes.Count > 0)
+		{
+			throw new InvalidOperationException("Before applying themes all panes must be closed.");
+		}
+		if (dockPanel.FloatWindows.Count > 0)
+		{
+			throw new InvalidOperationException("Before applying themes all float windows must be closed.");
+		}
+		if (dockPanel.Contents.Count > 0)
+		{
+			throw new InvalidOperationException("Before applying themes all dock contents must be closed.");
+		}
+		if (ColorPalette == null)
+		{
+			dockPanel.ResetDummy();
+		}
+		else
+		{
+			_dockBackColor = dockPanel.DockBackColor;
+			dockPanel.DockBackColor = ColorPalette.MainWindowActive.Background;
+			dockPanel.SetDummy();
+		}
+		_showAutoHideContentOnHover = dockPanel.ShowAutoHideContentOnHover;
+		dockPanel.ShowAutoHideContentOnHover = ShowAutoHideContentOnHover;
+	}
+
+	internal void PostApply(DockPanel dockPanel)
+	{
+		dockPanel.ResetAutoHideStripControl();
+		dockPanel.ResetAutoHideStripWindow();
+		dockPanel.ResetDockWindows();
+	}
+
+	public virtual void CleanUp(DockPanel dockPanel)
+	{
+		if (dockPanel != null)
+		{
+			if (ColorPalette != null)
+			{
+				dockPanel.DockBackColor = _dockBackColor;
+			}
+			dockPanel.ShowAutoHideContentOnHover = _showAutoHideContentOnHover;
+		}
+		foreach (KeyValuePair<ToolStrip, KeyValuePair<ToolStripRenderMode, ToolStripRenderer>> item in _stripBefore)
+		{
+			ToolStrip key = item.Key;
+			KeyValuePair<ToolStripRenderMode, ToolStripRenderer> value = item.Value;
+			if (value.Key == ToolStripRenderMode.Custom)
+			{
+				if (value.Value != null)
+				{
+					key.Renderer = value.Value;
+				}
+			}
+			else
+			{
+				key.RenderMode = value.Key;
+			}
+		}
+		_stripBefore.Clear();
+		if (_managerBefore.Key == ToolStripManagerRenderMode.Custom)
+		{
+			if (_managerBefore.Value != null)
+			{
+				ToolStripManager.Renderer = _managerBefore.Value;
+			}
+		}
+		else
+		{
+			ToolStripManager.RenderMode = _managerBefore.Key;
+		}
+	}
+
+	public static byte[] Decompress(byte[] fileToDecompress)
+	{
+		using MemoryStream stream = new MemoryStream(fileToDecompress);
+		using MemoryStream memoryStream = new MemoryStream();
+		using GZipStream gZipStream = new GZipStream(stream, CompressionMode.Decompress);
+		byte[] array = new byte[4096];
+		int count;
+		while ((count = gZipStream.Read(array, 0, array.Length)) != 0)
+		{
+			memoryStream.Write(array, 0, count);
+		}
+		return memoryStream.ToArray();
+	}
+}

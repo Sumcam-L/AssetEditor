@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>Firaxis.ContentExporters</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <UseWindowsForms>True</UseWindowsForms>
+    <TargetFramework>net462</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="System.Core" />
+    <ProjectReference Include="..\Firaxis.CivTech\Firaxis.CivTech.csproj" />
+    <ProjectReference Include="..\Firaxis.Error\Firaxis.Error.csproj" />
+    <ProjectReference Include="..\Firaxis.Granny\Firaxis.Granny.csproj" />
+    <ProjectReference Include="..\Firaxis.MaxInterface\Firaxis.MaxInterface.csproj" />
+    <ProjectReference Include="..\Firaxis.MayaInterface\Firaxis.MayaInterface.csproj" />
+    <ProjectReference Include="..\Firaxis.PhotoshopInterface\Firaxis.PhotoshopInterface.csproj" />
+    <ProjectReference Include="..\Firaxis.Utility\Firaxis.Utility.csproj" />
+    <ProjectReference Include="..\Firaxis.Wig\Firaxis.Wig.csproj" />
+    <ProjectReference Include="..\Firaxis.IO\Firaxis.IO.csproj" />
+    <ProjectReference Include="..\Atf.Core\Atf.Core.csproj" />
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;E:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\&quot;" />
+  </Target>
+</Project>

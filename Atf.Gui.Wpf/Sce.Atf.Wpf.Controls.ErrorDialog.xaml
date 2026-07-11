@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<c:CommonDialog x:Class="Sce.Atf.Wpf.Controls.ErrorDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:c="clr-namespace:Sce.Atf.Wpf.Controls" xmlns:l="clr-namespace:Sce.Atf.Wpf.Markup" xmlns:b="clr-namespace:Sce.Atf.Wpf" Height="Auto" Width="350" MinWidth="350" ShowInTaskbar="False" ResizeMode="CanResize" SizeToContent="Height">
+  <DockPanel LastChildFill="True">
+    <StackPanel DockPanel.Dock="Bottom">
+      <DockPanel LastChildFill="False">
+        <CheckBox DockPanel.Dock="Left" Margin="0,0,6,0" VerticalAlignment="Center" Content="{l:Loc Do not show this message again}" IsChecked="{Binding SuppressMessage, Mode=TwoWay}" />
+        <Button DockPanel.Dock="Right" IsDefault="True" Style="{StaticResource {x:Static b:Resources.DialogButtonStyleKey}}" Content="{l:Loc OK}" Command="{Binding OkCommand}" />
+      </DockPanel>
+    </StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+      <TextBlock DockPanel.Dock="Top" MinHeight="40" TextWrapping="Wrap" Text="{Binding Message, Mode=OneTime}" />
+    </ScrollViewer>
+  </DockPanel>
+</c:CommonDialog>

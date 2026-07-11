@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="XLP"
+  xmlns="XLP"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="XLPEntryType">
+    <xs:sequence>
+      <xs:element name="EntryID" type="xs:string" />
+      <xs:element name="ObjectName" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PlatformType">
+    <xs:sequence>
+      <xs:element name="Platform" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="PlatformContainerType">
+    <xs:sequence>
+      <xs:element name="Platforms" type="PlatformType" minOccurs = "0" maxOccurs ="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="XLPType">
+    <xs:sequence>
+      <xs:element name="ClassName" type="xs:string"/>
+      <xs:element name="PackageName" type="xs:string"/>
+	  <xs:element name="ModuleName" type="xs:string"/>
+	  <xs:element name="Platforms" type="PlatformContainerType" />
+      <xs:element name="Entries" minOccurs="0" maxOccurs="unbounded" type="XLPEntryType"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:element name="XLP" type="XLPType"/>
+
+</xs:schema>

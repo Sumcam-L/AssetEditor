@@ -1,0 +1,19 @@
+using System.Runtime.CompilerServices;
+using _003CCppImplementationDetails_003E;
+using AssetObjects;
+
+namespace Firaxis.CivTech.AssetObjects;
+
+public class ArtDefRefCollectionParameter : CollectionParameter, IArtDefRefCollectionParameter
+{
+	public unsafe ArtDefRefCollectionParameter(global::AssetObjects.ParameterSet* pkParameterSet, sbyte* szName)
+	{
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out Placeholder_003CAssetObjects_003A_003AArtDefReferenceParameter_003E placeholder_003CAssetObjects_003A_003AArtDefReferenceParameter_003E);
+		base._002Ector(global::_003CModule_003E.AssetObjects_002EParameterSet_002EPush_003Cclass_0020AssetObjects_003A_003ACollectionParameter_002Cstruct_0020AssetObjects_003A_003APlaceholder_003Cclass_0020AssetObjects_003A_003AArtDefReferenceParameter_003E_002Cchar_0020const_0020_0028_0026_0029_005B1_005D_003E(pkParameterSet, szName, &placeholder_003CAssetObjects_003A_003AArtDefReferenceParameter_003E, (_0024ArrayType_0024_0024_0024BY00_0024_0024CBD*)System.Runtime.CompilerServices.Unsafe.AsPointer(ref global::_003CModule_003E._003F_003F_C_0040_00CNPNBAHC_0040_003F_0024AA_0040)));
+	}
+
+	public unsafe ArtDefRefCollectionParameter(global::AssetObjects.CollectionParameter* pkParameter)
+		: base(pkParameter)
+	{
+	}
+}

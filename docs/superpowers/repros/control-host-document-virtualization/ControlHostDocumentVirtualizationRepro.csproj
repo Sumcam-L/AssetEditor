@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net462</TargetFramework>
+    <UseWindowsForms>True</UseWindowsForms>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>11.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
+    <ProjectReference Include="..\..\..\..\Firaxis.ATF\Firaxis.ATF.csproj" />
+    <ProjectReference Include="..\..\..\..\Firaxis.Theme\Firaxis.Theme.csproj" />
+    <ProjectReference Include="..\..\..\..\WeifenLuo.WinFormsUI.Docking\WeifenLuo.WinFormsUI.Docking.csproj" />
+    <ProjectReference Include="..\..\..\..\Atf.Gui.WinForms\Atf.Gui.WinForms.csproj" />
+  </ItemGroup>
+</Project>

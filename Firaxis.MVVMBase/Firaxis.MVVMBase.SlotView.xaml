@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Firaxis.MVVMBase.SlotView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:local="clr-namespace:Firaxis.MVVMBase">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <sys:String x:Key="dots">.........................................................................................................................................................................................................................................................................</sys:String>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <DockPanel LastChildFill="True">
+    <TextBlock DockPanel.Dock="Left" Margin="5" Foreground="#FFFFFFFF" Text="{Binding SlotName}" />
+    <Button Content="Clear" DockPanel.Dock="Right" Width="60" Margin="5 0 0 0" Command="{Binding ClearCommand}" />
+    <ComboBox DockPanel.Dock="Right" Width="240" ItemsSource="{Binding Domain}" SelectedItem="{Binding SelectedValue}" />
+    <TextBlock Text="{StaticResource dots}" Margin="4,0,4,0" VerticalAlignment="Bottom" Foreground="#FFFFFFFF" FontSize="16" />
+  </DockPanel>
+</UserControl>

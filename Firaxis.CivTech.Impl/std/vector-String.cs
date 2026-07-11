@@ -1,0 +1,17 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace std;
+
+[StructLayout(LayoutKind.Sequential, Size = 24)]
+[NativeCppClass]
+internal struct vector_003CString_003A_003ABasicT_003CPlatform_003A_003AStaticHeapAllocator_003C5_002C0_003E_002C2_003E_002Cstd_003A_003Aallocator_003CString_003A_003ABasicT_003CPlatform_003A_003AStaticHeapAllocator_003C5_002C0_003E_002C2_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 24)]
+[NativeCppClass]
+internal struct vector_003CString_003A_003ABasicT_003CPlatform_003A_003AStaticHeapAllocator_003C5_002C0_003E_002C0_003E_002Cstd_003A_003Aallocator_003CString_003A_003ABasicT_003CPlatform_003A_003AStaticHeapAllocator_003C5_002C0_003E_002C0_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}

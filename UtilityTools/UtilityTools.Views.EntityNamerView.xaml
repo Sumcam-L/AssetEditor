@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="UtilityTools.Views.EntityNamerView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" Title="Entity Name Clash Resolver" SizeToContent="WidthAndHeight" Background="{DynamicResource GrayBackgroundBrush}" xmlns:views="clr-namespace:UtilityTools.Views;assembly=UtilityTools">
+  <DockPanel LastChildFill="False" Margin="10">
+    <FrameworkElement.Resources>
+      <ResourceDictionary>
+        <DataTemplate x:Key="EntityNamerViewTemplate">
+          <DockPanel Margin="0 2 0 1">
+            <CheckBox Content="Override" Foreground="#FFFFFFFF" TextBlock.Foreground="#FFFFFFFF" IsChecked="{Binding OverrideExisting}" />
+            <TextBox Margin="5 0 0 0" Text="{Binding EntityName}" />
+          </DockPanel>
+        </DataTemplate>
+      </ResourceDictionary>
+    </FrameworkElement.Resources>
+    <TextBlock DockPanel.Dock="Top" Text="Entities with Clashing Names" FontSize="14" FontWeight="SemiBold" Margin="10" Foreground="#FFFFFFFF" />
+    <Button DockPanel.Dock="Top" Content="Override All" HorizontalAlignment="Left" Width="100" Command="{Binding OverrideAllCommand}" />
+    <ScrollViewer DockPanel.Dock="Top" MaxHeight="400" Background="{DynamicResource GrayBackgroundBrush}" Margin="5">
+      <ItemsControl Background="{DynamicResource GrayBackgroundBrush}" ItemTemplate="{StaticResource EntityNamerViewTemplate}" ItemsSource="{Binding Entities}" />
+    </ScrollViewer>
+    <DockPanel Dock="Bottom" LastChildFill="False" HorizontalAlignment="Right" Background="{DynamicResource GrayBackgroundBrush}" Margin="5">
+      <Button DockPanel.Dock="Left" Content="OK" Margin="10 0 10 0" Command="{Binding OKCommand}" />
+      <Button DockPanel.Dock="Left" Content="Cancel" Command="{Binding CancelCommand}" />
+    </DockPanel>
+  </DockPanel>
+</Window>

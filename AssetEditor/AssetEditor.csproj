@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>AssetEditor</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>True</UseWPF>
+    <UseWindowsForm>True</UseWindowsForm>
+    <TargetFramework>net462</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="AssetEditor.Resources.AssetEditor.ico" />
+    <EmbeddedResource Include="AssetEditor.Resources.AssetEditor.ico" LogicalName="AssetEditor.Resources.AssetEditor.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <ProjectReference Include="..\Atf.Gui\Atf.Gui.csproj" />
+    <ProjectReference Include="..\Atf.Core\Atf.Core.csproj" />
+    <ProjectReference Include="..\Atf.Gui.WinForms\Atf.Gui.WinForms.csproj" />
+    <ProjectReference Include="..\Firaxis.CivTech\Firaxis.CivTech.csproj" />
+    <ProjectReference Include="..\Firaxis.ATF\Firaxis.ATF.csproj" />
+    <ProjectReference Include="..\Firaxis.AssetEditing\Firaxis.AssetEditing.csproj" />
+    <ProjectReference Include="..\Firaxis.Controls\Firaxis.Controls.csproj" />
+    <ProjectReference Include="..\Firaxis.VersionControl\Firaxis.VersionControl.csproj" />
+    <ProjectReference Include="..\Firaxis.Theme\Firaxis.Theme.csproj" />
+    <ProjectReference Include="..\Firaxis.Utility\Firaxis.Utility.csproj" />
+    <ProjectReference Include="..\Firaxis.Error\Firaxis.Error.csproj" />
+    <ProjectReference Include="..\Firaxis.AssetBrowser\Firaxis.AssetBrowser.csproj" />
+    <ProjectReference Include="..\Firaxis.MVVMBase\Firaxis.MVVMBase.csproj" />
+    <ProjectReference Include="..\Atf.IronPython\Atf.IronPython.csproj" />
+    <ProjectReference Include="..\Firaxis.AssetPreviewing\Firaxis.AssetPreviewing.csproj" />
+    <ProjectReference Include="..\Firaxis.Threading\Firaxis.Threading.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;E:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\&quot;" />
+    <Exec Command="copy &quot;$(TargetPath).config&quot; &quot;E:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\&quot;" />
+  </Target>
+</Project>

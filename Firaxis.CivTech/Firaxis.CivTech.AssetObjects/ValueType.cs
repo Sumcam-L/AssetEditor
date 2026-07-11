@@ -1,0 +1,19 @@
+namespace Firaxis.CivTech.AssetObjects;
+
+public enum ValueType
+{
+	VT_FLOAT,
+	VT_INT,
+	VT_BOOL,
+	VT_RGB,
+	VT_STRING,
+	VT_OBJECT,
+	VT_COORD2D,
+	VT_COORD3D,
+	VT_BLP_ENTRY,
+	VT_ARTDEF_REFERENCE,
+	VT_COLLECTION,
+	VT_CURVE,
+	VT_TUPLE,
+	VT_COUNT
+}

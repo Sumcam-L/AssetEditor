@@ -1,0 +1,37 @@
+using Sce.Atf.Input;
+
+namespace Sce.Atf.Rendering;
+
+public class MaxControlScheme : ControlScheme
+{
+	public override Keys AddSelection => Keys.Control;
+
+	public override Keys ToggleSelection => Keys.Shift;
+
+	public override Keys RemoveSelection => Keys.Alt;
+
+	public override bool IsRotating(Keys modifierKeys, MouseEventArgs e)
+	{
+		return e.Button == MouseButtons.Middle && (modifierKeys & Keys.Alt) == Keys.Alt;
+	}
+
+	public override bool IsZooming(Keys modifierKeys, MouseEventArgs e)
+	{
+		return (e.Button == MouseButtons.Right && (modifierKeys & Keys.Alt) == Keys.Alt) || e.Delta != 0;
+	}
+
+	public override bool IsPanning(Keys modifierKeys, MouseEventArgs e)
+	{
+		return e.Button == MouseButtons.Middle && (modifierKeys & Keys.Alt) == 0;
+	}
+
+	public override bool IsTurning(Keys modifierKeys, MouseEventArgs e)
+	{
+		return e.Button == MouseButtons.Middle && (modifierKeys & Keys.Alt) == 0;
+	}
+
+	public override bool IsElevating(Keys modifierKeys, MouseEventArgs e)
+	{
+		return e.Button == MouseButtons.Middle && (modifierKeys & Keys.Alt) == Keys.Alt;
+	}
+}

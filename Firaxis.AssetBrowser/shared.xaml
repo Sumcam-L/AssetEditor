@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:Firaxis.AssetBrowser" xmlns:abvm="clr-namespace:Firaxis.AssetBrowser.ViewModels" xmlns:abv="clr-namespace:Firaxis.AssetBrowser.Views" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:mvvmh="clr-namespace:Firaxis.MVVMBase.Helpers;assembly=Firaxis.MVVMBase">
+  <BooleanToVisibilityConverter x:Key="BoolToVis" />
+  <abv:BackgroundConverter x:Key="BackgroundConverter" />
+  <BitmapImage x:Key="Loading" UriSource="Resources/free_bsd.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Asset" UriSource="Resources/asset.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Geometry" UriSource="Resources/geometry.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Texture" UriSource="Resources/texture.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Material" UriSource="Resources/material.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Animation" UriSource="Resources/animation.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="DSG" UriSource="Resources/state-graph.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Light Rig" UriSource="Resources/lightrig.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Environment Light" UriSource="Resources/sun.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Analytic Light" UriSource="Resources/analytic-light.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <BitmapImage x:Key="Particle Effect" UriSource="Resources/particle.png" CacheOption="OnLoad" UriCachePolicy="CacheIfAvailable" />
+  <Style x:Key="boldListboxSelection" TargetType="{x:Type ListBoxItem}">
+    <Setter Property="ListBoxItem.IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}" />
+    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+    <Style.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="UIElement.IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="ListBoxItem.IsSelected" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+      </MultiTrigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="ListBoxItem.IsSelected" Value="True" />
+          <Condition Property="Selector.IsSelectionActive" Value="False" />
+        </MultiTrigger.Conditions>
+        <Setter Property="FontWeight" Value="Bold" />
+      </MultiTrigger>
+    </Style.Triggers>
+  </Style>
+  <mvvmh:WindowFactoryRegistration x:Key="{x:Type abvm:AssetBrowserDialogViewModel}" ViewType="{x:Type abv:AssetBrowserDialogWindow}" />
+  <DataTemplate x:Key="IconColumn">
+    <Image VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-6,0,-6,0" Source="{Binding Thumbnail, IsAsync=True}" Width="{Binding ThumbnailSize}" Height="{Binding ThumbnailSize}" />
+  </DataTemplate>
+  <DataTemplate x:Key="{DataTemplateKey {x:Type abvm:AssetTypeViewModel}}" DataType="{x:Type abvm:AssetTypeViewModel}">
+    <TextBlock Name="nameText" Text="{Binding Name}" />
+  </DataTemplate>
+  <DataTemplate x:Key="projectVisibilityTemplate" DataType="{x:Type abvm:ProjectFilterViewModel}">
+    <CheckBox Name="projectVisibilty" Margin="5,0,5,0" Width="Auto" Content="{Binding Project}" IsChecked="{Binding Visible}" />
+  </DataTemplate>
+  <DataTemplate x:Key="{DataTemplateKey {x:Type abvm:AssetBrowserViewModel}}" DataType="{x:Type abvm:AssetBrowserViewModel}">
+    <abv:AssetBrowserView />
+  </DataTemplate>
+  <DataTemplate x:Key="{DataTemplateKey {x:Type abvm:ConstrainedFilterViewModel}}" DataType="{x:Type abvm:ConstrainedFilterViewModel}">
+    <abv:ClassicFilterView />
+  </DataTemplate>
+  <DataTemplate x:Key="{DataTemplateKey {x:Type abvm:StaticFilterViewModel}}" DataType="{x:Type abvm:StaticFilterViewModel}">
+    <abv:ClassicFilterView />
+  </DataTemplate>
+  <DataTemplate x:Key="{DataTemplateKey {x:Type abvm:StackFilterViewModel}}" DataType="{x:Type abvm:StackFilterViewModel}">
+    <abv:StackFilterView />
+  </DataTemplate>
+  <DataTemplate x:Key="{DataTemplateKey {x:Type abvm:FilterBuilderViewModel}}" DataType="{x:Type abvm:FilterBuilderViewModel}">
+    <abv:FilterBuilderView />
+  </DataTemplate>
+  <DataTemplate x:Key="{DataTemplateKey {x:Type abvm:FilterStyleCollectionViewModel}}" DataType="{x:Type abvm:FilterStyleCollectionViewModel}">
+    <abv:FilterSelectionView />
+  </DataTemplate>
+</ResourceDictionary>

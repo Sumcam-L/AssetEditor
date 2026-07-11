@@ -1,0 +1,11 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Firaxis.CivTech.AssetObjects._003FA0x424d5b7e._003FRemoveConsumerFromCollection_0040_003FA0x424d5b7e_0040AssetObjects_0040CivTech_0040Firaxis_0040_0040_0024_0024FYA_NAEAV_003F_0024Container_0040UArtConsumer_0040AssetObjects_0040_0040_00402_0040PEBD_0040Z.__l2;
+
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _003Clambda_5a3f3dcec8df25c6fdae7ce4f5b32abd_003E
+{
+	private long _003Calignment_0020member_003E;
+}

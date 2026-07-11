@@ -1,0 +1,23 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace std;
+
+[StructLayout(LayoutKind.Sequential, Size = 32)]
+[NativeCppClass]
+internal struct _Compressed_pair_003Cstd_003A_003A_Wrap_alloc_003Cstd_003A_003Aallocator_003Cwchar_t_003E_0020_003E_002Cstd_003A_003A_String_val_003Cstd_003A_003A_Simple_types_003Cwchar_t_003E_0020_003E_002C1_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 32)]
+[NativeCppClass]
+internal struct _Compressed_pair_003Cstd_003A_003A_Wrap_alloc_003Cstd_003A_003Aallocator_003Cchar_003E_0020_003E_002Cstd_003A_003A_String_val_003Cstd_003A_003A_Simple_types_003Cchar_003E_0020_003E_002C1_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 32)]
+[NativeCppClass]
+internal struct _Compressed_pair_003Cstd_003A_003A_Wrap_alloc_003Cstd_003A_003Aallocator_003Cchar16_t_003E_0020_003E_002Cstd_003A_003A_String_val_003Cstd_003A_003A_Simple_types_003Cchar16_t_003E_0020_003E_002C1_003E
+{
+	private long _003Calignment_0020member_003E;
+}

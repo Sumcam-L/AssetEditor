@@ -1,0 +1,36 @@
+# Visual Studio user state
+.vs/
+*.suo
+*.user
+*.csproj.user
+*.sln.docstates
+*.slnLaunch.user
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+.msbuildtmp/
+TestResults/
+artifacts/
+
+# Compiler and test artifacts
+*.pdb
+*.cache
+*.log
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet generated packages
+packages/
+*.nupkg
+*.snupkg
+
+# Local agent state
+.serena/
+.superpowers/
+
+# Operating system files
+Thumbs.db
+Desktop.ini
+.DS_Store

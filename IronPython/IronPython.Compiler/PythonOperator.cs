@@ -1,0 +1,36 @@
+namespace IronPython.Compiler;
+
+public enum PythonOperator
+{
+	None = 0,
+	Not = 1,
+	Pos = 2,
+	Invert = 3,
+	Negate = 4,
+	Add = 5,
+	Subtract = 6,
+	Multiply = 7,
+	Divide = 8,
+	TrueDivide = 9,
+	Mod = 10,
+	BitwiseAnd = 11,
+	BitwiseOr = 12,
+	Xor = 13,
+	LeftShift = 14,
+	RightShift = 15,
+	Power = 16,
+	FloorDivide = 17,
+	LessThan = 18,
+	LessThanOrEqual = 19,
+	GreaterThan = 20,
+	GreaterThanOrEqual = 21,
+	Equal = 22,
+	NotEqual = 23,
+	In = 24,
+	NotIn = 25,
+	IsNot = 26,
+	Is = 27,
+	ExclusiveOr = 13,
+	Equals = 22,
+	NotEquals = 23
+}

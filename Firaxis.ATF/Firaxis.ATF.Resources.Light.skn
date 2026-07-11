@@ -1,0 +1,1755 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<skin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="atfskin">
+  <style name="WPFStyle" targetType="Firaxis.MVVMBase.SkinStub">
+    <setter propertyName="ControlDarkBackColor">
+      <valueInfo type="System.Drawing.Color" value="#FFDDDDDD" />
+    </setter>
+    <setter propertyName="ControlDarkDarkBackColor">
+      <valueInfo type="System.Drawing.Color" value="#FFCCCCCC" />
+    </setter>
+  </style>
+  <style name="TitleBarStyle" targetType="Sce.Atf.Applications.FormNcRenderer+SkinInfo">
+		<setter propertyName="ActiveBorderColor">
+			<valueInfo type="System.Drawing.Color" value="#FFB4B4B4" />
+		</setter>
+		<setter propertyName="InactiveBorderColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF4F7FC" />
+		</setter>
+		<setter propertyName="TitleBarBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF99B4D1" />
+		</setter>
+		<setter propertyName="TitleBarForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="ActiveTitleBarForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="CaptionButtonHoverColor">
+			<valueInfo type="System.Drawing.Color" value="#FFD7E4F2" />
+		</setter>
+	</style>
+	<style name="ControlStyle" targetType="System.Windows.Forms.Control">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+		<setter propertyName="ForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="Font">
+			<valueInfo type="System.Drawing.Font">
+				<constructorParams>
+					<valueInfo type="string" value="Segoe UI" />
+					<valueInfo type="float" value="9.0" />
+					<valueInfo type="System.Drawing.FontStyle" value="Regular" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="ButtonStyle" targetType="System.Windows.Forms.Button">
+		<setter propertyName="ForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="FlatStyle">
+			<valueInfo type="System.Windows.Forms.FlatStyle" value="Flat" />
+		</setter>
+	</style>
+	<style name="GroupBoxStyle" targetType="System.Windows.Forms.GroupBox">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+	</style>
+	<style name="LabelStyle" targetType="System.Windows.Forms.Label">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+	</style>
+	<style name="RadioButtonStyle" targetType="System.Windows.Forms.RadioButton">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+	</style>
+	<style name="CheckBoxStyle" targetType="System.Windows.Forms.CheckBox">
+		<setter propertyName="FlatStyle">
+			<valueInfo type="System.Windows.Forms.FlatStyle" value="Flat" />
+		</setter>
+	</style>
+	<style name="SplitContainerStyle" targetType="System.Windows.Forms.SplitContainer">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFC0C0C0" />
+		</setter>
+	</style>
+	<style name="Grid Header" targetType="Sce.Atf.Controls.PropertyEditing.GridView+ColumnHeaders">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="ForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="ColumnHeaderAlphaBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#7FFFFFFF" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="ColumnHeaderBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FFE3E3E3" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="DropColumnIndicatorPen">
+			<valueInfo type="System.Drawing.Pen">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF000000" />
+					<valueInfo type="float" value="3" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="PropertyGridDescriptionControlStyle" targetType="Sce.Atf.Controls.PropertyEditing.PropertyGrid+DescriptionControl">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+		<setter propertyName="TextBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF000000" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="EnumDropDownStyle" targetType="Sce.Atf.Controls.PropertyEditing.HotTrackListBox">
+		<setter propertyName="HighlightColor">
+			<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+		</setter>
+		<setter propertyName="HighlightTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+	</style>
+	<style name="PropertyEditingStyle" targetType="Sce.Atf.Controls.PropertyEditing.PropertyEditingControl">
+		<setter propertyName="ReadOnlyTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF6D6D6D" />
+		</setter>
+		<setter propertyName="PaintValueBorderColor">
+			<valueInfo type="System.Drawing.Color" value="#FF5D5D5D" />
+		</setter>
+	</style>
+	<style name="PropertyEditingButtonStyle" targetType="Sce.Atf.Controls.PropertyEditing.PropertyEditingControl+EditButton">
+		<setter propertyName="DisabledTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF6D6D6D" />
+		</setter>
+	</style>
+	<style name="PropertyGridViewStyle" targetType="Sce.Atf.Controls.PropertyEditing.PropertyGridView">
+		<setter propertyName="PropertyBackgroundHighlightBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="PropertyTextHighlightBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="EvenRowColor">
+			<valueInfo type="System.Drawing.Color" value="#FFE3E3E3" />
+		</setter>
+		<setter propertyName="OddRowColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+		<setter propertyName="PropertyExpanderBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF696969" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="PropertyBackgroundBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="PropertyTextBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF000000" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="PropertyReadOnlyTextBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF6D6D6D" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="PropertyLinePen">
+			<valueInfo type="System.Drawing.Pen">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF696969" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="CategoryBackgroundBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="CategoryNameBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="CategoryLinePen">
+			<valueInfo type="System.Drawing.Pen">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF696969" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="CategoryExpanderBrush">
+			<valueInfo type="System.Drawing.SolidBrush">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF696969" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="Font">
+			<valueInfo type="System.Drawing.Font">
+				<constructorParams>
+					<valueInfo type="string" value="Segoe UI" />
+					<valueInfo type="float" value="9.0" />
+					<valueInfo type="System.Drawing.FontStyle" value="Regular" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="TimelineItemStyle" targetType="Firaxis.Controls.Scrollables.ScrollableItemText">
+		<setter propertyName="HighlightBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+		</setter>
+		<setter propertyName="SeparatorColor">
+			<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+		</setter>
+		<setter propertyName="HardSeparatorColor">
+			<valueInfo type="System.Drawing.Color" value="#FF696969" />
+		</setter>
+		<setter propertyName="HighlightTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="TextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+	</style>
+	<style name="PropertyTreeControlStyle" targetType="Firaxis.AssetPreviewing.PropertyTreeControl">
+		<setter propertyName="ForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+		<setter propertyName="EvenBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFE3E3E3" />
+		</setter>
+		<setter propertyName="OddBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+    <setter propertyName="GridLineColor">
+      <valueInfo type="System.Drawing.Color" value="#FF696969" />
+    </setter>
+		<setter propertyName="SelectedForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="SelectedBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+		</setter>
+		<setter propertyName="Font">
+			<valueInfo type="System.Drawing.Font">
+				<constructorParams>
+					<valueInfo type="string" value="Segoe UI" />
+					<valueInfo type="float" value="9.0" />
+					<valueInfo type="System.Drawing.FontStyle" value="Regular" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="TimelineTriggerStyle" targetType="Firaxis.Asset.ScrollableItemTrackBase">
+		<setter propertyName="SeparatorColor">
+			<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+		</setter>
+		<setter propertyName="HardSeparatorColor">
+			<valueInfo type="System.Drawing.Color" value="#FF696969" />
+		</setter>
+		<setter propertyName="HighlightedBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+		</setter>
+		<setter propertyName="HighlightedTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="HoverTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="TextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="DurationEndColor">
+			<valueInfo type="System.Drawing.Color" value="#FFf000D0" />
+		</setter>
+		<setter propertyName="ChangingBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+		</setter>
+		<setter propertyName="ChangingTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="MarkColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFC000" />
+		</setter>
+	</style>
+	<style name="TimelineAnimationStyle" targetType="Firaxis.Asset.ScrollableItemAnimationBase">
+		<setter propertyName="SeparatorColor">
+			<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+		</setter>
+		<setter propertyName="HardSeparatorColor">
+			<valueInfo type="System.Drawing.Color" value="#FF696969" />
+		</setter>
+		<setter propertyName="HighlightedBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+		</setter>
+		<setter propertyName="HighlightedTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="HoverTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="TextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="DurationEndColor">
+			<valueInfo type="System.Drawing.Color" value="#FFf000D0" />
+		</setter>
+		<setter propertyName="ActiveFillColor">
+			<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+		</setter>
+		<setter propertyName="InactiveFillColor">
+			<valueInfo type="System.Drawing.Color" value="#FF696969" />
+		</setter>
+		<setter propertyName="ActiveTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="InactiveTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+	</style>
+	<style name="GridViewStyle" targetType="Sce.Atf.Controls.PropertyEditing.GridView">
+		<setter propertyName="HighlightColor">
+			<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+		</setter>
+		<setter propertyName="HighlightTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="EvenRowColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="OddRowColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+		<setter propertyName="GridLineColor">
+			<valueInfo type="System.Drawing.Color" value="#FF696969" />
+		</setter>
+		<setter propertyName="SelectedCellColor">
+			<valueInfo type="System.Drawing.Color" value="#FF3399FF" />
+		</setter>
+		<setter propertyName="CategoryCellBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+		</setter>
+		<setter propertyName="CellTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="CellReadOnlyTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF6D6D6D" />
+		</setter>
+	</style>
+	<style name="TreeListStyle" targetType="Sce.Atf.Controls.TreeListView+TheTreeListView">
+		<setter propertyName="TextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="ModifiableTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="HighlightTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="ModifiableHighlightTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="DisabledTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FF6D6D6D" />
+		</setter>
+		<setter propertyName="HighlightBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+		</setter>
+		<setter propertyName="DisabledBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+		</setter>
+		<setter propertyName="GridLinesColor">
+			<valueInfo type="System.Drawing.Color" value="#FF696969" />
+		</setter>
+		<setter propertyName="ExpanderGradient">
+			<valueInfo type="Sce.Atf.Applications.ControlGradient">
+				<setter propertyName="StartColor">
+					<valueInfo type="System.Drawing.Color" value="#FF696969" />
+				</setter>
+				<setter propertyName="EndColor">
+					<valueInfo type="System.Drawing.Color" value="#FF696969" />
+				</setter>
+				<setter propertyName="LinearGradientMode">
+					<valueInfo type="System.Drawing.Drawing2D.LinearGradientMode" value="Vertical" />
+				</setter>
+				<setter propertyName="TextColor">
+					<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+				</setter>
+			</valueInfo>
+		</setter>
+		<setter propertyName="ExpanderPen">
+			<valueInfo type="System.Drawing.Pen">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF000000" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+		<setter propertyName="HierarchyLinePen">
+			<valueInfo type="System.Drawing.Pen">
+				<constructorParams>
+					<valueInfo type="System.Drawing.Color" value="#FF000000" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="TreeStyle" targetType="Sce.Atf.Controls.TreeControl">
+		<setter propertyName="ItemRenderer">
+			<valueInfo type="Sce.Atf.Controls.TreeItemRenderer">
+				<setter propertyName="TextBrush">
+					<valueInfo type="System.Drawing.SolidBrush">
+						<constructorParams>
+							<valueInfo type="System.Drawing.Color" value="#FF000000" />
+						</constructorParams>
+					</valueInfo>
+				</setter>
+				<setter propertyName="ExpanderPen">
+					<valueInfo type="System.Drawing.Pen">
+						<constructorParams>
+							<valueInfo type="System.Drawing.Color" value="#FF000000" />
+						</constructorParams>
+					</valueInfo>
+				</setter>
+				<setter propertyName="HierarchyLinePen">
+					<valueInfo type="System.Drawing.Pen">
+						<constructorParams>
+							<valueInfo type="System.Drawing.Color" value="#FF000000" />
+						</constructorParams>
+					</valueInfo>
+				</setter>
+				<setter propertyName="HighlightBrush">
+					<valueInfo type="System.Drawing.SolidBrush">
+						<constructorParams>
+							<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+						</constructorParams>
+					</valueInfo>
+				</setter>
+				<setter propertyName="DeactiveHighlightBrush">
+					<valueInfo type="System.Drawing.SolidBrush">
+						<constructorParams>
+							<valueInfo type="System.Drawing.Color" value="#FF007ACC" />
+						</constructorParams>
+					</valueInfo>
+				</setter>
+				<setter propertyName="HighlightTextBrush">
+					<valueInfo type="System.Drawing.SolidBrush">
+						<constructorParams>
+							<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+						</constructorParams>
+					</valueInfo>
+				</setter>
+				<setter propertyName="DeactiveHighlightTextBrush">
+					<valueInfo type="System.Drawing.SolidBrush">
+						<constructorParams>
+							<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+						</constructorParams>
+					</valueInfo>
+				</setter>
+				<setter propertyName="CategoryStartColor">
+					<valueInfo type="System.Drawing.Color" value="#FF696969" />
+				</setter>
+				<setter propertyName="CategoryEndColor">
+					<valueInfo type="System.Drawing.Color" value="#FF696969" />
+				</setter>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="ThemeStyle" targetType="Firaxis.Theme.FiraxisTheme">
+		<setter propertyName="ColorPalette">
+			<valueInfo type="WeifenLuo.WinFormsUI.Docking.DockPanelColorPalette">
+				<constructorParams>
+					<valueInfo type="Firaxis.Theme.FiraxisAdapterPaletteFactory">
+						<constructorParams>
+							<valueInfo type="Firaxis.Theme.FiraxisThemePalette">
+								<setter propertyName="AutoHideTabPalette">
+									<valueInfo type="AutoHideTabPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="AutoHideTabMouseOverPalette">
+									<valueInfo type="AutoHideTabMouseOverPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarMenuPalette">
+									<valueInfo type="CommandBarMenuPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarMenuPopupPalette">
+									<valueInfo type="CommandBarMenuPopupPalette">
+										<setter propertyName="Arrow">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="BackgroundTop">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="BackgroundBottom">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Checkmark">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="CheckmarkBackground">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="IconBackground">
+											<valueInfo type="System.Drawing.Color" value="#FF696969" />
+										</setter>
+										<setter propertyName="Separator">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarMenuPopupDisabledPalette">
+									<valueInfo type="CommandBarMenuPopupDisabledPalette">
+										<setter propertyName="Checkmark">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="CheckmarkBackground">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarMenuPopupHoveredPalette">
+									<valueInfo type="CommandBarMenuPopupHoveredPalette">
+										<setter propertyName="Arrow">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="Checkmark">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="CheckmarkBackground">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="ItemBackground">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarMenuTopLevelHeaderHoveredPalette">
+									<valueInfo type="CommandBarMenuTopLevelHeaderHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarToolbarPalette">
+									<valueInfo type="CommandBarToolbarPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Grip">
+											<valueInfo type="System.Drawing.Color" value="#FF696969" />
+										</setter>
+										<setter propertyName="OverflowButtonBackground">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="OverflowButtonGlyph">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Separator">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="SeparatorAccent">
+											<valueInfo type="System.Drawing.Color" value="#FFE3E3E3" />
+										</setter>
+										<setter propertyName="Tray">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarToolbarButtonCheckedPalette">
+									<valueInfo type="CommandBarToolbarButtonCheckedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarToolbarButtonCheckedHoveredPalette">
+									<valueInfo type="CommandBarToolbarButtonCheckedHoveredPalette">
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarToolbarButtonPalette">
+									<valueInfo type="CommandBarToolbarButtonPalette">
+										<setter propertyName="Arrow">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarToolbarButtonHoveredPalette">
+									<valueInfo type="CommandBarToolbarButtonHoveredPalette">
+										<setter propertyName="Arrow">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="Separator">
+											<valueInfo type="System.Drawing.Color" value="#FF696969" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarToolbarButtonPressedPalette">
+									<valueInfo type="CommandBarToolbarButtonPressedPalette">
+										<setter propertyName="Arrow">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarToolbarOverflowHoveredPalette">
+									<valueInfo type="CommandBarToolbarOverflowHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="CommandBarToolbarOverflowPressedPalette">
+									<valueInfo type="CommandBarToolbarOverflowPressedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="OverflowButtonPalette">
+									<valueInfo type="OverflowButtonPalette">
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="OverflowButtonHoveredPalette">
+									<valueInfo type="OverflowButtonHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="OverflowButtonPressedPalette">
+									<valueInfo type="OverflowButtonPressedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabSelectedActivePalette">
+									<valueInfo type="TabSelectedActivePalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFABABAB" />
+										</setter>
+										<setter propertyName="Button">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabSelectedInactivePalette">
+									<valueInfo type="TabSelectedInactivePalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFC0C0C0" />
+										</setter>
+										<setter propertyName="Button">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabUnselectedPalette">
+									<valueInfo type="TabUnselectedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabUnselectedHoveredPalette">
+									<valueInfo type="TabUnselectedHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Button">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabButtonSelectedActiveHoveredPalette">
+									<valueInfo type="TabButtonSelectedActiveHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabButtonSelectedActivePressedPalette">
+									<valueInfo type="TabButtonSelectedActivePressedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabButtonSelectedInactiveHoveredPalette">
+									<valueInfo type="TabButtonSelectedInactiveHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabButtonSelectedInactivePressedPalette">
+									<valueInfo type="TabButtonSelectedInactivePressedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabButtonUnselectedTabHoveredButtonHoveredPalette">
+									<valueInfo type="TabButtonUnselectedTabHoveredButtonHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="TabButtonUnselectedTabHoveredButtonPressedPalette">
+									<valueInfo type="TabButtonUnselectedTabHoveredButtonPressedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="MainWindowActivePalette">
+									<valueInfo type="MainWindowActivePalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="MainWindowStatusBarPalette">
+									<valueInfo type="MainWindowStatusBarPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Highlight">
+											<valueInfo type="System.Drawing.Color" value="#909090" />
+										</setter>
+										<setter propertyName="HighlightText">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="ResizeGrip">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="ResizeGripAccent">
+											<valueInfo type="System.Drawing.Color" value="#909090" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowCaptionActivePalette">
+									<valueInfo type="ToolWindowCaptionActivePalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FF99B4D1" />
+										</setter>
+										<setter propertyName="Button">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Grip">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowCaptionInactivePalette">
+									<valueInfo type="ToolWindowCaptionInactivePalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFBFCDDB" />
+										</setter>
+										<setter propertyName="Button">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Grip">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowCaptionButtonActiveHoveredPalette">
+									<valueInfo type="ToolWindowCaptionButtonActiveHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#9F9F9F" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowCaptionButtonPressedPalette">
+									<valueInfo type="ToolWindowCaptionButtonPressedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowCaptionButtonInactiveHoveredPalette">
+									<valueInfo type="ToolWindowCaptionButtonInactiveHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Glyph">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowTabSelectedActivePalette">
+									<valueInfo type="ToolWindowTabSelectedActivePalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#7F7F7F" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowTabSelectedInactivePalette">
+									<valueInfo type="ToolWindowTabSelectedInactivePalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#7F7F7F" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowTabUnselectedPalette">
+									<valueInfo type="ToolWindowTabUnselectedPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowTabUnselectedHoveredPalette">
+									<valueInfo type="ToolWindowTabUnselectedHoveredPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#9F9F9F" />
+										</setter>
+										<setter propertyName="Text">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="ToolWindowPalette">
+									<valueInfo type="ToolWindowPalette">
+										<setter propertyName="Separator">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+									</valueInfo>
+								</setter>
+								<setter propertyName="DockTargetPalette">
+									<valueInfo type="DockTargetPalette">
+										<setter propertyName="Background">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="Border">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="ButtonBackground">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="ButtonBorder">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+										<setter propertyName="GlyphBackground">
+											<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+										</setter>
+										<setter propertyName="GlyphArrow">
+											<valueInfo type="System.Drawing.Color" value="#FF000000" />
+										</setter>
+										<setter propertyName="GlyphBorder">
+											<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+										</setter>
+									</valueInfo>
+								</setter>
+							</valueInfo>
+						</constructorParams>
+					</valueInfo>
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="ToolStripTrackBarStyle" targetType="Firaxis.Controls.ToolStripTrackBar+ToolStripHostedTrackBar">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+		<setter propertyName="ForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="Font">
+			<valueInfo type="System.Drawing.Font">
+				<constructorParams>
+					<valueInfo type="string" value="Segoe UI" />
+					<valueInfo type="float" value="9.0" />
+					<valueInfo type="System.Drawing.FontStyle" value="Regular" />
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="ToolStripStyle" targetType="System.Windows.Forms.ToolStrip">
+		<setter propertyName="BackColor">
+			<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+		</setter>
+		<setter propertyName="ForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF000000" />
+		</setter>
+		<setter propertyName="Renderer">
+			<valueInfo type="Firaxis.Theme.FiraxisToolStripRenderer">
+				<constructorParams>
+					<valueInfo type="Firaxis.Theme.FiraxisThemePalette">
+						<setter propertyName="AutoHideTabPalette">
+							<valueInfo type="AutoHideTabPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="AutoHideTabMouseOverPalette">
+							<valueInfo type="AutoHideTabMouseOverPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarMenuPalette">
+							<valueInfo type="CommandBarMenuPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarMenuPopupPalette">
+							<valueInfo type="CommandBarMenuPopupPalette">
+								<setter propertyName="Arrow">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="BackgroundTop">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="BackgroundBottom">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Checkmark">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="CheckmarkBackground">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="IconBackground">
+									<valueInfo type="System.Drawing.Color" value="#7F7F7F" />
+								</setter>
+								<setter propertyName="Separator">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarMenuPopupDisabledPalette">
+							<valueInfo type="CommandBarMenuPopupDisabledPalette">
+								<setter propertyName="Checkmark">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="CheckmarkBackground">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF868686" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarMenuPopupHoveredPalette">
+							<valueInfo type="CommandBarMenuPopupHoveredPalette">
+								<setter propertyName="Arrow">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="Checkmark">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="CheckmarkBackground">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="ItemBackground">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarMenuTopLevelHeaderHoveredPalette">
+							<valueInfo type="CommandBarMenuTopLevelHeaderHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarToolbarPalette">
+							<valueInfo type="CommandBarToolbarPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Grip">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="OverflowButtonBackground">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="OverflowButtonGlyph">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Separator">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="SeparatorAccent">
+									<valueInfo type="System.Drawing.Color" value="#909090" />
+								</setter>
+								<setter propertyName="Tray">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarToolbarButtonCheckedPalette">
+							<valueInfo type="CommandBarToolbarButtonCheckedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarToolbarButtonCheckedHoveredPalette">
+							<valueInfo type="CommandBarToolbarButtonCheckedHoveredPalette">
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarToolbarButtonPalette">
+							<valueInfo type="CommandBarToolbarButtonPalette">
+								<setter propertyName="Arrow">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarToolbarButtonHoveredPalette">
+							<valueInfo type="CommandBarToolbarButtonHoveredPalette">
+								<setter propertyName="Arrow">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="Separator">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarToolbarButtonPressedPalette">
+							<valueInfo type="CommandBarToolbarButtonPressedPalette">
+								<setter propertyName="Arrow">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarToolbarOverflowHoveredPalette">
+							<valueInfo type="CommandBarToolbarOverflowHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="CommandBarToolbarOverflowPressedPalette">
+							<valueInfo type="CommandBarToolbarOverflowPressedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="OverflowButtonPalette">
+							<valueInfo type="OverflowButtonPalette">
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="OverflowButtonHoveredPalette">
+							<valueInfo type="OverflowButtonHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#909090" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="OverflowButtonPressedPalette">
+							<valueInfo type="OverflowButtonPressedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabSelectedActivePalette">
+							<valueInfo type="TabSelectedActivePalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Button">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabSelectedInactivePalette">
+							<valueInfo type="TabSelectedInactivePalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Button">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabUnselectedPalette">
+							<valueInfo type="TabUnselectedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabUnselectedHoveredPalette">
+							<valueInfo type="TabUnselectedHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Button">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabButtonSelectedActiveHoveredPalette">
+							<valueInfo type="TabButtonSelectedActiveHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabButtonSelectedActivePressedPalette">
+							<valueInfo type="TabButtonSelectedActivePressedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabButtonSelectedInactiveHoveredPalette">
+							<valueInfo type="TabButtonSelectedInactiveHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabButtonSelectedInactivePressedPalette">
+							<valueInfo type="TabButtonSelectedInactivePressedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabButtonUnselectedTabHoveredButtonHoveredPalette">
+							<valueInfo type="TabButtonUnselectedTabHoveredButtonHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="TabButtonUnselectedTabHoveredButtonPressedPalette">
+							<valueInfo type="TabButtonUnselectedTabHoveredButtonPressedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="MainWindowActivePalette">
+							<valueInfo type="MainWindowActivePalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="MainWindowStatusBarPalette">
+							<valueInfo type="MainWindowStatusBarPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Highlight">
+									<valueInfo type="System.Drawing.Color" value="#909090" />
+								</setter>
+								<setter propertyName="HighlightText">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="ResizeGrip">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="ResizeGripAccent">
+									<valueInfo type="System.Drawing.Color" value="#909090" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowCaptionActivePalette">
+							<valueInfo type="ToolWindowCaptionActivePalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FF99B4D1" />
+								</setter>
+								<setter propertyName="Button">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Grip">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowCaptionInactivePalette">
+							<valueInfo type="ToolWindowCaptionInactivePalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFBFCDDB" />
+								</setter>
+								<setter propertyName="Button">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Grip">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowCaptionButtonActiveHoveredPalette">
+							<valueInfo type="ToolWindowCaptionButtonActiveHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowCaptionButtonPressedPalette">
+							<valueInfo type="ToolWindowCaptionButtonPressedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowCaptionButtonInactiveHoveredPalette">
+							<valueInfo type="ToolWindowCaptionButtonInactiveHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Glyph">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowTabSelectedActivePalette">
+							<valueInfo type="ToolWindowTabSelectedActivePalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowTabSelectedInactivePalette">
+							<valueInfo type="ToolWindowTabSelectedInactivePalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowTabUnselectedPalette">
+							<valueInfo type="ToolWindowTabUnselectedPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowTabUnselectedHoveredPalette">
+							<valueInfo type="ToolWindowTabUnselectedHoveredPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Text">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="ToolWindowPalette">
+							<valueInfo type="ToolWindowPalette">
+								<setter propertyName="Separator">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+							</valueInfo>
+						</setter>
+						<setter propertyName="DockTargetPalette">
+							<valueInfo type="DockTargetPalette">
+								<setter propertyName="Background">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="Border">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="ButtonBackground">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="ButtonBorder">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+								<setter propertyName="GlyphBackground">
+									<valueInfo type="System.Drawing.Color" value="#FFF0F0F0" />
+								</setter>
+								<setter propertyName="GlyphArrow">
+									<valueInfo type="System.Drawing.Color" value="#FF000000" />
+								</setter>
+								<setter propertyName="GlyphBorder">
+									<valueInfo type="System.Drawing.Color" value="#FFA0A0A0" />
+								</setter>
+							</valueInfo>
+						</setter>
+					</valueInfo>
+				</constructorParams>
+			</valueInfo>
+		</setter>
+	</style>
+	<style name="DataBoundListViewStyle" targetType="Sce.Atf.Controls.DataBoundListView">
+		<setter propertyName="AlternatingRowColor1">
+			<valueInfo type="System.Drawing.Color" value="#FF333333" />
+		</setter>
+		<setter propertyName="AlternatingRowColor2">
+			<valueInfo type="System.Drawing.Color" value="#FF3a3a3a" />
+		</setter>
+		<setter propertyName="NormalTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="ExternalEditorTextColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+	</style>
+	<style name="LinkLabelStyle" targetType="System.Windows.Forms.LinkLabel">
+		<setter propertyName="LinkColor">
+			<valueInfo type="System.Drawing.Color" value="#FF5EBEFF" />
+		</setter>
+	</style>
+	<style name="SyntaxEditorControlStyle" targetType="Sce.Atf.Controls.SyntaxEditorControl.SyntaxEditorControl">
+		<setter propertyName="TextAreaBackgroundFill">
+			<valueInfo type="System.Drawing.Color" value="#FF484848" />
+		</setter>
+		<setter propertyName="TextAreaDisabledBackgroundFill">
+			<valueInfo type="System.Drawing.Color" value="#FF282828" />
+		</setter>
+		<setter propertyName="SelectionFocusedBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF1818FF" />
+		</setter>
+		<setter propertyName="SelectionFocusedForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+		</setter>
+		<setter propertyName="SelectionUnfocusedBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF181888" />
+		</setter>
+		<setter propertyName="SelectionUnfocusedForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FFAAAAAA" />
+		</setter>
+		<setter propertyName="LineNumberMarginBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF686868" />
+		</setter>
+		<setter propertyName="LineNumberForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FF999999" />
+		</setter>
+		<setter propertyName="LineSelectMarginBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF484848" />
+		</setter>
+		<setter propertyName="OutlineIndicatorBackColor">
+			<valueInfo type="System.Drawing.Color" value="#FF888822" />
+		</setter>
+		<setter propertyName="OutlineIndicatorForeColor">
+			<valueInfo type="System.Drawing.Color" value="#FFFFFF88" />
+		</setter>
+		<setter propertyName="TextHighlightStyles">
+			<listInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="DefaultStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+					</constructorParams>
+				</valueInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="ReservedWordStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FF88DDFF" />
+					</constructorParams>
+				</valueInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="CommentDefaultStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FF50F057" />
+					</constructorParams>
+				</valueInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="CommentDefaultStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FF50F057" />
+					</constructorParams>
+				</valueInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="StringDelimiterStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FFEE4444" />
+					</constructorParams>
+				</valueInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="StringDefaultStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FFEE4444" />
+					</constructorParams>
+				</valueInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="NumberStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FFBB3AFF" />
+					</constructorParams>
+				</valueInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="FunctionStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FFFF33FF" />
+					</constructorParams>
+				</valueInfo>
+				<valueInfo type="Sce.Atf.Controls.SyntaxEditorControl.TextHighlightStyle">
+					<constructorParams>
+						<valueInfo type="string" value="OperatorStyle" />
+						<valueInfo type="System.Drawing.Color" value="#FFFFFFFF" />
+					</constructorParams>
+				</valueInfo>
+			</listInfo>
+		</setter>
+	</style>
+</skin>

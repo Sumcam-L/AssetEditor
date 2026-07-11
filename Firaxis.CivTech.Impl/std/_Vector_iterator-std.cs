@@ -1,0 +1,41 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace std;
+
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _Vector_iterator_003Cstd_003A_003A_Vector_val_003Cstd_003A_003A_Simple_types_003Cstd_003A_003Abasic_string_003Cchar_002Cstd_003A_003Achar_traits_003Cchar_003E_002Cstd_003A_003Aallocator_003Cchar_003E_0020_003E_0020_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _Vector_iterator_003Cstd_003A_003A_Vector_val_003Cstd_003A_003A_Simple_types_003CAssetObjects_003A_003ASegmentDefinition_0020_002A_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _Vector_iterator_003Cstd_003A_003A_Vector_val_003Cstd_003A_003A_Simple_types_003Cstd_003A_003Abasic_string_003Cwchar_t_002Cstd_003A_003Achar_traits_003Cwchar_t_003E_002Cstd_003A_003Aallocator_003Cwchar_t_003E_0020_003E_0020_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _Vector_iterator_003Cstd_003A_003A_Vector_val_003Cstd_003A_003A_Simple_types_003CFiraxis_003A_003ACivTech_003A_003AAssetPreviewer_003A_003AKnobDatabase_003A_003AKnobGroup_0020_002A_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _Vector_iterator_003Cstd_003A_003A_Vector_val_003Cstd_003A_003A_Simple_types_003CFiraxis_003A_003ACivTech_003A_003AAssetPreviewer_003A_003AKnobDatabase_003A_003AKnobRecord_0020_002A_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _Vector_iterator_003Cstd_003A_003A_Vector_val_003Cstd_003A_003A_Simple_types_003CFiraxis_003A_003ACivTech_003A_003AAssetPreviewer_003A_003A_INTERNAL_003A_003AWidgetDB_003A_003AWidgetInfo_0020_002A_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}

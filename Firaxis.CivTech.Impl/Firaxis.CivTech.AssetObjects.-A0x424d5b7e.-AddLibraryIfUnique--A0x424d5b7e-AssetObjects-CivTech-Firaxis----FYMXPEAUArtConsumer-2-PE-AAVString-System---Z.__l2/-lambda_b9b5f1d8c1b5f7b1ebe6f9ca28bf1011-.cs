@@ -1,0 +1,11 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Firaxis.CivTech.AssetObjects._003FA0x424d5b7e._003FAddLibraryIfUnique_0040_003FA0x424d5b7e_0040AssetObjects_0040CivTech_0040Firaxis_0040_0040_0024_0024FYMXPEAUArtConsumer_00402_0040PE_0024AAVString_0040System_0040_0040_0040Z.__l2;
+
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _003Clambda_b9b5f1d8c1b5f7b1ebe6f9ca28bf1011_003E
+{
+	private long _003Calignment_0020member_003E;
+}

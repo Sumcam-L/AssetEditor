@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="UtilityTools.Views.PreviewerKnobSetView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:View="clr-namespace:UtilityTools.Views" xmlns:ViewModel="clr-namespace:UtilityTools.ViewModels">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <DataTemplate x:Key="ButtonKnobContentTemplate">
+        <View:ButtonKnobView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+      </DataTemplate>
+      <DataTemplate x:Key="ParameterKnobContentTemplate">
+        <View:ParameterKnobView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+      </DataTemplate>
+      <DataTemplate x:Key="KnobGroupContentTemplate">
+        <View:PreviewerKnobGroupView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+      </DataTemplate>
+      <DataTemplate x:Key="StringListPreviewerKnobContentTemplate">
+        <View:StringListPreviewerKnobView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+      </DataTemplate>
+      <View:PreviewerKnobSetItemTemplateSelector x:Key="PreviewerKnobSetItemTemplateSelector" ButtonKnobContentTemplate="{StaticResource ButtonKnobContentTemplate}" ParameterKnobContentTemplate="{StaticResource ParameterKnobContentTemplate}" KnobGroupContentTemplate="{StaticResource KnobGroupContentTemplate}" StringListPreviewerKnobContentTemplate="{StaticResource StringListPreviewerKnobContentTemplate}" />
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <DockPanel LastChildFill="True">
+    <Expander DockPanel.Dock="Top" IsExpanded="True">
+      <HeaderedContentControl.Header>
+        <Label Name="topLabel" FontSize="14" FontWeight="Bold" BorderThickness="1" BorderBrush="#FF808080" Margin="0 2 0 0" Padding="2" Content="{Binding Title}" />
+      </HeaderedContentControl.Header>
+      <ContentControl.Content>
+        <Border Name="subgroupBorder" BorderBrush="#FFA9A9A9" BorderThickness="2">
+          <ItemsControl Name="previewerKnobs" ItemTemplateSelector="{StaticResource PreviewerKnobSetItemTemplateSelector}" ItemsSource="{Binding PreviewerKnobs}" />
+        </Border>
+      </ContentControl.Content>
+    </Expander>
+  </DockPanel>
+</UserControl>

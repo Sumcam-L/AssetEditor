@@ -1,0 +1,11 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace std;
+
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _Tree_const_iterator_003Cstd_003A_003A_Tree_val_003Cstd_003A_003A_Tree_simple_types_003Cstd_003A_003Apair_003Cstd_003A_003Abasic_string_003Cwchar_t_002Cstd_003A_003Achar_traits_003Cwchar_t_003E_002Cstd_003A_003Aallocator_003Cwchar_t_003E_0020_003E_0020const_0020_002Cunsigned_0020long_003E_0020_003E_0020_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}

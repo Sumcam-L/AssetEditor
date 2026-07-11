@@ -1,0 +1,35 @@
+namespace ScintillaNET;
+
+public enum Lexer
+{
+	Container = 0,
+	Null = 1,
+	Ada = 20,
+	Asm = 34,
+	Batch = 12,
+	Cpp = 3,
+	Css = 38,
+	Fortran = 36,
+	FreeBasic = 75,
+	Html = 4,
+	Json = 120,
+	Lisp = 21,
+	Lua = 15,
+	Pascal = 18,
+	Perl = 6,
+	PhpScript = 69,
+	PowerShell = 88,
+	Properties = 9,
+	PureBasic = 67,
+	Python = 2,
+	Ruby = 22,
+	Smalltalk = 72,
+	Sql = 7,
+	Vb = 8,
+	VbScript = 28,
+	Verilog = 56,
+	Xml = 5,
+	BlitzBasic = 66,
+	Markdown = 98,
+	R = 86
+}

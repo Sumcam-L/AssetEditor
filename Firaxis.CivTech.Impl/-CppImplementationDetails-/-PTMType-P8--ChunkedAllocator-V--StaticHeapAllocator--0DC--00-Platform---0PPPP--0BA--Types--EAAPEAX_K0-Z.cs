@@ -1,0 +1,10 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace _003CCppImplementationDetails_003E;
+
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _0024PTMType_0024P8_003F_0024ChunkedAllocator_0040V_003F_0024StaticHeapAllocator_0040_00240DC_0040_002400_0040Platform_0040_0040_00240PPPP_0040_00240BA_0040_0040Types_0040_0040EAAPEAX_K0_0040Z
+{
+}

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<c:CommonDialog x:Class="Sce.Atf.Wpf.Controls.ConfirmationDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:c="clr-namespace:Sce.Atf.Wpf.Controls" xmlns:l="clr-namespace:Sce.Atf.Wpf" xmlns:vc="clr-namespace:Sce.Atf.Wpf.ValueConverters" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="Height" WindowStartupLocation="CenterOwner" Width="400" FocusManager.FocusedElement="{Binding ElementName=yesButton}">
+  <StackPanel>
+    <TextBlock Margin="0,0,0,12" TextWrapping="Wrap" Text="{Binding Message}" />
+    <DockPanel LastChildFill="False">
+      <Button DockPanel.Dock="Right" IsCancel="True" Style="{StaticResource {x:Static l:Resources.DialogButtonStyleKey}}" Command="{Binding CancelCommand}" Visibility="{Binding HideCancelButton, Converter={vc:InverseBoolToVisibilityConverter}}">
+        <TextBlock Text="{Binding CancelButtonText}" />
+      </Button>
+      <Button DockPanel.Dock="Right" Style="{StaticResource {x:Static l:Resources.DialogButtonStyleKey}}" Command="{Binding NoCommand}">
+        <TextBlock Text="{Binding NoButtonText}" />
+      </Button>
+      <Button Name="yesButton" DockPanel.Dock="Right" IsDefault="True" Style="{StaticResource {x:Static l:Resources.DialogButtonStyleKey}}" Command="{Binding OkCommand}">
+        <TextBlock Text="{Binding YesButtonText}" />
+      </Button>
+    </DockPanel>
+  </StackPanel>
+</c:CommonDialog>

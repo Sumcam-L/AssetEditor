@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="ArtDef"
+  xmlns="ArtDef"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:ft="FieldTypes">
+
+  <xs:import namespace="FieldTypes" schemaLocation="../Fields/FieldTypes.xsd" />
+
+  <xs:complexType name="ArtDefElementType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Fields" minOccurs="0" maxOccurs="unbounded" type="ft:FieldValueType" />
+      <xs:element name="Collections" minOccurs="0" maxOccurs="unbounded" type="ArtDefCollectionType" />
+      <xs:element name="AppendMergedParameterCollections" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ArtDefCollectionType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+	    <xs:element name="Description" type="xs:string"/>
+      <xs:element name="ReplaceMergedCollectionElements" type="xs:boolean"/>
+      <xs:element name="Elements" minOccurs="0" maxOccurs="unbounded" type="ArtDefElementType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ArtDefType">
+    <xs:sequence>
+      <xs:element name="Template" type="xs:string"/>
+	  <xs:element name="Description" type="xs:string"/>
+      <xs:element name="RootCollection" minOccurs="0" maxOccurs="unbounded" type="ArtDefCollectionType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="ArtDef" type="ArtDefType"/>
+
+</xs:schema>

@@ -1,0 +1,14 @@
+using System;
+
+namespace IronPython.Runtime;
+
+[Flags]
+public enum CompileFlags
+{
+	CO_NESTED = 0x10,
+	CO_DONT_IMPLY_DEDENT = 0x200,
+	CO_GENERATOR_ALLOWED = 0x1000,
+	CO_FUTURE_DIVISION = 0x2000,
+	CO_FUTURE_ABSOLUTE_IMPORT = 0x4000,
+	CO_FUTURE_WITH_STATEMENT = 0x8000
+}

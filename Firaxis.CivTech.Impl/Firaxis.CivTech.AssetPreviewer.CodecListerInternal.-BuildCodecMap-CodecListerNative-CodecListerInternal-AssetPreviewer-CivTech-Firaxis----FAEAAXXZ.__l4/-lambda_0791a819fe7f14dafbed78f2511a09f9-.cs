@@ -1,0 +1,11 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Firaxis.CivTech.AssetPreviewer.CodecListerInternal._003FBuildCodecMap_0040CodecListerNative_0040CodecListerInternal_0040AssetPreviewer_0040CivTech_0040Firaxis_0040_0040_0024_0024FAEAAXXZ.__l4;
+
+[StructLayout(LayoutKind.Sequential, Size = 16)]
+[NativeCppClass]
+internal struct _003Clambda_0791a819fe7f14dafbed78f2511a09f9_003E
+{
+	private long _003Calignment_0020member_003E;
+}

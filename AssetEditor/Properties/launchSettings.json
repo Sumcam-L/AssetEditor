@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "配置文件 1": {
+      "commandName": "Executable",
+      "executablePath": "E:\\SteamLibrary\\steamapps\\common\\Sid Meier's Civilization VI SDK\\AssetModTools\\AssetEditor\\AssetEditor.exe",
+      "commandLineArgs": "\"E:\\SteamLibrary\\steamapps\\common\\Sid Meier's Civilization VI SDK\\AssetModTools\\Cooker\" \"WuwaCore\" \"E:\\Sumcam\\Documents\\Firaxis ModBuddy\\Civilization VI\\WuwaCore\\WuwaCore\" \"Expansion2\" \"E:\\SteamLibrary\\steamapps\\common\\Sid Meier's Civilization VI SDK Assets\\Civ6\\DLC\\Expansion2\\pantry\" \"Shared\" \"E:\\SteamLibrary\\steamapps\\common\\Sid Meier's Civilization VI SDK Assets\\Civ6\\DLC\\Shared\\pantry\" \"Civ6\" \"E:\\SteamLibrary\\steamapps\\common\\Sid Meier's Civilization VI SDK Assets\\Civ6\\pantry\" ",
+      "workingDirectory": "E:\\SteamLibrary\\steamapps\\common\\Sid Meier's Civilization VI SDK\\ModBuddy\\"
+    }
+  }
+}

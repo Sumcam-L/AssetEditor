@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="UtilityTools.Views.AssetSlotView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:UtilConverters="clr-namespace:Firaxis.Utility.Converters;assembly=Firaxis.Utility" xmlns:views="clr-namespace:UtilityTools.Views;assembly=UtilityTools">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
+      <UtilConverters:InverseBooleanConverter x:Key="inverseBoolConverter" />
+      <UtilConverters:InverseBoolToVis x:Key="inverseBoolToVis" />
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <DockPanel LastChildFill="True" IsEnabled="{Binding IsPrimarySlot, Converter={StaticResource inverseBoolConverter}}">
+    <TextBlock Text="Slot ID: " DockPanel.Dock="Left" FontWeight="SemiBold" />
+    <TextBlock Name="slotID" DockPanel.Dock="Left" Margin="1 0 0 0" FontWeight="SemiBold" Text="{Binding SlotID}" />
+    <Button Name="clearAssetButton" Content="X" DockPanel.Dock="Right" Command="{Binding ClearAssetCommand}" IsEnabled="{Binding IsClearable}" />
+    <Button Name="assetSelectorButton" Content="Browse" DockPanel.Dock="Right" Command="{Binding BrowseForAssetCommand}" Visibility="{Binding IsLightRig, Converter={StaticResource inverseBoolToVis}}" />
+    <ComboBox Name="lightRigSelector" DockPanel.Dock="Right" Margin="5 0 0 0" ItemsSource="{Binding AvailableLightRigs}" SelectedIndex="{Binding SelectedLightRigIndex}" Visibility="{Binding IsLightRig, Converter={StaticResource BoolToVis}}" />
+    <TextBlock Name="selectedAsset" DockPanel.Dock="Left" Margin="5 0 5 0" FontStyle="Italic" Foreground="#FFD3D3D3" Text="{Binding SelectedAsset}" Visibility="{Binding IsLightRig, Converter={StaticResource inverseBoolToVis}}" />
+  </DockPanel>
+</UserControl>

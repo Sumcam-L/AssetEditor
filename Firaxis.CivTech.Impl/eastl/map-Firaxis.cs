@@ -1,0 +1,17 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace eastl;
+
+[StructLayout(LayoutKind.Sequential, Size = 48)]
+[NativeCppClass]
+internal struct map_003CFiraxis_003A_003ACivTech_003A_003AAssetObjects_003A_003ADDTNode_002Cvoid_0020_002A_002Ceastl_003A_003Aless_003CFiraxis_003A_003ACivTech_003A_003AAssetObjects_003A_003ADDTNode_003E_002CTypes_003A_003AEASTL_Allocator_003C19_002C0_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 48)]
+[NativeCppClass]
+internal struct map_003CFiraxis_003A_003ACivTech_003A_003AAssetObjects_003A_003ADDTGraphNode_002Cvoid_0020_002A_002Ceastl_003A_003Aless_003CFiraxis_003A_003ACivTech_003A_003AAssetObjects_003A_003ADDTGraphNode_003E_002CTypes_003A_003AEASTL_Allocator_003C19_002C0_003E_0020_003E
+{
+	private long _003Calignment_0020member_003E;
+}

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="UtilityTools.Views.KnobViews.FunctionKnobView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:knobviews="clr-namespace:UtilityTools.Views.KnobViews;assembly=UtilityTools">
+  <DockPanel>
+    <Button Name="functionButton" Content="{Binding Label}" Command="{Binding ExecuteFunctionCommand}" ToolTip="{Binding ToolTip}" />
+  </DockPanel>
+</UserControl>

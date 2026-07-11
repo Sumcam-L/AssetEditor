@@ -1,0 +1,17 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Types;
+
+[StructLayout(LayoutKind.Sequential, Size = 32)]
+[NativeCppClass]
+internal struct BlockAllocator_003CFiraxis_003A_003ACivTech_003A_003AAssetPreviewer_003A_003AKnobDatabase_003A_003AKnobGroup_002C4096_002CPlatform_003A_003AStaticHeapAllocator_003C23_002C0_003E_002C8_003E
+{
+	private long _003Calignment_0020member_003E;
+}
+[StructLayout(LayoutKind.Sequential, Size = 32)]
+[NativeCppClass]
+internal struct BlockAllocator_003CFiraxis_003A_003ACivTech_003A_003AAssetPreviewer_003A_003AKnobDatabase_003A_003AKnobRecord_002C4096_002CPlatform_003A_003AStaticHeapAllocator_003C23_002C0_003E_002C8_003E
+{
+	private long _003Calignment_0020member_003E;
+}

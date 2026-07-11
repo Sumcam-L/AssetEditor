@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>ScintillaNET</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <UseWindowsForms>True</UseWindowsForms>
+    <TargetFramework>net462</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="ScintillaNET.x64.SciLexer.dll.gz" />
+    <None Remove="ScintillaNET.x86.SciLexer.dll.gz" />
+    <None Remove="ScintillaNET.x64.License.txt" />
+    <None Remove="ScintillaNET.x64.version.txt" />
+    <None Remove="ScintillaNET.x86.License.txt" />
+    <None Remove="ScintillaNET.x86.version.txt" />
+    <None Remove="ScintillaNET.x64.SciLexer.dll" />
+    <None Remove="ScintillaNET.x86.SciLexer.dll" />
+    <None Remove="ScintillaNET.x64.SciLexer.pdb" />
+    <None Remove="ScintillaNET.x86.SciLexer.pdb" />
+    <None Remove="ScintillaNET.x64.SciLexer.exp" />
+    <None Remove="ScintillaNET.x86.SciLexer.exp" />
+    <None Remove="ScintillaNET.x64.SciLexer.lib" />
+    <None Remove="ScintillaNET.x86.SciLexer.lib" />
+    <EmbeddedResource Include="ScintillaNET.x64.SciLexer.dll.gz" LogicalName="ScintillaNET.x64.SciLexer.dll.gz" />
+    <EmbeddedResource Include="ScintillaNET.x86.SciLexer.dll.gz" LogicalName="ScintillaNET.x86.SciLexer.dll.gz" />
+    <EmbeddedResource Include="ScintillaNET.x64.License.txt" LogicalName="ScintillaNET.x64.License.txt" />
+    <EmbeddedResource Include="ScintillaNET.x64.version.txt" LogicalName="ScintillaNET.x64.version.txt" />
+    <EmbeddedResource Include="ScintillaNET.x86.License.txt" LogicalName="ScintillaNET.x86.License.txt" />
+    <EmbeddedResource Include="ScintillaNET.x86.version.txt" LogicalName="ScintillaNET.x86.version.txt" />
+    <EmbeddedResource Include="ScintillaNET.x64.SciLexer.dll" LogicalName="ScintillaNET.x64.SciLexer.dll" />
+    <EmbeddedResource Include="ScintillaNET.x86.SciLexer.dll" LogicalName="ScintillaNET.x86.SciLexer.dll" />
+    <EmbeddedResource Include="ScintillaNET.x64.SciLexer.pdb" LogicalName="ScintillaNET.x64.SciLexer.pdb" />
+    <EmbeddedResource Include="ScintillaNET.x86.SciLexer.pdb" LogicalName="ScintillaNET.x86.SciLexer.pdb" />
+    <EmbeddedResource Include="ScintillaNET.x64.SciLexer.exp" LogicalName="ScintillaNET.x64.SciLexer.exp" />
+    <EmbeddedResource Include="ScintillaNET.x86.SciLexer.exp" LogicalName="ScintillaNET.x86.SciLexer.exp" />
+    <EmbeddedResource Include="ScintillaNET.x64.SciLexer.lib" LogicalName="ScintillaNET.x64.SciLexer.lib" />
+    <EmbeddedResource Include="ScintillaNET.x86.SciLexer.lib" LogicalName="ScintillaNET.x86.SciLexer.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;E:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\&quot;" />
+  </Target>
+</Project>

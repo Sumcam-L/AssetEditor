@@ -1,0 +1,11 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Firaxis.CivTech.CookerInterface._003FA0x4bcd4891._003FFixupArtSpecificationFiles_0040_003FA0x4bcd4891_0040CookerInterface_0040CivTech_0040Firaxis_0040_0040_0024_0024FYMXPEAVINewCookerOptions_0040AssetCookerHelpers_0040_0040PE_0024AAU_003F_0024ICollection_0040PE_0024AAVString_0040System_0040_0040_0040Generic_0040Collections_0040System_0040_0040_0040Z.__l2;
+
+[StructLayout(LayoutKind.Sequential, Size = 8)]
+[NativeCppClass]
+internal struct _003Clambda_55bc699df4439a00deba64415480e0f4_003E
+{
+	private long _003Calignment_0020member_003E;
+}

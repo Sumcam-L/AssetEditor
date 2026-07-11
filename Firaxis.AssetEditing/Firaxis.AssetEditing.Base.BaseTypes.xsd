@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+  targetNamespace="BaseTypes"
+  xmlns="BaseTypes"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="TextElementType">
+    <xs:sequence>
+      <xs:element name="Text" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DataFileType">
+    <xs:sequence>
+      <xs:element name="ID" type="xs:string" />
+      <xs:element name="RelativePath" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DataFilesType">
+    <xs:sequence>
+      <xs:element name="Element" minOccurs="0" maxOccurs="unbounded" type="DataFileType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TagsType">
+    <xs:sequence>
+      <xs:element name="Element" minOccurs="0" maxOccurs="unbounded" type="TextElementType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="GroupsType">
+    <xs:sequence>
+      <xs:element name="Element" minOccurs="0" maxOccurs="unbounded" type="TextElementType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PathValueType">
+    <xs:sequence>
+      <xs:element name="Path" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--<xs:complexType name="BaseTypeReferencerType">
+    <xs:sequence>
+      <xs:element name="Groups" type="GroupsType" />
+      <xs:element name="Tags" type="TagsType" />
+      <xs:element name="DataFiles" type="DataFilesType" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="BaseTypes" type="BaseTypeReferencerType"/>-->
+  
+</xs:schema>

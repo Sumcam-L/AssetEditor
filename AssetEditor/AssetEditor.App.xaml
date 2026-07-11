@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application x:Class="AssetEditor.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:asseteditor="clr-namespace:AssetEditor;assembly=AssetEditor" ShutdownMode="OnExplicitShutdown">
+  <Application.Resources>
+    <ResourceDictionary>
+      <sys:String x:Key="Dummy1">Dummy1</sys:String>
+      <sys:String x:Key="Dummy2">Dummy2</sys:String>
+    </ResourceDictionary>
+  </Application.Resources>
+</Application>

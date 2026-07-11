@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Atf.Gui</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>net462</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Sce.Atf.Resources.4WAY05.CUR" />
+    <None Remove="Sce.Atf.Resources.HO_SPLIT.CUR" />
+    <None Remove="Sce.Atf.Resources.VE_SPLIT.CUR" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.Panhv.cur" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.QuestionMark.cur" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.SelectionCursor.cur" />
+    <None Remove="Sce.Atf.Resources.SelectRow.cur" />
+    <None Remove="Sce.Atf.Resources.AlignBottoms16.png" />
+    <None Remove="Sce.Atf.Resources.AlignBottoms24.png" />
+    <None Remove="Sce.Atf.Resources.AlignBottoms32.png" />
+    <None Remove="Sce.Atf.Resources.AlignCenters16.png" />
+    <None Remove="Sce.Atf.Resources.AlignCenters24.png" />
+    <None Remove="Sce.Atf.Resources.AlignCenters32.png" />
+    <None Remove="Sce.Atf.Resources.AlignLefts16.png" />
+    <None Remove="Sce.Atf.Resources.AlignLefts24.png" />
+    <None Remove="Sce.Atf.Resources.AlignLefts32.png" />
+    <None Remove="Sce.Atf.Resources.AlignMiddles16.png" />
+    <None Remove="Sce.Atf.Resources.AlignMiddles24.png" />
+    <None Remove="Sce.Atf.Resources.AlignMiddles32.png" />
+    <None Remove="Sce.Atf.Resources.AlignRights16.png" />
+    <None Remove="Sce.Atf.Resources.AlignRights24.png" />
+    <None Remove="Sce.Atf.Resources.AlignRights32.png" />
+    <None Remove="Sce.Atf.Resources.AlignTops16.png" />
+    <None Remove="Sce.Atf.Resources.AlignTops24.png" />
+    <None Remove="Sce.Atf.Resources.AlignTops32.png" />
+    <None Remove="Sce.Atf.Resources.Alphabetical.png" />
+    <None Remove="Sce.Atf.Resources.ByCategory.png" />
+    <None Remove="Sce.Atf.Resources.Copy16.png" />
+    <None Remove="Sce.Atf.Resources.Copy24.png" />
+    <None Remove="Sce.Atf.Resources.Copy32.png" />
+    <None Remove="Sce.Atf.Resources.Cut16.png" />
+    <None Remove="Sce.Atf.Resources.Cut24.png" />
+    <None Remove="Sce.Atf.Resources.Cut32.png" />
+    <None Remove="Sce.Atf.Resources.Data16.png" />
+    <None Remove="Sce.Atf.Resources.Data24.png" />
+    <None Remove="Sce.Atf.Resources.Data32.png" />
+    <None Remove="Sce.Atf.Resources.Delete16.png" />
+    <None Remove="Sce.Atf.Resources.Delete24.png" />
+    <None Remove="Sce.Atf.Resources.Delete32.png" />
+    <None Remove="Sce.Atf.Resources.Document16.png" />
+    <None Remove="Sce.Atf.Resources.Document24.png" />
+    <None Remove="Sce.Atf.Resources.Document32.png" />
+    <None Remove="Sce.Atf.Resources.Find16.png" />
+    <None Remove="Sce.Atf.Resources.Find24.png" />
+    <None Remove="Sce.Atf.Resources.Find32.png" />
+    <None Remove="Sce.Atf.Resources.FitToSize16.png" />
+    <None Remove="Sce.Atf.Resources.FitToSize24.png" />
+    <None Remove="Sce.Atf.Resources.FitToSize32.png" />
+    <None Remove="Sce.Atf.Resources.Folder16.png" />
+    <None Remove="Sce.Atf.Resources.Folder24.png" />
+    <None Remove="Sce.Atf.Resources.Folder32.png" />
+    <None Remove="Sce.Atf.Resources.greenPlus13.png" />
+    <None Remove="Sce.Atf.Resources.Group16.png" />
+    <None Remove="Sce.Atf.Resources.Group24.png" />
+    <None Remove="Sce.Atf.Resources.Group32.png" />
+    <None Remove="Sce.Atf.Resources.Help16.png" />
+    <None Remove="Sce.Atf.Resources.Help24.png" />
+    <None Remove="Sce.Atf.Resources.Help32.png" />
+    <None Remove="Sce.Atf.Resources.lock13.png" />
+    <None Remove="Sce.Atf.Resources.Lock16.png" />
+    <None Remove="Sce.Atf.Resources.Lock24.png" />
+    <None Remove="Sce.Atf.Resources.Lock32.png" />
+    <None Remove="Sce.Atf.Resources.nav_left.png" />
+    <None Remove="Sce.Atf.Resources.nav_right.png" />
+    <None Remove="Sce.Atf.Resources.Paste16.png" />
+    <None Remove="Sce.Atf.Resources.Paste24.png" />
+    <None Remove="Sce.Atf.Resources.Paste32.png" />
+    <None Remove="Sce.Atf.Resources.Preferences16.png" />
+    <None Remove="Sce.Atf.Resources.Preferences24.png" />
+    <None Remove="Sce.Atf.Resources.Preferences32.png" />
+    <None Remove="Sce.Atf.Resources.redCheck13.png" />
+    <None Remove="Sce.Atf.Resources.Redo16.png" />
+    <None Remove="Sce.Atf.Resources.Redo24.png" />
+    <None Remove="Sce.Atf.Resources.Redo32.png" />
+    <None Remove="Sce.Atf.Resources.Save16.png" />
+    <None Remove="Sce.Atf.Resources.Save24.png" />
+    <None Remove="Sce.Atf.Resources.Save32.png" />
+    <None Remove="Sce.Atf.Resources.SaveAll16.png" />
+    <None Remove="Sce.Atf.Resources.SaveAll24.png" />
+    <None Remove="Sce.Atf.Resources.SaveAll32.png" />
+    <None Remove="Sce.Atf.Resources.SaveAs16.png" />
+    <None Remove="Sce.Atf.Resources.SaveAs24.png" />
+    <None Remove="Sce.Atf.Resources.SaveAs32.png" />
+    <None Remove="Sce.Atf.Resources.SCEA.png" />
+    <None Remove="Sce.Atf.Resources.Selection16.png" />
+    <None Remove="Sce.Atf.Resources.Selection24.png" />
+    <None Remove="Sce.Atf.Resources.Selection32.png" />
+    <None Remove="Sce.Atf.Resources.Undo16.png" />
+    <None Remove="Sce.Atf.Resources.Undo24.png" />
+    <None Remove="Sce.Atf.Resources.Undo32.png" />
+    <None Remove="Sce.Atf.Resources.Ungroup16.png" />
+    <None Remove="Sce.Atf.Resources.Ungroup24.png" />
+    <None Remove="Sce.Atf.Resources.Ungroup32.png" />
+    <None Remove="Sce.Atf.Resources.Unlock16.png" />
+    <None Remove="Sce.Atf.Resources.Unlock24.png" />
+    <None Remove="Sce.Atf.Resources.Unlock32.png" />
+    <None Remove="Sce.Atf.Resources.Unsorted.png" />
+    <None Remove="Sce.Atf.Resources.ZoomIn16.png" />
+    <None Remove="Sce.Atf.Resources.ZoomIn24.png" />
+    <None Remove="Sce.Atf.Resources.ZoomIn32.png" />
+    <None Remove="Sce.Atf.Resources.ZoomOut16.png" />
+    <None Remove="Sce.Atf.Resources.ZoomOut24.png" />
+    <None Remove="Sce.Atf.Resources.ZoomOut32.png" />
+    <None Remove="Sce.Atf.Resources.add.png" />
+    <None Remove="Sce.Atf.Resources.arrow_down_blue.png" />
+    <None Remove="Sce.Atf.Resources.arrow_up_blue.png" />
+    <None Remove="Sce.Atf.Resources.cube_molecule.png" />
+    <None Remove="Sce.Atf.Resources.cube_molecule_new.png" />
+    <None Remove="Sce.Atf.Resources.delete.png" />
+    <None Remove="Sce.Atf.Resources.document_add.png" />
+    <None Remove="Sce.Atf.Resources.document_check.png" />
+    <None Remove="Sce.Atf.Resources.document_into.png" />
+    <None Remove="Sce.Atf.Resources.document_lock.png" />
+    <None Remove="Sce.Atf.Resources.document_refresh.png" />
+    <None Remove="Sce.Atf.Resources.document_revert.png" />
+    <None Remove="Sce.Atf.Resources.document_warning.png" />
+    <None Remove="Sce.Atf.Resources.dom_interface.png" />
+    <None Remove="Sce.Atf.Resources.factory.png" />
+    <None Remove="Sce.Atf.Resources.layer.png" />
+    <None Remove="Sce.Atf.Resources.package.png" />
+    <None Remove="Sce.Atf.Resources.prefabFolder.png" />
+    <None Remove="Sce.Atf.Resources.SubDocument16.png" />
+    <None Remove="Sce.Atf.Resources.SubDocument24.png" />
+    <None Remove="Sce.Atf.Resources.SubDocument32.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.AddKeysTool.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.BreakTangents.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.ClampedTangents.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.CurveSnap.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.CycleAfter.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.CycleAfterwithOffset.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.CycleBefore.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.CycleBeforewithOffset.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.Denormalize-curves.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.FlatTangents.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.FrameAll.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.FreeTangentWeight.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.InsertKeysTool.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.LinearTangents.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.LockTangent-Weight.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.MoveKeysTool.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.MoveNearestPickedKeyTool.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.NoAction.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.Normalizecurves.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.PlateauTangents.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.PointSnap.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.ScaleKeysTool.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.SplineTangents.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.StepTangents.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.TimeSnap.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.UnifyTangents.png" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.ValueSnap.png" />
+    <None Remove="Sce.Atf.Resources.printer16.png" />
+    <None Remove="Sce.Atf.Resources.printer24.png" />
+    <None Remove="Sce.Atf.Resources.printer32.png" />
+    <None Remove="Sce.Atf.Resources.printer_preferences16.png" />
+    <None Remove="Sce.Atf.Resources.printer_preferences24.png" />
+    <None Remove="Sce.Atf.Resources.printer_preferences32.png" />
+    <None Remove="Sce.Atf.Resources.printer_view16.png" />
+    <None Remove="Sce.Atf.Resources.printer_view24.png" />
+    <None Remove="Sce.Atf.Resources.printer_view32.png" />
+    <None Remove="Sce.Atf.Resources.HideSelection16.png" />
+    <None Remove="Sce.Atf.Resources.HideSelection24.png" />
+    <None Remove="Sce.Atf.Resources.HideSelection32.png" />
+    <None Remove="Sce.Atf.Resources.Isolate16.png" />
+    <None Remove="Sce.Atf.Resources.Isolate24.png" />
+    <None Remove="Sce.Atf.Resources.Isolate32.png" />
+    <None Remove="Sce.Atf.Resources.ShowAll16.png" />
+    <None Remove="Sce.Atf.Resources.ShowAll24.png" />
+    <None Remove="Sce.Atf.Resources.ShowAll32.png" />
+    <None Remove="Sce.Atf.Resources.ShowSelection16.png" />
+    <None Remove="Sce.Atf.Resources.ShowSelection24.png" />
+    <None Remove="Sce.Atf.Resources.ShowSelection32.png" />
+    <None Remove="Sce.Atf.Resources.reference.png" />
+    <None Remove="Sce.Atf.Resources.referenceNull.png" />
+    <None Remove="Sce.Atf.Resources.referenceOverride.png" />
+    <None Remove="Sce.Atf.Resources.resource.png" />
+    <None Remove="Sce.Atf.Resources.resourceFolder.png" />
+    <None Remove="Sce.Atf.Resources.diskdrive16.png" />
+    <None Remove="Sce.Atf.Resources.diskdrive24.png" />
+    <None Remove="Sce.Atf.Resources.diskdrive32.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_connect.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_enable.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_reconcile.png" />
+    <None Remove="Sce.Atf.Resources.sort_ascending.png" />
+    <None Remove="Sce.Atf.Resources.sort_descending.png" />
+    <None Remove="Sce.Atf.Resources.checked_items.png" />
+    <None Remove="Sce.Atf.Resources.ui_locked16x16.png" />
+    <None Remove="Sce.Atf.Resources.ui_locked24x24.png" />
+    <None Remove="Sce.Atf.Resources.ui_locked32x32.png" />
+    <None Remove="Sce.Atf.Resources.ui_unlocked16x16.png" />
+    <None Remove="Sce.Atf.Resources.ui_unlocked24x24.png" />
+    <None Remove="Sce.Atf.Resources.ui_unlocked32x32.png" />
+    <None Remove="Sce.Atf.Resources.edit_locked16x16.png" />
+    <None Remove="Sce.Atf.Resources.edit_locked24x24.png" />
+    <None Remove="Sce.Atf.Resources.edit_locked32x32.png" />
+    <None Remove="Sce.Atf.Resources.edit_unlocked16x16.png" />
+    <None Remove="Sce.Atf.Resources.edit_unlocked24x24.png" />
+    <None Remove="Sce.Atf.Resources.edit_unlocked32x32.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_add.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_checkin.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_checkout.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_disable.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_getLatest.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_refresh.png" />
+    <None Remove="Sce.Atf.Resources.sourceControl_revert.png" />
+    <None Remove="Sce.Atf.Resources.component16.png" />
+    <None Remove="Sce.Atf.Resources.component24.png" />
+    <None Remove="Sce.Atf.Resources.component32.png" />
+    <None Remove="Sce.Atf.Resources.components.png" />
+    <None Remove="Sce.Atf.Resources.pin_green16.png" />
+    <None Remove="Sce.Atf.Resources.pin_green24.png" />
+    <None Remove="Sce.Atf.Resources.pin_green32.png" />
+    <None Remove="Sce.Atf.Resources.pin_grey16.png" />
+    <None Remove="Sce.Atf.Resources.pin_grey24.png" />
+    <None Remove="Sce.Atf.Resources.pin_grey32.png" />
+    <None Remove="Sce.Atf.Resources.document_unknown.png" />
+    <None Remove="Sce.Atf.Resources.unknown13.png" />
+    <None Remove="Sce.Atf.Resources.folderClosedReference16.png" />
+    <None Remove="Sce.Atf.Resources.folderOpenReference16.png" />
+    <None Remove="Sce.Atf.Resources.Reset16.png" />
+    <None Remove="Sce.Atf.Resources.AtfLogo.png" />
+    <None Remove="Sce.Atf.Resources.package_error.png" />
+    <None Remove="Sce.Atf.Resources.colpkg.png" />
+    <None Remove="Sce.Atf.Resources.elemdot.png" />
+    <None Remove="Sce.Atf.Resources.gear_preferences.ico" />
+    <None Remove="Sce.Atf.Resources.warning.ico" />
+    <None Remove="Sce.Atf.Resources.search.ico" />
+    <None Remove="Sce.Atf.Resources.Computer.ico" />
+    <None Remove="Sce.Atf.Resources.Folder.ico" />
+    <None Remove="Sce.Atf.Resources.filter.ico" />
+    <None Remove="Sce.Atf.Resources.AtfIcon.ico" />
+    <None Remove="Sce.Atf.Resources.Thumbs.db" />
+    <None Remove="Sce.Atf.Controls.CurveEditing.Resources.QuickHelp.txt" />
+    <None Remove="Sce.Atf.Resources.ja.Localization.xml" />
+    <EmbeddedResource Include="Sce.Atf.Resources.4WAY05.CUR" LogicalName="Sce.Atf.Resources.4WAY05.CUR" />
+    <EmbeddedResource Include="Sce.Atf.Resources.HO_SPLIT.CUR" LogicalName="Sce.Atf.Resources.HO_SPLIT.CUR" />
+    <EmbeddedResource Include="Sce.Atf.Resources.VE_SPLIT.CUR" LogicalName="Sce.Atf.Resources.VE_SPLIT.CUR" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.Panhv.cur" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.Panhv.cur" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.QuestionMark.cur" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.QuestionMark.cur" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.SelectionCursor.cur" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.SelectionCursor.cur" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SelectRow.cur" LogicalName="Sce.Atf.Resources.SelectRow.cur" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignBottoms16.png" LogicalName="Sce.Atf.Resources.AlignBottoms16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignBottoms24.png" LogicalName="Sce.Atf.Resources.AlignBottoms24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignBottoms32.png" LogicalName="Sce.Atf.Resources.AlignBottoms32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignCenters16.png" LogicalName="Sce.Atf.Resources.AlignCenters16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignCenters24.png" LogicalName="Sce.Atf.Resources.AlignCenters24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignCenters32.png" LogicalName="Sce.Atf.Resources.AlignCenters32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignLefts16.png" LogicalName="Sce.Atf.Resources.AlignLefts16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignLefts24.png" LogicalName="Sce.Atf.Resources.AlignLefts24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignLefts32.png" LogicalName="Sce.Atf.Resources.AlignLefts32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignMiddles16.png" LogicalName="Sce.Atf.Resources.AlignMiddles16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignMiddles24.png" LogicalName="Sce.Atf.Resources.AlignMiddles24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignMiddles32.png" LogicalName="Sce.Atf.Resources.AlignMiddles32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignRights16.png" LogicalName="Sce.Atf.Resources.AlignRights16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignRights24.png" LogicalName="Sce.Atf.Resources.AlignRights24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignRights32.png" LogicalName="Sce.Atf.Resources.AlignRights32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignTops16.png" LogicalName="Sce.Atf.Resources.AlignTops16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignTops24.png" LogicalName="Sce.Atf.Resources.AlignTops24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AlignTops32.png" LogicalName="Sce.Atf.Resources.AlignTops32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Alphabetical.png" LogicalName="Sce.Atf.Resources.Alphabetical.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ByCategory.png" LogicalName="Sce.Atf.Resources.ByCategory.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Copy16.png" LogicalName="Sce.Atf.Resources.Copy16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Copy24.png" LogicalName="Sce.Atf.Resources.Copy24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Copy32.png" LogicalName="Sce.Atf.Resources.Copy32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Cut16.png" LogicalName="Sce.Atf.Resources.Cut16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Cut24.png" LogicalName="Sce.Atf.Resources.Cut24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Cut32.png" LogicalName="Sce.Atf.Resources.Cut32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Data16.png" LogicalName="Sce.Atf.Resources.Data16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Data24.png" LogicalName="Sce.Atf.Resources.Data24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Data32.png" LogicalName="Sce.Atf.Resources.Data32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Delete16.png" LogicalName="Sce.Atf.Resources.Delete16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Delete24.png" LogicalName="Sce.Atf.Resources.Delete24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Delete32.png" LogicalName="Sce.Atf.Resources.Delete32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Document16.png" LogicalName="Sce.Atf.Resources.Document16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Document24.png" LogicalName="Sce.Atf.Resources.Document24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Document32.png" LogicalName="Sce.Atf.Resources.Document32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Find16.png" LogicalName="Sce.Atf.Resources.Find16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Find24.png" LogicalName="Sce.Atf.Resources.Find24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Find32.png" LogicalName="Sce.Atf.Resources.Find32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.FitToSize16.png" LogicalName="Sce.Atf.Resources.FitToSize16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.FitToSize24.png" LogicalName="Sce.Atf.Resources.FitToSize24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.FitToSize32.png" LogicalName="Sce.Atf.Resources.FitToSize32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Folder16.png" LogicalName="Sce.Atf.Resources.Folder16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Folder24.png" LogicalName="Sce.Atf.Resources.Folder24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Folder32.png" LogicalName="Sce.Atf.Resources.Folder32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.greenPlus13.png" LogicalName="Sce.Atf.Resources.greenPlus13.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Group16.png" LogicalName="Sce.Atf.Resources.Group16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Group24.png" LogicalName="Sce.Atf.Resources.Group24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Group32.png" LogicalName="Sce.Atf.Resources.Group32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Help16.png" LogicalName="Sce.Atf.Resources.Help16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Help24.png" LogicalName="Sce.Atf.Resources.Help24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Help32.png" LogicalName="Sce.Atf.Resources.Help32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.lock13.png" LogicalName="Sce.Atf.Resources.lock13.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Lock16.png" LogicalName="Sce.Atf.Resources.Lock16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Lock24.png" LogicalName="Sce.Atf.Resources.Lock24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Lock32.png" LogicalName="Sce.Atf.Resources.Lock32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.nav_left.png" LogicalName="Sce.Atf.Resources.nav_left.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.nav_right.png" LogicalName="Sce.Atf.Resources.nav_right.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Paste16.png" LogicalName="Sce.Atf.Resources.Paste16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Paste24.png" LogicalName="Sce.Atf.Resources.Paste24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Paste32.png" LogicalName="Sce.Atf.Resources.Paste32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Preferences16.png" LogicalName="Sce.Atf.Resources.Preferences16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Preferences24.png" LogicalName="Sce.Atf.Resources.Preferences24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Preferences32.png" LogicalName="Sce.Atf.Resources.Preferences32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.redCheck13.png" LogicalName="Sce.Atf.Resources.redCheck13.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Redo16.png" LogicalName="Sce.Atf.Resources.Redo16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Redo24.png" LogicalName="Sce.Atf.Resources.Redo24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Redo32.png" LogicalName="Sce.Atf.Resources.Redo32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Save16.png" LogicalName="Sce.Atf.Resources.Save16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Save24.png" LogicalName="Sce.Atf.Resources.Save24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Save32.png" LogicalName="Sce.Atf.Resources.Save32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SaveAll16.png" LogicalName="Sce.Atf.Resources.SaveAll16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SaveAll24.png" LogicalName="Sce.Atf.Resources.SaveAll24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SaveAll32.png" LogicalName="Sce.Atf.Resources.SaveAll32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SaveAs16.png" LogicalName="Sce.Atf.Resources.SaveAs16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SaveAs24.png" LogicalName="Sce.Atf.Resources.SaveAs24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SaveAs32.png" LogicalName="Sce.Atf.Resources.SaveAs32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SCEA.png" LogicalName="Sce.Atf.Resources.SCEA.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Selection16.png" LogicalName="Sce.Atf.Resources.Selection16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Selection24.png" LogicalName="Sce.Atf.Resources.Selection24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Selection32.png" LogicalName="Sce.Atf.Resources.Selection32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Undo16.png" LogicalName="Sce.Atf.Resources.Undo16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Undo24.png" LogicalName="Sce.Atf.Resources.Undo24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Undo32.png" LogicalName="Sce.Atf.Resources.Undo32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Ungroup16.png" LogicalName="Sce.Atf.Resources.Ungroup16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Ungroup24.png" LogicalName="Sce.Atf.Resources.Ungroup24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Ungroup32.png" LogicalName="Sce.Atf.Resources.Ungroup32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Unlock16.png" LogicalName="Sce.Atf.Resources.Unlock16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Unlock24.png" LogicalName="Sce.Atf.Resources.Unlock24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Unlock32.png" LogicalName="Sce.Atf.Resources.Unlock32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Unsorted.png" LogicalName="Sce.Atf.Resources.Unsorted.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ZoomIn16.png" LogicalName="Sce.Atf.Resources.ZoomIn16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ZoomIn24.png" LogicalName="Sce.Atf.Resources.ZoomIn24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ZoomIn32.png" LogicalName="Sce.Atf.Resources.ZoomIn32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ZoomOut16.png" LogicalName="Sce.Atf.Resources.ZoomOut16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ZoomOut24.png" LogicalName="Sce.Atf.Resources.ZoomOut24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ZoomOut32.png" LogicalName="Sce.Atf.Resources.ZoomOut32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.add.png" LogicalName="Sce.Atf.Resources.add.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.arrow_down_blue.png" LogicalName="Sce.Atf.Resources.arrow_down_blue.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.arrow_up_blue.png" LogicalName="Sce.Atf.Resources.arrow_up_blue.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.cube_molecule.png" LogicalName="Sce.Atf.Resources.cube_molecule.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.cube_molecule_new.png" LogicalName="Sce.Atf.Resources.cube_molecule_new.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.delete.png" LogicalName="Sce.Atf.Resources.delete.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.document_add.png" LogicalName="Sce.Atf.Resources.document_add.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.document_check.png" LogicalName="Sce.Atf.Resources.document_check.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.document_into.png" LogicalName="Sce.Atf.Resources.document_into.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.document_lock.png" LogicalName="Sce.Atf.Resources.document_lock.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.document_refresh.png" LogicalName="Sce.Atf.Resources.document_refresh.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.document_revert.png" LogicalName="Sce.Atf.Resources.document_revert.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.document_warning.png" LogicalName="Sce.Atf.Resources.document_warning.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.dom_interface.png" LogicalName="Sce.Atf.Resources.dom_interface.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.factory.png" LogicalName="Sce.Atf.Resources.factory.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.layer.png" LogicalName="Sce.Atf.Resources.layer.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.package.png" LogicalName="Sce.Atf.Resources.package.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.prefabFolder.png" LogicalName="Sce.Atf.Resources.prefabFolder.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SubDocument16.png" LogicalName="Sce.Atf.Resources.SubDocument16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SubDocument24.png" LogicalName="Sce.Atf.Resources.SubDocument24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.SubDocument32.png" LogicalName="Sce.Atf.Resources.SubDocument32.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.AddKeysTool.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.AddKeysTool.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.BreakTangents.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.BreakTangents.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.ClampedTangents.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.ClampedTangents.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.CurveSnap.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.CurveSnap.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.CycleAfter.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.CycleAfter.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.CycleAfterwithOffset.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.CycleAfterwithOffset.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.CycleBefore.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.CycleBefore.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.CycleBeforewithOffset.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.CycleBeforewithOffset.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.Denormalize-curves.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.Denormalize-curves.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.FlatTangents.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.FlatTangents.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.FrameAll.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.FrameAll.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.FreeTangentWeight.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.FreeTangentWeight.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.InsertKeysTool.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.InsertKeysTool.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.LinearTangents.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.LinearTangents.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.LockTangent-Weight.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.LockTangent-Weight.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.MoveKeysTool.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.MoveKeysTool.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.MoveNearestPickedKeyTool.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.MoveNearestPickedKeyTool.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.NoAction.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.NoAction.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.Normalizecurves.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.Normalizecurves.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.PlateauTangents.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.PlateauTangents.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.PointSnap.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.PointSnap.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.ScaleKeysTool.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.ScaleKeysTool.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.SplineTangents.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.SplineTangents.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.StepTangents.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.StepTangents.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.TimeSnap.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.TimeSnap.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.UnifyTangents.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.UnifyTangents.png" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.ValueSnap.png" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.ValueSnap.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer16.png" LogicalName="Sce.Atf.Resources.printer16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer24.png" LogicalName="Sce.Atf.Resources.printer24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer32.png" LogicalName="Sce.Atf.Resources.printer32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer_preferences16.png" LogicalName="Sce.Atf.Resources.printer_preferences16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer_preferences24.png" LogicalName="Sce.Atf.Resources.printer_preferences24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer_preferences32.png" LogicalName="Sce.Atf.Resources.printer_preferences32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer_view16.png" LogicalName="Sce.Atf.Resources.printer_view16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer_view24.png" LogicalName="Sce.Atf.Resources.printer_view24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.printer_view32.png" LogicalName="Sce.Atf.Resources.printer_view32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.HideSelection16.png" LogicalName="Sce.Atf.Resources.HideSelection16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.HideSelection24.png" LogicalName="Sce.Atf.Resources.HideSelection24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.HideSelection32.png" LogicalName="Sce.Atf.Resources.HideSelection32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Isolate16.png" LogicalName="Sce.Atf.Resources.Isolate16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Isolate24.png" LogicalName="Sce.Atf.Resources.Isolate24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Isolate32.png" LogicalName="Sce.Atf.Resources.Isolate32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ShowAll16.png" LogicalName="Sce.Atf.Resources.ShowAll16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ShowAll24.png" LogicalName="Sce.Atf.Resources.ShowAll24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ShowAll32.png" LogicalName="Sce.Atf.Resources.ShowAll32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ShowSelection16.png" LogicalName="Sce.Atf.Resources.ShowSelection16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ShowSelection24.png" LogicalName="Sce.Atf.Resources.ShowSelection24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ShowSelection32.png" LogicalName="Sce.Atf.Resources.ShowSelection32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.reference.png" LogicalName="Sce.Atf.Resources.reference.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.referenceNull.png" LogicalName="Sce.Atf.Resources.referenceNull.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.referenceOverride.png" LogicalName="Sce.Atf.Resources.referenceOverride.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.resource.png" LogicalName="Sce.Atf.Resources.resource.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.resourceFolder.png" LogicalName="Sce.Atf.Resources.resourceFolder.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.diskdrive16.png" LogicalName="Sce.Atf.Resources.diskdrive16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.diskdrive24.png" LogicalName="Sce.Atf.Resources.diskdrive24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.diskdrive32.png" LogicalName="Sce.Atf.Resources.diskdrive32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_connect.png" LogicalName="Sce.Atf.Resources.sourceControl_connect.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_enable.png" LogicalName="Sce.Atf.Resources.sourceControl_enable.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_reconcile.png" LogicalName="Sce.Atf.Resources.sourceControl_reconcile.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sort_ascending.png" LogicalName="Sce.Atf.Resources.sort_ascending.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sort_descending.png" LogicalName="Sce.Atf.Resources.sort_descending.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.checked_items.png" LogicalName="Sce.Atf.Resources.checked_items.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ui_locked16x16.png" LogicalName="Sce.Atf.Resources.ui_locked16x16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ui_locked24x24.png" LogicalName="Sce.Atf.Resources.ui_locked24x24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ui_locked32x32.png" LogicalName="Sce.Atf.Resources.ui_locked32x32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ui_unlocked16x16.png" LogicalName="Sce.Atf.Resources.ui_unlocked16x16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ui_unlocked24x24.png" LogicalName="Sce.Atf.Resources.ui_unlocked24x24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ui_unlocked32x32.png" LogicalName="Sce.Atf.Resources.ui_unlocked32x32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.edit_locked16x16.png" LogicalName="Sce.Atf.Resources.edit_locked16x16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.edit_locked24x24.png" LogicalName="Sce.Atf.Resources.edit_locked24x24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.edit_locked32x32.png" LogicalName="Sce.Atf.Resources.edit_locked32x32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.edit_unlocked16x16.png" LogicalName="Sce.Atf.Resources.edit_unlocked16x16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.edit_unlocked24x24.png" LogicalName="Sce.Atf.Resources.edit_unlocked24x24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.edit_unlocked32x32.png" LogicalName="Sce.Atf.Resources.edit_unlocked32x32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_add.png" LogicalName="Sce.Atf.Resources.sourceControl_add.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_checkin.png" LogicalName="Sce.Atf.Resources.sourceControl_checkin.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_checkout.png" LogicalName="Sce.Atf.Resources.sourceControl_checkout.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_disable.png" LogicalName="Sce.Atf.Resources.sourceControl_disable.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_getLatest.png" LogicalName="Sce.Atf.Resources.sourceControl_getLatest.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_refresh.png" LogicalName="Sce.Atf.Resources.sourceControl_refresh.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.sourceControl_revert.png" LogicalName="Sce.Atf.Resources.sourceControl_revert.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.component16.png" LogicalName="Sce.Atf.Resources.component16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.component24.png" LogicalName="Sce.Atf.Resources.component24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.component32.png" LogicalName="Sce.Atf.Resources.component32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.components.png" LogicalName="Sce.Atf.Resources.components.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.pin_green16.png" LogicalName="Sce.Atf.Resources.pin_green16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.pin_green24.png" LogicalName="Sce.Atf.Resources.pin_green24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.pin_green32.png" LogicalName="Sce.Atf.Resources.pin_green32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.pin_grey16.png" LogicalName="Sce.Atf.Resources.pin_grey16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.pin_grey24.png" LogicalName="Sce.Atf.Resources.pin_grey24.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.pin_grey32.png" LogicalName="Sce.Atf.Resources.pin_grey32.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.document_unknown.png" LogicalName="Sce.Atf.Resources.document_unknown.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.unknown13.png" LogicalName="Sce.Atf.Resources.unknown13.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.folderClosedReference16.png" LogicalName="Sce.Atf.Resources.folderClosedReference16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.folderOpenReference16.png" LogicalName="Sce.Atf.Resources.folderOpenReference16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Reset16.png" LogicalName="Sce.Atf.Resources.Reset16.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AtfLogo.png" LogicalName="Sce.Atf.Resources.AtfLogo.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.package_error.png" LogicalName="Sce.Atf.Resources.package_error.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.colpkg.png" LogicalName="Sce.Atf.Resources.colpkg.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.elemdot.png" LogicalName="Sce.Atf.Resources.elemdot.png" />
+    <EmbeddedResource Include="Sce.Atf.Resources.gear_preferences.ico" LogicalName="Sce.Atf.Resources.gear_preferences.ico" />
+    <EmbeddedResource Include="Sce.Atf.Resources.warning.ico" LogicalName="Sce.Atf.Resources.warning.ico" />
+    <EmbeddedResource Include="Sce.Atf.Resources.search.ico" LogicalName="Sce.Atf.Resources.search.ico" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Computer.ico" LogicalName="Sce.Atf.Resources.Computer.ico" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Folder.ico" LogicalName="Sce.Atf.Resources.Folder.ico" />
+    <EmbeddedResource Include="Sce.Atf.Resources.filter.ico" LogicalName="Sce.Atf.Resources.filter.ico" />
+    <EmbeddedResource Include="Sce.Atf.Resources.AtfIcon.ico" LogicalName="Sce.Atf.Resources.AtfIcon.ico" />
+    <EmbeddedResource Include="Sce.Atf.Resources.Thumbs.db" LogicalName="Sce.Atf.Resources.Thumbs.db" />
+    <EmbeddedResource Include="Sce.Atf.Controls.CurveEditing.Resources.QuickHelp.txt" LogicalName="Sce.Atf.Controls.CurveEditing.Resources.QuickHelp.txt" />
+    <EmbeddedResource Include="Sce.Atf.Resources.ja.Localization.xml" LogicalName="Sce.Atf.Resources.ja.Localization.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Design" />
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web.Services" />
+    <ProjectReference Include="..\Atf.Core\Atf.Core.csproj" />
+    <ProjectReference Include="..\Bespoke.Common.Osc\Bespoke.Common.Osc.csproj" />
+    <ProjectReference Include="..\Bespoke.Common\Bespoke.Common.csproj" />
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;E:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\&quot;" />
+  </Target>
+</Project>

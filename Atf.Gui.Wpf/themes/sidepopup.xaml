@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:Sce.Atf.Wpf.Docking">
+  <Style x:Key="{x:Type local:SidePopup}" TargetType="{x:Type local:SidePopup}">
+    <Setter Property="UIElement.SnapsToDevicePixels" Value="True" />
+    <Setter Property="Background" Value="#00FFFFFF" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:SidePopup}">
+          <Grid Name="PART_Grid">
+            <StackPanel Name="ItemsPanel" IsItemsHost="True" Orientation="{TemplateBinding local:SidePopup.Orientation}" />
+            <local:ResizablePopup x:Name="PART_Popup" PopupAnimation="Scroll" StaysOpen="True" AllowsTransparency="True" Background="{TemplateBinding local:SidePopup.ThumbBrush}" BorderBrush="{TemplateBinding Control.BorderBrush}" PlacementTarget="{Binding ItemsPanel}" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

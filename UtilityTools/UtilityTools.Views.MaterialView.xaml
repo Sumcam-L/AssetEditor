@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="UtilityTools.Views.MaterialView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:UtilViews="clr-namespace:UtilityTools.Views" xmlns:UtilViewModels="clr-namespace:UtilityTools.ViewModels">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <DataTemplate x:Key="ParameterSetContentTemplate">
+        <UtilViews:ParameterSetView VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+      </DataTemplate>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <Grid Background="{StaticResource GrayBackgroundBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="400" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <GridSplitter ResizeDirection="Columns" Grid.Column="0" Width="5" Height="Auto" HorizontalAlignment="Right" ResizeBehavior="CurrentAndNext" Background="{StaticResource DarkGrayBrush}" />
+    <ScrollViewer Grid.Column="0" Margin="0 0 5 0" VerticalScrollBarVisibility="Auto">
+      <StackPanel HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Top">
+        <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+          <Label Content="Class:" Style="{StaticResource BaseLabelStyle}" />
+          <ComboBox Margin="10 0" ItemsSource="{Binding AvailableMaterialClasses}" SelectedValue="{Binding MaterialClass}" />
+        </DockPanel>
+        <StackPanel Visibility="{Binding HasMaterialClass, Converter={StaticResource BoolToVis}}">
+          <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+            <Label Content="Name:" Style="{StaticResource BaseLabelStyle}" />
+            <TextBox Margin="10 0" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+          </DockPanel>
+          <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+            <Label Content="Tags:" Style="{StaticResource BaseLabelStyle}" />
+            <Label Content="{Binding TagsAsString}" />
+          </DockPanel>
+          <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+            <Button Content="Add Tag" DockPanel.Dock="Right" Command="{Binding AddTagCommand}" />
+            <TextBox Name="TagTextBox" Text="{Binding TagToAdd}" />
+          </DockPanel>
+          <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+            <Expander Background="{StaticResource ExpanderBackgroundBrush}" Foreground="{StaticResource WhiteTextBrush}" Margin="0 6 0 0" IsExpanded="True">
+              <HeaderedContentControl.Header>
+                <TextBlock FontWeight="Bold" Text="Parameters:" />
+              </HeaderedContentControl.Header>
+              <ContentControl.Content>
+                <UtilViews:ParameterSetView ContentTemplate="{StaticResource ParameterSetContentTemplate}" Content="{Binding ParametersViewModel}" />
+              </ContentControl.Content>
+            </Expander>
+          </DockPanel>
+        </StackPanel>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <AssemblyName>Firaxis.AssetEditing</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <UseWindowsForms>True</UseWindowsForms>
+    <TargetFramework>net462</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Firaxis.AssetEditing.ArtDef.ArtDef.xsd" />
+    <None Remove="Firaxis.AssetEditing.Base.BaseTypes.xsd" />
+    <None Remove="Firaxis.AssetEditing.Entities.Entities.xsd" />
+    <None Remove="Firaxis.AssetEditing.Fields.FieldTypes.xsd" />
+    <None Remove="Firaxis.AssetEditing.FireFX.FireFXLibrary.xsd" />
+    <None Remove="Firaxis.AssetEditing.GameArtSpecification.GameArtSpecification.xsd" />
+    <None Remove="Firaxis.AssetEditing.XLP.XLP.xsd" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddClass16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddClass24.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddClass48.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddExisting16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddExisting24.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddExisting32.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddExisting48.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddNew16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddNew24.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddNew32.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AddNew48.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.BindAttachments.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ClearMaterials16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.DeleteClass16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.DeleteClass24.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.DeleteClass48.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.DuplicateClass16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.DuplicateClass24.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.DuplicateClass48.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.FillMaterials16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ObjectAdd16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ObjectClear16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ObjectNew16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ObjectOpen16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ObjectReImport16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.PreviewSource16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ReloadProject16.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ReloadProject32.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.ReloadProject48.png" />
+    <None Remove="Firaxis.AssetEditing.Resources.AssetCommands.AddItem.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.AssetCommands.FixReferences.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.AssetCommands.ImportExisting.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.AssetCommands.OpenSource.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.AssetCommands.Reimport.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.AssetCommands.RemoveItem.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Animations.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Attachments.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Base.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Behavior.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Camera.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.CookParameters.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Geometry.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.HUD.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Lighting.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Particles.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Category.Spline.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.EditCommands.Copy.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.EditCommands.Cut.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.EditCommands.Delete.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.EditCommands.Paste.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.EditCommands.Redo.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.EditCommands.Undo.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileCommands.NewFile.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileCommands.OpenArtDef.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileCommands.OpenEntity.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileCommands.OpenXLP.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileCommands.Save.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileCommands.SaveAll.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.AnalyticLight.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.Animation.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.ArtDef.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.Asset.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.Behavior.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.EnvironmentMap.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.FireFX.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.Geometry.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.LightRig.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.Material.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.ParticleEffect.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.Texture.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FileTypes.XLP.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.FireFX.Compile.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.General.ChevronClosed.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.General.ChevronClosedHover.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.General.ChevronOpen.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.General.ChevronOpenHover.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Misc.ArrowDown.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Misc.ArrowUp.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.AddTimeline.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.AddTrack.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.AddTrigger.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.CollapseAll.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.CollapseAllButThis.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.DeleteTrack.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.ExpandAll.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.ExpandAllWithTriggers.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.GotoEnd.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.GotoStart.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.LoopPlayback.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.PasteAtTime.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.PausePlayback.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.StartPlayback.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.StepBackward.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.StepForward.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Timeline.StopPlayback.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.UICommands.LockUI.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.UICommands.UnlockUI.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Widgets.Move.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Widgets.None.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Widgets.Rotate.ico" />
+    <None Remove="Firaxis.AssetEditing.Resources.Widgets.Scale.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.ArtDef.ArtDef.xsd" LogicalName="Firaxis.AssetEditing.ArtDef.ArtDef.xsd" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Base.BaseTypes.xsd" LogicalName="Firaxis.AssetEditing.Base.BaseTypes.xsd" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Entities.Entities.xsd" LogicalName="Firaxis.AssetEditing.Entities.Entities.xsd" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Fields.FieldTypes.xsd" LogicalName="Firaxis.AssetEditing.Fields.FieldTypes.xsd" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.FireFX.FireFXLibrary.xsd" LogicalName="Firaxis.AssetEditing.FireFX.FireFXLibrary.xsd" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.GameArtSpecification.GameArtSpecification.xsd" LogicalName="Firaxis.AssetEditing.GameArtSpecification.GameArtSpecification.xsd" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.XLP.XLP.xsd" LogicalName="Firaxis.AssetEditing.XLP.XLP.xsd" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddClass16.png" LogicalName="Firaxis.AssetEditing.Resources.AddClass16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddClass24.png" LogicalName="Firaxis.AssetEditing.Resources.AddClass24.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddClass48.png" LogicalName="Firaxis.AssetEditing.Resources.AddClass48.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddExisting16.png" LogicalName="Firaxis.AssetEditing.Resources.AddExisting16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddExisting24.png" LogicalName="Firaxis.AssetEditing.Resources.AddExisting24.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddExisting32.png" LogicalName="Firaxis.AssetEditing.Resources.AddExisting32.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddExisting48.png" LogicalName="Firaxis.AssetEditing.Resources.AddExisting48.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddNew16.png" LogicalName="Firaxis.AssetEditing.Resources.AddNew16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddNew24.png" LogicalName="Firaxis.AssetEditing.Resources.AddNew24.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddNew32.png" LogicalName="Firaxis.AssetEditing.Resources.AddNew32.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AddNew48.png" LogicalName="Firaxis.AssetEditing.Resources.AddNew48.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.BindAttachments.png" LogicalName="Firaxis.AssetEditing.Resources.BindAttachments.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ClearMaterials16.png" LogicalName="Firaxis.AssetEditing.Resources.ClearMaterials16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.DeleteClass16.png" LogicalName="Firaxis.AssetEditing.Resources.DeleteClass16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.DeleteClass24.png" LogicalName="Firaxis.AssetEditing.Resources.DeleteClass24.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.DeleteClass48.png" LogicalName="Firaxis.AssetEditing.Resources.DeleteClass48.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.DuplicateClass16.png" LogicalName="Firaxis.AssetEditing.Resources.DuplicateClass16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.DuplicateClass24.png" LogicalName="Firaxis.AssetEditing.Resources.DuplicateClass24.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.DuplicateClass48.png" LogicalName="Firaxis.AssetEditing.Resources.DuplicateClass48.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FillMaterials16.png" LogicalName="Firaxis.AssetEditing.Resources.FillMaterials16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ObjectAdd16.png" LogicalName="Firaxis.AssetEditing.Resources.ObjectAdd16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ObjectClear16.png" LogicalName="Firaxis.AssetEditing.Resources.ObjectClear16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ObjectNew16.png" LogicalName="Firaxis.AssetEditing.Resources.ObjectNew16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ObjectOpen16.png" LogicalName="Firaxis.AssetEditing.Resources.ObjectOpen16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ObjectReImport16.png" LogicalName="Firaxis.AssetEditing.Resources.ObjectReImport16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.PreviewSource16.png" LogicalName="Firaxis.AssetEditing.Resources.PreviewSource16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ReloadProject16.png" LogicalName="Firaxis.AssetEditing.Resources.ReloadProject16.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ReloadProject32.png" LogicalName="Firaxis.AssetEditing.Resources.ReloadProject32.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.ReloadProject48.png" LogicalName="Firaxis.AssetEditing.Resources.ReloadProject48.png" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AssetCommands.AddItem.ico" LogicalName="Firaxis.AssetEditing.Resources.AssetCommands.AddItem.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AssetCommands.FixReferences.ico" LogicalName="Firaxis.AssetEditing.Resources.AssetCommands.FixReferences.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AssetCommands.ImportExisting.ico" LogicalName="Firaxis.AssetEditing.Resources.AssetCommands.ImportExisting.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AssetCommands.OpenSource.ico" LogicalName="Firaxis.AssetEditing.Resources.AssetCommands.OpenSource.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AssetCommands.Reimport.ico" LogicalName="Firaxis.AssetEditing.Resources.AssetCommands.Reimport.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.AssetCommands.RemoveItem.ico" LogicalName="Firaxis.AssetEditing.Resources.AssetCommands.RemoveItem.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Animations.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Animations.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Attachments.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Attachments.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Base.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Base.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Behavior.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Behavior.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Camera.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Camera.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.CookParameters.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.CookParameters.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Geometry.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Geometry.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.HUD.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.HUD.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Lighting.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Lighting.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Particles.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Particles.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Category.Spline.ico" LogicalName="Firaxis.AssetEditing.Resources.Category.Spline.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.EditCommands.Copy.ico" LogicalName="Firaxis.AssetEditing.Resources.EditCommands.Copy.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.EditCommands.Cut.ico" LogicalName="Firaxis.AssetEditing.Resources.EditCommands.Cut.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.EditCommands.Delete.ico" LogicalName="Firaxis.AssetEditing.Resources.EditCommands.Delete.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.EditCommands.Paste.ico" LogicalName="Firaxis.AssetEditing.Resources.EditCommands.Paste.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.EditCommands.Redo.ico" LogicalName="Firaxis.AssetEditing.Resources.EditCommands.Redo.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.EditCommands.Undo.ico" LogicalName="Firaxis.AssetEditing.Resources.EditCommands.Undo.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileCommands.NewFile.ico" LogicalName="Firaxis.AssetEditing.Resources.FileCommands.NewFile.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileCommands.OpenArtDef.ico" LogicalName="Firaxis.AssetEditing.Resources.FileCommands.OpenArtDef.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileCommands.OpenEntity.ico" LogicalName="Firaxis.AssetEditing.Resources.FileCommands.OpenEntity.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileCommands.OpenXLP.ico" LogicalName="Firaxis.AssetEditing.Resources.FileCommands.OpenXLP.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileCommands.Save.ico" LogicalName="Firaxis.AssetEditing.Resources.FileCommands.Save.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileCommands.SaveAll.ico" LogicalName="Firaxis.AssetEditing.Resources.FileCommands.SaveAll.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.AnalyticLight.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.AnalyticLight.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.Animation.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.Animation.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.ArtDef.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.ArtDef.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.Asset.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.Asset.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.Behavior.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.Behavior.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.EnvironmentMap.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.EnvironmentMap.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.FireFX.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.FireFX.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.Geometry.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.Geometry.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.LightRig.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.LightRig.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.Material.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.Material.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.ParticleEffect.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.ParticleEffect.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.Texture.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.Texture.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FileTypes.XLP.ico" LogicalName="Firaxis.AssetEditing.Resources.FileTypes.XLP.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.FireFX.Compile.ico" LogicalName="Firaxis.AssetEditing.Resources.FireFX.Compile.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.General.ChevronClosed.ico" LogicalName="Firaxis.AssetEditing.Resources.General.ChevronClosed.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.General.ChevronClosedHover.ico" LogicalName="Firaxis.AssetEditing.Resources.General.ChevronClosedHover.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.General.ChevronOpen.ico" LogicalName="Firaxis.AssetEditing.Resources.General.ChevronOpen.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.General.ChevronOpenHover.ico" LogicalName="Firaxis.AssetEditing.Resources.General.ChevronOpenHover.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Misc.ArrowDown.ico" LogicalName="Firaxis.AssetEditing.Resources.Misc.ArrowDown.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Misc.ArrowUp.ico" LogicalName="Firaxis.AssetEditing.Resources.Misc.ArrowUp.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.AddTimeline.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.AddTimeline.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.AddTrack.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.AddTrack.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.AddTrigger.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.AddTrigger.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.CollapseAll.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.CollapseAll.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.CollapseAllButThis.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.CollapseAllButThis.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.DeleteTrack.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.DeleteTrack.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.ExpandAll.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.ExpandAll.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.ExpandAllWithTriggers.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.ExpandAllWithTriggers.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.GotoEnd.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.GotoEnd.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.GotoStart.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.GotoStart.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.LoopPlayback.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.LoopPlayback.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.PasteAtTime.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.PasteAtTime.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.PausePlayback.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.PausePlayback.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.StartPlayback.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.StartPlayback.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.StepBackward.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.StepBackward.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.StepForward.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.StepForward.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Timeline.StopPlayback.ico" LogicalName="Firaxis.AssetEditing.Resources.Timeline.StopPlayback.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.UICommands.LockUI.ico" LogicalName="Firaxis.AssetEditing.Resources.UICommands.LockUI.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.UICommands.UnlockUI.ico" LogicalName="Firaxis.AssetEditing.Resources.UICommands.UnlockUI.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Widgets.Move.ico" LogicalName="Firaxis.AssetEditing.Resources.Widgets.Move.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Widgets.None.ico" LogicalName="Firaxis.AssetEditing.Resources.Widgets.None.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Widgets.Rotate.ico" LogicalName="Firaxis.AssetEditing.Resources.Widgets.Rotate.ico" />
+    <EmbeddedResource Include="Firaxis.AssetEditing.Resources.Widgets.Scale.ico" LogicalName="Firaxis.AssetEditing.Resources.Widgets.Scale.ico" />
+    
+</ItemGroup>
+  <ItemGroup>
+    <Reference Include="Firaxis.CivTech.Impl">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\Firaxis.CivTech.Impl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\..\..\..\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <ProjectReference Include="..\Firaxis.Reflection\Firaxis.Reflection.csproj" />
+    <ProjectReference Include="..\Firaxis.CivTech\Firaxis.CivTech.csproj" />
+    <ProjectReference Include="..\Atf.Core\Atf.Core.csproj" />
+    <ProjectReference Include="..\Firaxis.ATF\Firaxis.ATF.csproj" />
+    <ProjectReference Include="..\Atf.Gui\Atf.Gui.csproj" />
+    <ProjectReference Include="..\Atf.Gui.WinForms\Atf.Gui.WinForms.csproj" />
+    <ProjectReference Include="..\Firaxis.MVVMBase\Firaxis.MVVMBase.csproj" />
+    <ProjectReference Include="..\Firaxis.Asset\Firaxis.Asset.csproj" />
+    <ProjectReference Include="..\Firaxis.ContentExporters\Firaxis.ContentExporters.csproj" />
+    <ProjectReference Include="..\Firaxis.Utility\Firaxis.Utility.csproj" />
+    <ProjectReference Include="..\Firaxis.Error\Firaxis.Error.csproj" />
+    <ProjectReference Include="..\ScintillaNET\ScintillaNET.csproj" />
+    <ProjectReference Include="..\Firaxis.Controls\Firaxis.Controls.csproj" />
+    <ProjectReference Include="..\Firaxis.AssetBrowser\Firaxis.AssetBrowser.csproj" />
+    <ProjectReference Include="..\Firaxis.Collections\Firaxis.Collections.csproj" />
+    <ProjectReference Include="..\DatabaseWrapper\DatabaseWrapper.csproj" />
+    <ProjectReference Include="..\UtilityTools\UtilityTools.csproj" />
+    <ProjectReference Include="..\Firaxis.MathEx\Firaxis.MathEx.csproj" />
+    
+</ItemGroup>
+    <ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+  </ItemGroup>
+<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;E:\SteamLibrary\steamapps\common\Sid Meier's Civilization VI SDK\AssetModTools\AssetEditor\&quot;" />
+  </Target>
+</Project>
