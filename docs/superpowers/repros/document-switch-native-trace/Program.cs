@@ -61,6 +61,28 @@ internal static class Program
                 if (result != 0)
                     return result;
 
+                PaintTimingLog.Clear();
+                generation = DocumentSwitchTrace.Begin("generation-capture");
+                long replacementGeneration = 0;
+                Message paintMessage = Message.Create(panel.Handle, 0x000F, IntPtr.Zero, IntPtr.Zero);
+                DocumentSwitchTrace.Trace(
+                    panel,
+                    "logical",
+                    "before",
+                    ref paintMessage,
+                    () =>
+                    {
+                        replacementGeneration = DocumentSwitchTrace.Begin("replacement");
+                        return "doc=Test";
+                    },
+                    () => true);
+                DocumentSwitchTrace.End(replacementGeneration);
+                PaintTimingLog.Flush();
+
+                string generationEntry = NativeEntries(ReadLog()).Single();
+                if (!generationEntry.Contains("generation=" + generation + ","))
+                    return Fail("trace metadata did not retain the generation captured at entry");
+
                 IntPtr firstHandle = panel.Handle;
                 panel.RecreateHandleForTest();
                 Application.DoEvents();

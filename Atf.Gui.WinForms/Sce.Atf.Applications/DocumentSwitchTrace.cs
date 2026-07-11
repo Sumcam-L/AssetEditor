@@ -42,7 +42,8 @@ internal static class DocumentSwitchTrace
 		Func<string> context,
 		Func<bool> isActiveSurface)
 	{
-		if (Volatile.Read(ref s_activeGeneration) == 0 || !IsSelectedMessage(message.Msg))
+		long generation = Volatile.Read(ref s_activeGeneration);
+		if (generation == 0 || !IsSelectedMessage(message.Msg))
 			return;
 
 		try
@@ -51,15 +52,16 @@ internal static class DocumentSwitchTrace
 			if (message.Msg == WmWindowPositionChanging || message.Msg == WmWindowPositionChanged)
 				windowPosition = ", " + DecodeWindowPosition(message.LParam);
 
-			IntPtr parentHandle = control.Parent != null && control.Parent.IsHandleCreated
-				? control.Parent.Handle
+			Control parent = control.Parent;
+			IntPtr parentHandle = parent != null && parent.IsHandleCreated
+				? parent.Handle
 				: IntPtr.Zero;
 			string traceContext = context?.Invoke() ?? string.Empty;
 			bool active = isActiveSurface?.Invoke() ?? false;
 
 			PaintTimingLog.Write(
 				"NativeSwitchTrace generation={0}, role={1}, phase={2}, type={3}, message={4}, hwnd=0x{5:X}, parentHwnd=0x{6:X}, visible={7}, isHandleCreated={8}, backColor={9}, bounds={10}, clientRectangle={11}, {12}, active={13}{14}",
-				Volatile.Read(ref s_activeGeneration), role, phase, control.GetType().FullName,
+				generation, role, phase, control.GetType().FullName,
 				GetMessageName(message.Msg), message.HWnd.ToInt64(), parentHandle.ToInt64(), control.Visible,
 				control.IsHandleCreated, control.BackColor, control.Bounds, control.ClientRectangle,
 				traceContext, active, windowPosition);
@@ -146,7 +148,7 @@ internal static class DocumentSwitchTrace
 			control.HandleDestroyed += ControlHandleDestroyed;
 			control.Disposed += ControlDisposed;
 			if (control.IsHandleCreated)
-				AssignHandle(control.Handle);
+				AttachObservedHandle(control.Handle);
 		}
 
 		public void Dispose()
@@ -201,16 +203,9 @@ internal static class DocumentSwitchTrace
 
 		private void ControlHandleCreated(object sender, EventArgs e)
 		{
-			try
-			{
-				Control control = m_control;
-				if (control != null && control.IsHandleCreated)
-					AssignHandle(control.Handle);
-			}
-			catch
-			{
-				// Observer failures must not affect the target control lifecycle.
-			}
+			Control control = m_control;
+			if (control != null && control.IsHandleCreated)
+				AttachObservedHandle(control.Handle);
 		}
 
 		private void ControlHandleDestroyed(object sender, EventArgs e)
@@ -233,6 +228,32 @@ internal static class DocumentSwitchTrace
 			catch
 			{
 				// Observer failures must not affect the target control lifecycle.
+			}
+		}
+
+		private void AttachObservedHandle(IntPtr targetHandle)
+		{
+			try
+			{
+				if (Handle != IntPtr.Zero && Handle != targetHandle)
+					ReleaseHandle();
+				if (Handle == IntPtr.Zero)
+					AssignHandle(targetHandle);
+				if (Handle != targetHandle)
+					throw new InvalidOperationException("Native observer did not attach to the target HWND.");
+			}
+			catch (Exception ex)
+			{
+				try
+				{
+					PaintTimingLog.Write(
+						"NativeSwitchTrace observerAttachFailed role={0}, targetHwnd=0x{1:X}, observerHwnd=0x{2:X}, error={3}",
+						m_role, targetHandle.ToInt64(), Handle.ToInt64(), ex.GetType().FullName);
+				}
+				catch
+				{
+					// Observer failures must not affect the target control lifecycle.
+				}
 			}
 		}
 	}
