@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using Firaxis.ATF;
 using Firaxis.CivTech;
 using Firaxis.CivTech.AssetObjects;
@@ -43,6 +44,8 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 	private IPreviewerEntityLoadingService PreviewerEntityLoadingService { get; set; }
 
 	private IPreviewWindow ActiveWindow { get; set; }
+
+	private long m_previewActivateGeneration;
 
 	private ICivTechService CivTechService { get; set; }
 
@@ -182,12 +185,36 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 
 	private void DocumentRegistry_ActiveDocumentChanged(object sender, EventArgs e)
 	{
+		IDocument activeDocument = DocumentRegistry.ActiveDocument;
+		Control previewerControl = PreviewerControlHost?.PreviewerControl;
+		if (previewerControl != null && previewerControl.IsHandleCreated && !previewerControl.IsDisposed)
+		{
+			long generation = ++m_previewActivateGeneration;
+			previewerControl.BeginInvoke((Action)(() => ApplyActiveDocumentPreview(activeDocument, generation)));
+			PaintTimingLog.Write("Previewer: deferred activate scheduled generation={0}", generation);
+			return;
+		}
+		ApplyActiveDocumentPreview(activeDocument, 0);
+	}
+
+	private void ApplyActiveDocumentPreview(IDocument activeDocument, long generation)
+	{
+		if (generation != 0 && generation != m_previewActivateGeneration)
+		{
+			PaintTimingLog.Write("Previewer: skip stale activate generation={0}, current={1}", generation, m_previewActivateGeneration);
+			return;
+		}
 		var sw = Stopwatch.StartNew();
-		IPreviewableDocument previewDocumentOrSurrogate = GetPreviewDocumentOrSurrogate(DocumentRegistry.ActiveDocument);
+		IPreviewableDocument previewDocumentOrSurrogate = GetPreviewDocumentOrSurrogate(activeDocument);
 		long tGet = sw.ElapsedMilliseconds;
 		if (previewDocumentOrSurrogate != null)
 		{
-			IPreviewWindow wnd = PreviewWindows[previewDocumentOrSurrogate];
+			IPreviewWindow wnd;
+			if (!PreviewWindows.TryGetValue(previewDocumentOrSurrogate, out wnd) || wnd == null)
+			{
+				PaintTimingLog.Write("Previewer: missing window for deferred activate");
+				return;
+			}
 			ActivateDocumentPreview(previewDocumentOrSurrogate, wnd);
 			long tActivate = sw.ElapsedMilliseconds;
 			AnimationRecorderService?.SetActiveEntity(previewDocumentOrSurrogate.EntityAdapter.InstanceType, previewDocumentOrSurrogate.EntityAdapter.Name);
