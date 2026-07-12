@@ -13,6 +13,7 @@ internal sealed class DocumentHostControl : UserControl
         LogicalControl = logicalControl ?? throw new ArgumentNullException(nameof(logicalControl));
         Dock = DockStyle.Fill;
         Tag = logicalControl.Tag;
+		BackColor = logicalControl.BackColor;
 		SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
 		m_logicalControlObserver = DocumentSwitchTrace.Observe(
 			LogicalControl,
@@ -35,11 +36,7 @@ internal sealed class DocumentHostControl : UserControl
         bool hadHandle = LogicalControl.IsHandleCreated;
         var total = Stopwatch.StartNew();
         var phase = Stopwatch.StartNew();
-        LogicalControl.Visible = false;
-        long hide = phase.ElapsedMilliseconds;
-
-        phase.Restart();
-        if (LogicalControl.Parent != null)
+        if (LogicalControl.Parent != null && LogicalControl.Parent != this)
         {
             LogicalControl.Parent.Controls.Remove(LogicalControl);
         }
@@ -50,20 +47,25 @@ internal sealed class DocumentHostControl : UserControl
         long dock = phase.ElapsedMilliseconds;
 
         phase.Restart();
-        Controls.Add(LogicalControl);
-        long add = phase.ElapsedMilliseconds;
-
-        phase.Restart();
-        LogicalControl.Visible = true;
+        SuspendLayout();
+        try
+        {
+            if (!Controls.Contains(LogicalControl))
+            {
+                Controls.Add(LogicalControl);
+            }
+            LogicalControl.Visible = true;
+            LogicalControl.BringToFront();
+        }
+        finally
+        {
+            ResumeLayout(true);
+        }
         long show = phase.ElapsedMilliseconds;
-
-        phase.Restart();
-        LogicalControl.BringToFront();
-        long front = phase.ElapsedMilliseconds;
         total.Stop();
         PaintTimingLog.Write(
-            "DocumentHostAttach: control={0}, total={1}ms, hide={2}ms, remove={3}ms, dock={4}ms, add={5}ms, show={6}ms, front={7}ms, handle={8}->{9}",
-            LogicalControl.GetType().Name, total.ElapsedMilliseconds, hide, remove, dock, add, show, front, hadHandle, LogicalControl.IsHandleCreated);
+            "DocumentHostAttach: control={0}, total={1}ms, remove={2}ms, dock={3}ms, show={4}ms, handle={5}->{6}",
+            LogicalControl.GetType().Name, total.ElapsedMilliseconds, remove, dock, show, hadHandle, LogicalControl.IsHandleCreated);
         return true;
     }
 
@@ -74,8 +76,16 @@ internal sealed class DocumentHostControl : UserControl
             return;
         }
 
-        LogicalControl.Visible = false;
-        Controls.Remove(LogicalControl);
+        SuspendLayout();
+        try
+        {
+            LogicalControl.Visible = false;
+            Controls.Remove(LogicalControl);
+        }
+        finally
+        {
+            ResumeLayout(false);
+        }
     }
 
 	protected override void OnPaintBackground(PaintEventArgs e)

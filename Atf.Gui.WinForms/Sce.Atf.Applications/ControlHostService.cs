@@ -665,6 +665,7 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			}
 			dockContent.FormClosing -= dockContent_FormClosing;
 			NotifyControlHostUnregister(control);
+			PreAttachNextDocumentHost(dockContent);
 			DetachDocumentHostForUnregister(dockContent);
 			if (dockContent.Controls.Count > 0)
 			{
@@ -693,6 +694,7 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			}
 			dockContent.FormClosing -= dockContent_FormClosing;
 			NotifyControlHostUnregister(info.Control);
+			PreAttachNextDocumentHost(dockContent);
 			DetachDocumentHostForUnregister(dockContent);
 			if (dockContent.Controls.Count > 0)
 			{
@@ -1215,10 +1217,15 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 	private Control AttachDocumentHostIfNeeded(DockContent dockContent)
 	{
 		bool attachedLogicalControl;
-		return AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl);
+		return AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl, force: false);
 	}
 
 	private Control AttachDocumentHostIfNeeded(DockContent dockContent, out bool attachedLogicalControl)
+	{
+		return AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl, force: false);
+	}
+
+	private Control AttachDocumentHostIfNeeded(DockContent dockContent, out bool attachedLogicalControl, bool force)
 	{
 		attachedLogicalControl = false;
 		Control hostedControl = dockContent.Controls.Count > 0 ? dockContent.Controls[0] : null;
@@ -1239,26 +1246,29 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			return documentHost.LogicalControl;
 		}
 
-		DockContent panelActive = m_dockPanel.ActiveContent as DockContent;
-		if (panelActive != null
-			&& panelActive != dockContent
-			&& panelActive.DockState == DockState.Document
-			&& panelActive.Controls.Count > 0
-			&& GetDocumentHost(panelActive.Controls[0]) != null)
+		if (!force)
 		{
-			PaintTimingLog.Write(
-				"DocumentHostSwitch: skip-nonactive target={0}, panelActive={1}",
-				dockContent.Name, panelActive.Name);
-			return documentHost.LogicalControl;
-		}
+			DockContent panelActive = m_dockPanel.ActiveContent as DockContent;
+			if (panelActive != null
+				&& panelActive != dockContent
+				&& panelActive.DockState == DockState.Document
+				&& panelActive.Controls.Count > 0
+				&& GetDocumentHost(panelActive.Controls[0]) != null)
+			{
+				PaintTimingLog.Write(
+					"DocumentHostSwitch: skip-nonactive target={0}, panelActive={1}",
+					dockContent.Name, panelActive.Name);
+				return documentHost.LogicalControl;
+			}
 
-		if (m_documentHostAttachDepth > 0)
-		{
-			PaintTimingLog.Write(
-				"DocumentHostSwitch: reentrant-skip target={0}, active={1}",
-				documentHost.LogicalControl?.GetType().Name ?? "null",
-				activeDocumentHost?.LogicalControl?.GetType().Name ?? "null");
-			return documentHost.LogicalControl;
+			if (m_documentHostAttachDepth > 0)
+			{
+				PaintTimingLog.Write(
+					"DocumentHostSwitch: reentrant-skip target={0}, active={1}",
+					documentHost.LogicalControl?.GetType().Name ?? "null",
+					activeDocumentHost?.LogicalControl?.GetType().Name ?? "null");
+				return documentHost.LogicalControl;
+			}
 		}
 
 		m_documentHostAttachDepth++;
@@ -1379,6 +1389,7 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		{
 			if (IsCenterGroup(controlInfo.Group))
 			{
+				PreAttachNextDocumentHost(dockContent);
 				UnregisterControl(control);
 				if (m_activeDockContent == dockContent)
 				{
@@ -1431,6 +1442,75 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			m_activeClientControl = null;
 			FindControlInfo(control)?.Client.Deactivate(control);
 		}
+	}
+
+	private void PreAttachNextDocumentHost(DockContent closingContent)
+	{
+		if (closingContent == null || closingContent.DockState != DockState.Document)
+		{
+			return;
+		}
+		DockContent next = FindNextDocumentContent(closingContent);
+		if (next == null || next.Controls.Count <= 0)
+		{
+			return;
+		}
+		DocumentHostControl nextHost = GetDocumentHost(next.Controls[0]);
+		if (nextHost == null || nextHost.HasAttachedLogicalControl)
+		{
+			return;
+		}
+		var sw = Stopwatch.StartNew();
+		bool attachedLogicalControl;
+		AttachDocumentHostIfNeeded(next, out attachedLogicalControl, force: true);
+		if (attachedLogicalControl)
+		{
+			FlushDocumentPaint(next);
+		}
+		if (m_activeDockContent == closingContent)
+		{
+			m_activeDockContent = next;
+		}
+		PaintTimingLog.Write(
+			"PreAttachNextDocumentHost: next={0}, attached={1}, {2}ms",
+			next.Name, attachedLogicalControl, sw.ElapsedMilliseconds);
+	}
+
+	private DockContent FindNextDocumentContent(DockContent closingContent)
+	{
+		DockPane pane = closingContent.Pane;
+		if (pane != null)
+		{
+			IDockContent active = pane.ActiveContent;
+			if (active != null && active != closingContent && active is DockContent activeDoc
+				&& activeDoc.DockState == DockState.Document && !activeDoc.IsDisposed)
+			{
+				return activeDoc;
+			}
+			foreach (IDockContent content in pane.Contents)
+			{
+				if (content == closingContent || !(content is DockContent candidate))
+				{
+					continue;
+				}
+				if (candidate.DockState == DockState.Document && !candidate.IsDisposed && !candidate.IsHidden)
+				{
+					return candidate;
+				}
+			}
+		}
+		foreach (DockContent candidate in m_dockContent.Values)
+		{
+			if (candidate == closingContent || candidate.IsDisposed)
+			{
+				continue;
+			}
+			if (candidate.DockState == DockState.Document && !candidate.IsHidden)
+			{
+				return candidate;
+			}
+		}
+		return null;
 	}
 
 	private void DetachDocumentHostForUnregister(DockContent dockContent)
