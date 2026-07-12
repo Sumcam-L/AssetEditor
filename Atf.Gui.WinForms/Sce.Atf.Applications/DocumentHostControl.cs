@@ -13,6 +13,7 @@ internal sealed class DocumentHostControl : UserControl
         LogicalControl = logicalControl ?? throw new ArgumentNullException(nameof(logicalControl));
         Dock = DockStyle.Fill;
         Tag = logicalControl.Tag;
+		SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
 		m_logicalControlObserver = DocumentSwitchTrace.Observe(
 			LogicalControl,
 			"logical-control",
@@ -76,6 +77,15 @@ internal sealed class DocumentHostControl : UserControl
         LogicalControl.Visible = false;
         Controls.Remove(LogicalControl);
     }
+
+	protected override void OnPaintBackground(PaintEventArgs e)
+	{
+		if (HasAttachedLogicalControl && LogicalControl.Visible && LogicalControl.Bounds.Contains(ClientRectangle))
+		{
+			return;
+		}
+		base.OnPaintBackground(e);
+	}
 
 	protected override void WndProc(ref Message message)
 	{

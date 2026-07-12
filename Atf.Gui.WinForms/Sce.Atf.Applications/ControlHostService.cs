@@ -1046,6 +1046,12 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			var sw = Stopwatch.StartNew();
 			if (deferDocumentActivate)
 			{
+				bool attachedLogicalControl;
+				AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl);
+				if (attachedLogicalControl)
+				{
+					FlushDocumentPaint(dockContent);
+				}
 				long traceGeneration = m_documentSwitchTraceGeneration;
 				m_dockPanel.BeginInvoke((Action)(() => ActivateClientIfStillActive(dockContent, traceGeneration)));
 			}
@@ -1107,6 +1113,15 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		m_documentSwitchTraceGeneration = DocumentSwitchTrace.BeginOrReuse(
 			"outer-visible-before-active-change target=" + GetDocumentTraceIdentity(dockContent));
 		ObserveDocumentPane(dockContent.Pane);
+		if (dockContent.Controls.Count > 0)
+		{
+			bool attachedLogicalControl;
+			AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl);
+			if (attachedLogicalControl)
+			{
+				FlushDocumentPaint(dockContent);
+			}
+		}
 	}
 
 	private string GetDocumentTraceContext()
