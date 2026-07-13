@@ -322,7 +322,7 @@ public class SkinService : IInitializable, ISkinService
 		if (skinnedControls == null || skinnedControls.Add(obj))
 		{
 			Type type = obj.GetType();
-			if (control == null || (control.IsHandleCreated && !control.IsDisposed))
+			if (control == null || !control.IsDisposed)
 			{
 				SkinStyle skinStyle = FindBestSkinStyle(type, s_activeSkin.Styles);
 				if (skinStyle != null)
@@ -369,11 +369,22 @@ public class SkinService : IInitializable, ISkinService
 		{
 			return;
 		}
+		control.ControlAdded -= Control_ControlAdded;
+		control.ControlAdded += Control_ControlAdded;
 		foreach (Control control2 in control.Controls)
 		{
 			ApplyNewPropertyValues(control2, skinnedControls);
 		}
 		control.ResumeLayout();
+	}
+
+	private static void Control_ControlAdded(object sender, ControlEventArgs e)
+	{
+		if (s_activeSkin == null || e.Control == null || e.Control.IsDisposed)
+		{
+			return;
+		}
+		ApplyActiveSkin(e.Control, null);
 	}
 
 	private static SkinStyle FindBestSkinStyle(Type targetType, IList<SkinStyle> roots)

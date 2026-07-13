@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Sce.Atf.Applications;
@@ -52,6 +53,12 @@ internal sealed class DocumentHostControl : UserControl
         Controls.Add(LogicalControl);
         long add = phase.ElapsedMilliseconds;
 
+		Rectangle displayBounds = DisplayRectangle;
+		if (displayBounds.Width > 0 && displayBounds.Height > 0)
+		{
+			LogicalControl.Bounds = displayBounds;
+		}
+
         phase.Restart();
         LogicalControl.Visible = true;
         long show = phase.ElapsedMilliseconds;
@@ -61,8 +68,8 @@ internal sealed class DocumentHostControl : UserControl
         long front = phase.ElapsedMilliseconds;
         total.Stop();
         PaintTimingLog.Write(
-            "DocumentHostAttach: control={0}, total={1}ms, hide={2}ms, remove={3}ms, dock={4}ms, add={5}ms, show={6}ms, front={7}ms, handle={8}->{9}",
-            LogicalControl.GetType().Name, total.ElapsedMilliseconds, hide, remove, dock, add, show, front, hadHandle, LogicalControl.IsHandleCreated);
+            "DocumentHostAttach: control={0}, total={1}ms, hide={2}ms, remove={3}ms, dock={4}ms, add={5}ms, show={6}ms, front={7}ms, handle={8}->{9}, displayBounds={10}",
+            LogicalControl.GetType().Name, total.ElapsedMilliseconds, hide, remove, dock, add, show, front, hadHandle, LogicalControl.IsHandleCreated, displayBounds);
         return true;
     }
 
