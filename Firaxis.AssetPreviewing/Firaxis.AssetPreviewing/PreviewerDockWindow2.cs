@@ -156,6 +156,7 @@ public class PreviewerDockWindow2 : IInitializable, IControlHostClient, IPreview
 
 	public void Shutdown()
 	{
+		UiIdleCleanupQueue.Drain();
 		((IAudioPreviewer)this).Shutdown(true);
 		((IAssetPreviewer)this).Shutdown();
 	}

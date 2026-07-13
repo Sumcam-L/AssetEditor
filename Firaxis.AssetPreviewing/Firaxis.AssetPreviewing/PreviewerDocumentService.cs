@@ -47,6 +47,8 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 
 	private long m_previewActivateGeneration;
 
+	private bool m_shuttingDown;
+
 	private ICivTechService CivTechService { get; set; }
 
 	private IPreviewDisplay ActiveDisplay { get; set; }
@@ -71,6 +73,7 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 		PreviewerWidgetService = widgetSvc;
 		PreviewerEntityLoadingService = loaderSvc;
 		CivTechService = civTechSvc;
+		Application.ApplicationExit += Application_ApplicationExit;
 	}
 
 	public void ApplyWorkspaceChanges(IEnumerable<Uri> changedFiles)
@@ -129,6 +132,31 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 	private void QueuePreviewWindowClose(IPreviewWindow previewWindow)
 	{
 		UiIdleCleanupQueue.Enqueue("PreviewWindow", () => AssetPreviewer.CloseWindow(previewWindow));
+	}
+
+	private void Application_ApplicationExit(object sender, EventArgs e)
+	{
+		Shutdown();
+	}
+
+	private void Shutdown()
+	{
+		if (m_shuttingDown)
+		{
+			return;
+		}
+		m_shuttingDown = true;
+		Application.ApplicationExit -= Application_ApplicationExit;
+		m_previewActivateGeneration++;
+		UiIdleCleanupQueue.Drain();
+		foreach (KeyValuePair<IPreviewableDocument, IPreviewWindow> pair in PreviewWindows.ToArray())
+		{
+			ShutdownDocumentPreviewing(pair.Key, pair.Value);
+			AssetPreviewer.CloseWindow(pair.Value);
+			pair.Key.PreviewWindow = null;
+		}
+		PreviewWindows.Clear();
+		UiIdleCleanupQueue.Drain();
 	}
 
 	private bool CanPreserveActivePreviewControls(IPreviewableDocument closingDocument, IPreviewWindow closingWindow)

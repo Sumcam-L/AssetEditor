@@ -265,8 +265,6 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 
 	private readonly Dictionary<DockPane, DocumentHostControl> m_activeDocumentHostsByPane = new Dictionary<DockPane, DocumentHostControl>();
 
-	private int m_documentHostAttachDepth;
-
 	private readonly Dictionary<DockPane, IDisposable> m_documentPaneTraceObservers = new Dictionary<DockPane, IDisposable>();
 	private readonly IDisposable m_dockPanelTraceObserver;
 
@@ -665,7 +663,6 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			}
 			dockContent.FormClosing -= dockContent_FormClosing;
 			NotifyControlHostUnregister(control);
-			PreAttachNextDocumentHost(dockContent);
 			DetachDocumentHostForUnregister(dockContent);
 			if (dockContent.Controls.Count > 0)
 			{
@@ -694,7 +691,6 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			}
 			dockContent.FormClosing -= dockContent_FormClosing;
 			NotifyControlHostUnregister(info.Control);
-			PreAttachNextDocumentHost(dockContent);
 			DetachDocumentHostForUnregister(dockContent);
 			if (dockContent.Controls.Count > 0)
 			{
@@ -1050,12 +1046,6 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			var sw = Stopwatch.StartNew();
 			if (deferDocumentActivate)
 			{
-				bool attachedLogicalControl;
-				AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl);
-				if (attachedLogicalControl)
-				{
-					FlushDocumentPaint(dockContent);
-				}
 				long traceGeneration = m_documentSwitchTraceGeneration;
 				m_dockPanel.BeginInvoke((Action)(() => ActivateClientIfStillActive(dockContent, traceGeneration)));
 			}
@@ -1162,10 +1152,7 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		{
 			FlushDocumentPaint(dockContent);
 		}
-		if (logicalControl != null && m_activeClientControl != logicalControl)
-		{
-			ActivateClient(logicalControl);
-		}
+		ActivateClient(logicalControl);
 	}
 
 	private void ShowAndAttachDocumentHost(DockContent dockContent)
@@ -1217,15 +1204,10 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 	private Control AttachDocumentHostIfNeeded(DockContent dockContent)
 	{
 		bool attachedLogicalControl;
-		return AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl, force: false);
+		return AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl);
 	}
 
 	private Control AttachDocumentHostIfNeeded(DockContent dockContent, out bool attachedLogicalControl)
-	{
-		return AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl, force: false);
-	}
-
-	private Control AttachDocumentHostIfNeeded(DockContent dockContent, out bool attachedLogicalControl, bool force)
 	{
 		attachedLogicalControl = false;
 		Control hostedControl = dockContent.Controls.Count > 0 ? dockContent.Controls[0] : null;
@@ -1236,72 +1218,28 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		}
 
 		DockPane pane = dockContent.Pane;
-		DocumentHostControl activeDocumentHost = null;
+		long tDetach = 0;
+		long tAttach = 0;
+		DocumentHostControl activeDocumentHost;
+		if (pane != null && m_activeDocumentHostsByPane.TryGetValue(pane, out activeDocumentHost) && activeDocumentHost != documentHost)
+		{
+			var swDetach = Stopwatch.StartNew();
+			activeDocumentHost.DetachLogicalControl();
+			tDetach = swDetach.ElapsedMilliseconds;
+		}
+
+		var swAttach = Stopwatch.StartNew();
+		attachedLogicalControl = documentHost.AttachLogicalControl();
+		tAttach = swAttach.ElapsedMilliseconds;
 		if (pane != null)
 		{
-			m_activeDocumentHostsByPane.TryGetValue(pane, out activeDocumentHost);
+			m_activeDocumentHostsByPane[pane] = documentHost;
 		}
-		if (activeDocumentHost == documentHost && documentHost.HasAttachedLogicalControl)
+		if (tDetach + tAttach > 0)
 		{
-			return documentHost.LogicalControl;
+			PaintTimingLog.Write("DocumentHostSwitch: detach={0}ms, attach={1}ms", tDetach, tAttach);
 		}
-
-		if (!force)
-		{
-			DockContent panelActive = m_dockPanel.ActiveContent as DockContent;
-			if (panelActive != null
-				&& panelActive != dockContent
-				&& panelActive.DockState == DockState.Document
-				&& panelActive.Controls.Count > 0
-				&& GetDocumentHost(panelActive.Controls[0]) != null)
-			{
-				PaintTimingLog.Write(
-					"DocumentHostSwitch: skip-nonactive target={0}, panelActive={1}",
-					dockContent.Name, panelActive.Name);
-				return documentHost.LogicalControl;
-			}
-
-			if (m_documentHostAttachDepth > 0)
-			{
-				PaintTimingLog.Write(
-					"DocumentHostSwitch: reentrant-skip target={0}, active={1}",
-					documentHost.LogicalControl?.GetType().Name ?? "null",
-					activeDocumentHost?.LogicalControl?.GetType().Name ?? "null");
-				return documentHost.LogicalControl;
-			}
-		}
-
-		m_documentHostAttachDepth++;
-		try
-		{
-			long tDetach = 0;
-			long tAttach = 0;
-			if (activeDocumentHost != null && activeDocumentHost != documentHost)
-			{
-				var swDetach = Stopwatch.StartNew();
-				activeDocumentHost.DetachLogicalControl();
-				tDetach = swDetach.ElapsedMilliseconds;
-			}
-
-			var swAttach = Stopwatch.StartNew();
-			attachedLogicalControl = documentHost.AttachLogicalControl();
-			tAttach = swAttach.ElapsedMilliseconds;
-			if (pane != null)
-			{
-				m_activeDocumentHostsByPane[pane] = documentHost;
-			}
-			if (tDetach + tAttach > 0)
-			{
-				PaintTimingLog.Write(
-					"DocumentHostSwitch: detach={0}ms, attach={1}ms, target={2}",
-					tDetach, tAttach, documentHost.LogicalControl?.GetType().Name ?? "null");
-			}
-			return documentHost.LogicalControl;
-		}
-		finally
-		{
-			m_documentHostAttachDepth--;
-		}
+		return documentHost.LogicalControl;
 	}
 
 	private void FlushDocumentPaint(DockContent dockContent)
@@ -1311,12 +1249,12 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			return;
 		}
 		var sw = Stopwatch.StartNew();
-		dockContent.Invalidate(invalidateChildren: true);
-		if (dockContent.Controls.Count > 0)
-		{
-			dockContent.Controls[0].Invalidate(invalidateChildren: true);
-		}
-		PaintTimingLog.Write("FlushDocumentPaint: total={0}ms, invalidate-only", sw.ElapsedMilliseconds);
+		var stats = new VisibleTreeUpdateStats();
+		UpdateVisibleTree(dockContent, 0, stats);
+		PaintTimingLog.Write(
+			"FlushDocumentPaint: total={0}ms, controls={1}, depth={2}, update={3}ms, slowest={4}:{5}ms",
+			sw.ElapsedMilliseconds, stats.ControlCount, stats.MaxDepth, stats.UpdateMilliseconds,
+			stats.SlowestControlType ?? "null", stats.SlowestUpdateMilliseconds);
 	}
 
 	private sealed class VisibleTreeUpdateStats
@@ -1389,15 +1327,12 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		{
 			if (IsCenterGroup(controlInfo.Group))
 			{
-				PreAttachNextDocumentHost(dockContent);
 				UnregisterControl(control);
 				if (m_activeDockContent == dockContent)
 				{
 					m_activeDockContent = null;
 				}
-				ActivateCurrentDockContent();
-				AttachVisibleDocumentHosts();
-				m_pendingRegisteredDocumentControl = null;
+				ScheduleActivateCurrentDockContent("close document");
 			}
 			else
 			{
@@ -1442,75 +1377,6 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			m_activeClientControl = null;
 			FindControlInfo(control)?.Client.Deactivate(control);
 		}
-	}
-
-	private void PreAttachNextDocumentHost(DockContent closingContent)
-	{
-		if (closingContent == null || closingContent.DockState != DockState.Document)
-		{
-			return;
-		}
-		DockContent next = FindNextDocumentContent(closingContent);
-		if (next == null || next.Controls.Count <= 0)
-		{
-			return;
-		}
-		DocumentHostControl nextHost = GetDocumentHost(next.Controls[0]);
-		if (nextHost == null || nextHost.HasAttachedLogicalControl)
-		{
-			return;
-		}
-		var sw = Stopwatch.StartNew();
-		bool attachedLogicalControl;
-		AttachDocumentHostIfNeeded(next, out attachedLogicalControl, force: true);
-		if (attachedLogicalControl)
-		{
-			FlushDocumentPaint(next);
-		}
-		if (m_activeDockContent == closingContent)
-		{
-			m_activeDockContent = next;
-		}
-		PaintTimingLog.Write(
-			"PreAttachNextDocumentHost: next={0}, attached={1}, {2}ms",
-			next.Name, attachedLogicalControl, sw.ElapsedMilliseconds);
-	}
-
-	private DockContent FindNextDocumentContent(DockContent closingContent)
-	{
-		DockPane pane = closingContent.Pane;
-		if (pane != null)
-		{
-			IDockContent active = pane.ActiveContent;
-			if (active != null && active != closingContent && active is DockContent activeDoc
-				&& activeDoc.DockState == DockState.Document && !activeDoc.IsDisposed)
-			{
-				return activeDoc;
-			}
-			foreach (IDockContent content in pane.Contents)
-			{
-				if (content == closingContent || !(content is DockContent candidate))
-				{
-					continue;
-				}
-				if (candidate.DockState == DockState.Document && !candidate.IsDisposed && !candidate.IsHidden)
-				{
-					return candidate;
-				}
-			}
-		}
-		foreach (DockContent candidate in m_dockContent.Values)
-		{
-			if (candidate == closingContent || candidate.IsDisposed)
-			{
-				continue;
-			}
-			if (candidate.DockState == DockState.Document && !candidate.IsHidden)
-			{
-				return candidate;
-			}
-		}
-		return null;
 	}
 
 	private void DetachDocumentHostForUnregister(DockContent dockContent)
