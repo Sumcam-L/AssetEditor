@@ -115,10 +115,37 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 				return;
 			}
 			IPreviewWindow previewWindow = PreviewWindows[previewableDocument];
-			ShutdownDocumentPreviewing(previewableDocument, previewWindow);
-			AssetPreviewer.CloseWindow(previewWindow);
+			var sw = Stopwatch.StartNew();
+			bool preserveActiveControls = CanPreserveActivePreviewControls(previewableDocument, previewWindow);
+			ShutdownDocumentPreviewing(previewableDocument, previewWindow, preserveActiveControls);
+			long shutdown = sw.ElapsedMilliseconds;
 			PreviewWindows.Remove(previewableDocument);
+			QueuePreviewWindowClose(previewWindow);
+			PaintTimingLog.Write("Previewer: remove shutdown={0}ms, queueClose={1}ms",
+				shutdown, sw.ElapsedMilliseconds - shutdown);
 		}
+	}
+
+	private void QueuePreviewWindowClose(IPreviewWindow previewWindow)
+	{
+		UiIdleCleanupQueue.Enqueue("PreviewWindow", () => AssetPreviewer.CloseWindow(previewWindow));
+	}
+
+	private bool CanPreserveActivePreviewControls(IPreviewableDocument closingDocument, IPreviewWindow closingWindow)
+	{
+		IPreviewableDocument replacement = GetPreviewDocumentOrSurrogate(DocumentRegistry.ActiveDocument);
+		if (replacement == null || replacement == closingDocument)
+		{
+			return false;
+		}
+		IPreviewWindow replacementWindow;
+		if (!PreviewWindows.TryGetValue(replacement, out replacementWindow) || replacementWindow == null
+			|| closingWindow.GetPreviewModule() != replacementWindow.GetPreviewModule())
+		{
+			return false;
+		}
+		PaintTimingLog.Write("Previewer: preserve controls for deferred same-module replacement");
+		return true;
 	}
 
 	private bool UnbindSurrogatePreviewer(IDocument doc)
@@ -287,13 +314,16 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 		return true;
 	}
 
-	private void ShutdownDocumentPreviewing(IPreviewableDocument previewDoc, IPreviewWindow previewWnd)
+	private void ShutdownDocumentPreviewing(IPreviewableDocument previewDoc, IPreviewWindow previewWnd, bool preserveActiveControls = false)
 	{
 		previewDoc.PreviewModuleChanged -= PreviewDoc_PreviewModuleChanged;
 		previewDoc.UriChanged -= PreviewDoc_UriChanged;
-		PreviewerWidgetService.ClearIfActive(previewWnd, previewDoc.As<IEntityDocument>());
-		AnimationKnobService.ClearIfActive(previewDoc.EntityAdapter.InstanceEntity);
-		KnobService.ClearIfActive(previewDoc);
+		if (!preserveActiveControls)
+		{
+			PreviewerWidgetService.ClearIfActive(previewWnd, previewDoc.As<IEntityDocument>());
+			AnimationKnobService.ClearIfActive(previewDoc.EntityAdapter.InstanceEntity);
+			KnobService.ClearIfActive(previewDoc);
+		}
 		if (ActiveWindow == previewWnd)
 		{
 			ActiveDisplay.UnbindWindow();
@@ -388,6 +418,7 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 
 	public void StartProjectChange(Action<string> statusMessagePrinter)
 	{
+		UiIdleCleanupQueue.Drain();
 		BugSubmitter.Assert(ProjectChangeCache.Count == 0, "Dirty project change cache");
 		statusMessagePrinter?.Invoke("Cleaning up entities being previewed...");
 		ProjectChangeCache.AddRange(PreviewWindows.Keys);

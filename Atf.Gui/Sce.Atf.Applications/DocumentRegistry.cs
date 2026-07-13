@@ -74,7 +74,7 @@ public class DocumentRegistry : IDocumentRegistry
 			foreach (Delegate d in inv)
 			{
 				var sw = Stopwatch.StartNew();
-				d.DynamicInvoke(this, e);
+				((EventHandler)d)(this, e);
 				sw.Stop();
 				if (sw.ElapsedMilliseconds > 1)
 					PaintTimingLog.Write("ActiveDocumentChanged subscriber '{0}': {1}ms", d.Method?.DeclaringType?.Name ?? "?", sw.ElapsedMilliseconds);
@@ -95,7 +95,22 @@ public class DocumentRegistry : IDocumentRegistry
 	private void Documents_ItemRemoved(object sender, ItemRemovedEventArgs<IDocument> e)
 	{
 		e.Item.UriChanged -= Document_UriChanged;
-		this.DocumentRemoved.Raise(this, e);
+		var swTotal = Stopwatch.StartNew();
+		Delegate[] inv = this.DocumentRemoved?.GetInvocationList();
+		if (inv != null)
+		{
+			foreach (Delegate d in inv)
+			{
+				var sw = Stopwatch.StartNew();
+				((EventHandler<ItemRemovedEventArgs<IDocument>>)d)(this, e);
+				sw.Stop();
+				if (sw.ElapsedMilliseconds > 1)
+					PaintTimingLog.Write("DocumentRemoved subscriber '{0}': {1}ms", d.Method?.DeclaringType?.Name ?? "?", sw.ElapsedMilliseconds);
+			}
+		}
+		swTotal.Stop();
+		if (swTotal.ElapsedMilliseconds > 1)
+			PaintTimingLog.Write("DocumentRemoved total: {0}ms", swTotal.ElapsedMilliseconds);
 	}
 
 	private void Document_UriChanged(object sender, UriChangedEventArgs e)

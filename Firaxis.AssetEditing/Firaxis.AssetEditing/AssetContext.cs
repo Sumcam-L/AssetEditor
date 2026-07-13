@@ -121,9 +121,13 @@ public class AssetContext : BaseEntityPropertyContext, IAssetEditorContext, IEnt
 	{
 		if (bDisposing)
 		{
-			base.GUI?.Bind(null);
-			base.GUI?.Dispose();
+			EntityEditorControlBase gui = base.GUI;
 			base.GUI = null;
+			if (gui != null)
+			{
+				gui.Bind(null);
+				UiIdleCleanupQueue.Enqueue("AssetEditorControl", gui.Dispose);
+			}
 		}
 		base.Dispose(bDisposing);
 	}

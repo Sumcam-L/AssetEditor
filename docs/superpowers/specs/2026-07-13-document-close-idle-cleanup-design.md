@@ -38,7 +38,7 @@ Native and WinForms destruction is queued for UI idle processing:
 
 The replacement document's deferred activation remains ahead of cleanup. Cleanup starts only after the replacement has completed its queued activation and the message queue reaches idle.
 
-Each idle callback executes at most one heavy cleanup item. If more items remain, the next item waits for a later idle callback so native preview closing and editor disposal do not form one long uninterrupted pause.
+Each idle callback executes at most one heavy cleanup item. If more items remain, a one-shot WinForms timer waits at least 150 ms before enabling the next idle callback. User activity can delay execution further, so native preview closing and editor disposal do not form one long uninterrupted pause.
 
 ### Ownership And Shutdown
 

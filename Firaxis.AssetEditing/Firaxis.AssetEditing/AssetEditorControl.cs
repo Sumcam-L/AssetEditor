@@ -728,7 +728,9 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 				m_context.Reloaded -= AssetContext_Reloaded;
 				m_context = null;
 			}
-			foreach (KeyValuePair<Control, Firaxis.ATF.DockContent> item in m_dockContent)
+			Firaxis.ATF.DockContent activeContent = m_dockPanel?.ActiveContent as Firaxis.ATF.DockContent;
+			foreach (KeyValuePair<Control, Firaxis.ATF.DockContent> item in m_dockContent
+				.OrderBy(pair => pair.Value == activeContent ? 1 : 0).ToArray())
 			{
 				item.Value.VisibleChanged -= InnerDockContent_VisibleChanged;
 				item.Value.Controls.Remove(item.Key);
