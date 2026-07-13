@@ -214,6 +214,8 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 
 	private System.ComponentModel.PropertyDescriptor[] m_propertyDescriptors = EmptyArray<System.ComponentModel.PropertyDescriptor>.Instance;
 
+	private bool m_editingContextRendered;
+
 	protected readonly Queue<Control> m_reusableControls = new Queue<Control>();
 
 	private Category[] m_categories = EmptyArray<Category>.Instance;
@@ -239,6 +241,10 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 	protected const int ExpanderSize = 8;
 
 	public object[] SelectedObjects => m_selectedObjects;
+
+	public bool BuildPropertiesWhenHidden { get; set; }
+
+	protected bool EditingContextRendered => m_editingContextRendered;
 
 	public object LastSelectedObject => (m_selectedObjects.Length != 0) ? m_selectedObjects[m_selectedObjects.Length - 1] : null;
 
@@ -566,8 +572,11 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 	protected override void OnVisibleChanged(EventArgs e)
 	{
 		base.OnVisibleChanged(e);
-		UpdateEditingContext();
-		SkinService.ApplyActiveSkin(this);
+		if (Visible && !m_editingContextRendered)
+		{
+			UpdateEditingContext();
+			SkinService.ApplyActiveSkin(this);
+		}
 	}
 
 	protected override void OnFontChanged(EventArgs e)
@@ -640,10 +649,11 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 	private void UpdateEditingContext()
 	{
 		this.CheckForIllegalCrossThreadCall();
+		m_editingContextRendered = false;
 		SuspendLayout();
 		SelectedProperty = null;
 		ClearCurrentProperties();
-		if (base.Visible && m_editingContext != null)
+		if ((base.Visible || BuildPropertiesWhenHidden) && m_editingContext != null)
 		{
 			int needed = m_propertyDescriptors.Length - m_reusableControls.Count;
 			for (int i = 0; i < needed; i++)
@@ -654,6 +664,7 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 		}
 		UpdatePropertySorting();
 		ResumeLayout(performLayout: true);
+		m_editingContextRendered = base.Visible || BuildPropertiesWhenHidden || m_editingContext == null;
 		RefreshEditingControls();
 		Invalidate();
 		this.EditingContextUpdated.Raise(this, EventArgs.Empty);

@@ -126,6 +126,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			m_propertyEditor.PropertySorting = PropertySorting.None;
 			AddDockContext(m_propertyEditor, "Properties", string.Empty, DockState.DockTop, show: true, activate: false);
 			m_cookParameterPropertyEditor = new Sce.Atf.Controls.PropertyEditing.PropertyGrid(PropertyGridMode.DisplayTooltips | PropertyGridMode.DisplayDescriptions | PropertyGridMode.HideResetAllButton);
+			m_cookParameterPropertyEditor.BuildPropertiesWhenHidden = true;
 			m_cookParameterPropertyEditor.PropertyGridView.ShowRowStriping = false;
 			m_cookParameterSetEditor = new CommandControl();
 			m_cookParameterSetEditor.Dock = DockStyle.Fill;
@@ -586,6 +587,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			ShowInnerDocument(m_cookParameterSetEditor);
 			m_cookParameterSetEditor.Bind(m_context.CookParametersContext);
 			m_cookParameterPropertyEditor.Bind(m_context.CookParametersContext);
+			m_cookParameterPropertyEditor.PropertyGridView.SelectedPropertyChanged -= PropertyGridView_SelectedPropertyChanged;
 			m_cookParameterPropertyEditor.PropertyGridView.SelectedPropertyChanged += PropertyGridView_SelectedPropertyChanged;
 		}
 		else

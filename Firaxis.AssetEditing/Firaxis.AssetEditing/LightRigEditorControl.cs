@@ -47,6 +47,7 @@ public class LightRigEditorControl : EntityEditorControlBase
 		m_propertyEditor.PropertySorting = PropertySorting.Categorized;
 		pnlProps.Controls.Add(m_propertyEditor);
 		m_cookParameterPropertyEditor = new Sce.Atf.Controls.PropertyEditing.PropertyGrid(PropertyGridMode.DisplayTooltips | PropertyGridMode.HideResetAllButton);
+		m_cookParameterPropertyEditor.BuildPropertiesWhenHidden = true;
 		m_cookParameterSetEditor = new CommandControl();
 		m_cookParameterSetEditor.Dock = DockStyle.Fill;
 		m_cookParameterPropertyEditor.Dock = DockStyle.Fill;

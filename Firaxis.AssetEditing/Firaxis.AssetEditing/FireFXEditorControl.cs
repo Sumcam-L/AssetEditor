@@ -72,6 +72,7 @@ public class FireFXEditorControl : EntityEditorControlBase
 		m_propertyEditor.PropertySorting = PropertySorting.None;
 		AddDockContext(m_propertyEditor, "Properties", string.Empty, DockState.DockTop);
 		m_cookParameterPropertyEditor = new Sce.Atf.Controls.PropertyEditing.PropertyGrid(PropertyGridMode.DisplayTooltips | PropertyGridMode.DisplayDescriptions | PropertyGridMode.HideResetAllButton);
+		m_cookParameterPropertyEditor.BuildPropertiesWhenHidden = true;
 		m_cookParameterPropertyEditor.PropertyGridView.ShowRowStriping = false;
 		m_cookParameterSetEditor = new CommandControl();
 		m_cookParameterSetEditor.Dock = DockStyle.Fill;

@@ -58,6 +58,7 @@ public class EntityEditorControl : EntityEditorControlBase
 		m_propertyEditor.PropertySorting = PropertySorting.Categorized;
 		AddDockContext(m_propertyEditor, "Properties", string.Empty, DockState.DockTop);
 		m_cookParameterPropertyEditor = new Sce.Atf.Controls.PropertyEditing.PropertyGrid(PropertyGridMode.DisplayTooltips | PropertyGridMode.DisplayDescriptions | PropertyGridMode.HideResetAllButton);
+		m_cookParameterPropertyEditor.BuildPropertiesWhenHidden = true;
 		m_cookParameterPropertyEditor.PropertyGridView.ShowRowStriping = false;
 		m_cookParameterSetEditor = new CommandControl();
 		m_cookParameterSetEditor.Dock = DockStyle.Fill;
@@ -192,6 +193,7 @@ public class EntityEditorControl : EntityEditorControlBase
 			m_dockPanel.ShowDocumentIcon = true;
 			m_dockPanel.LargeDocumentIcon = true;
 			m_dockPanel.DockTopPortion = 0.5;
+			m_cookParameterPropertyEditor.PropertyGridView.SelectedPropertyChanged -= PropertyGridView_SelectedPropertyChanged;
 			m_cookParameterPropertyEditor.PropertyGridView.SelectedPropertyChanged += PropertyGridView_SelectedPropertyChanged;
 			m_dockContent[m_cookParameterSetEditor].DockState = DockState.Document;
 			m_cookParameterSetEditor.Bind(m_context.CookParametersContext);

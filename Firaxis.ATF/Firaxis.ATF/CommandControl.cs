@@ -21,6 +21,8 @@ public class CommandControl : UserControl
 
 	private IDictionary<CommandInfo, CommandService.CommandControls> m_commandControls = new Dictionary<CommandInfo, CommandService.CommandControls>();
 
+	private bool m_skinApplied;
+
 	private IContainer components;
 
 	private ToolStrip tbCommands;
@@ -36,7 +38,6 @@ public class CommandControl : UserControl
 		InitializeComponent();
 		ShowCommandText = false;
 		Application.Idle += Application_Idle;
-		base.VisibleChanged += CommandControl_VisibleChanged;
 	}
 
 	public CommandControl(IEnumerable<CommandInfo> commands, ICommandClient commandClient)
@@ -106,6 +107,18 @@ public class CommandControl : UserControl
 		if (m_boundContext != null)
 		{
 			RegisterCommandClient(m_boundContext.CommandClient, m_boundContext.Commands);
+			SkinService.ApplyActiveSkin(tbCommands);
+			m_skinApplied = true;
+		}
+	}
+
+	protected override void OnVisibleChanged(EventArgs e)
+	{
+		base.OnVisibleChanged(e);
+		if (Visible && !m_skinApplied)
+		{
+			SkinService.ApplyActiveSkin(this);
+			m_skinApplied = true;
 		}
 	}
 
@@ -117,7 +130,6 @@ public class CommandControl : UserControl
 	{
 		if (disposing)
 		{
-			base.VisibleChanged -= CommandControl_VisibleChanged;
 			components?.Dispose();
 		}
 		base.Dispose(disposing);
@@ -155,14 +167,6 @@ public class CommandControl : UserControl
 			flag2 = (button.Enabled = flag);
 			flag3 = flag2;
 			menuItem.Enabled = flag3;
-		}
-	}
-
-	private void CommandControl_VisibleChanged(object sender, EventArgs e)
-	{
-		if (base.Visible)
-		{
-			SkinService.ApplyActiveSkin(this);
 		}
 	}
 

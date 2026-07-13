@@ -160,6 +160,12 @@ public class PropertyGrid : ScrollableControl
 
 	public PropertyGridView PropertyGridView => m_propertyGridView;
 
+	public bool BuildPropertiesWhenHidden
+	{
+		get => m_propertyGridView.BuildPropertiesWhenHidden;
+		set => m_propertyGridView.BuildPropertiesWhenHidden = value;
+	}
+
 	public PropertySorting PropertySorting
 	{
 		get

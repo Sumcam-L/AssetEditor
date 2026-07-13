@@ -1908,13 +1908,13 @@ public class GridView : PropertyView, IPropertyEditingControlOwner
 
 	protected override void OnVisibleChanged(EventArgs e)
 	{
+		bool applyInitialLayout = base.Visible && !EditingContextRendered;
 		base.OnVisibleChanged(e);
-		SkinService.ApplyActiveSkin(this);
-		if (base.Visible)
+		if (applyInitialLayout)
 		{
 			ApplyAllLayoutState();
 		}
-		else
+		else if (!base.Visible)
 		{
 			ClearToolTips();
 		}
