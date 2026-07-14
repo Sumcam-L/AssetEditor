@@ -333,7 +333,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		{
 			m_lastActiveInnerContent = (Firaxis.ATF.DockContent)m_dockPanel.ActiveContent;
 		}
-		if (Visible && !HasValidActiveInnerContent())
+		if (Visible && ContainsFocus && !HasValidActiveInnerContent())
 		{
 			ScheduleEnsureActiveInnerContent();
 		}
@@ -405,7 +405,10 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			BeginInvoke((Action)delegate
 			{
 				m_ensureActiveInnerContentPending = false;
-				EnsureActiveInnerContent();
+				if (ContainsFocus)
+				{
+					EnsureActiveInnerContent();
+				}
 			});
 		}
 		catch (InvalidOperationException)

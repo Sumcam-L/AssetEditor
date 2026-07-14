@@ -1929,23 +1929,7 @@ public class GridView : PropertyView, IPropertyEditingControlOwner
 		Control control = base.GetEditingControl(property);
 		if (control == null)
 		{
-			PropertyEditingControl propertyEditingControl = null;
-			while (m_reusableControls.Count > 0)
-			{
-				if (m_reusableControls.Dequeue() is PropertyEditingControl pec)
-				{
-					propertyEditingControl = pec;
-					break;
-				}
-			}
-			if (propertyEditingControl == null)
-			{
-				propertyEditingControl = new PropertyEditingControl();
-				for (int i = 0; i < 10; i++)
-				{
-					m_reusableControls.Enqueue(new PropertyEditingControl());
-				}
-			}
+			PropertyEditingControl propertyEditingControl = new PropertyEditingControl();
 			propertyEditingControl.Bind(property.Context);
 			propertyEditingControl.Height = RowHeight;
 			control = propertyEditingControl;

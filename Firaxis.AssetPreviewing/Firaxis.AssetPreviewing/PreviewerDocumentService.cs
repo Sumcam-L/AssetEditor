@@ -122,16 +122,11 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 			bool preserveActiveControls = CanPreserveActivePreviewControls(previewableDocument, previewWindow);
 			ShutdownDocumentPreviewing(previewableDocument, previewWindow, preserveActiveControls);
 			long shutdown = sw.ElapsedMilliseconds;
+			AssetPreviewer.CloseWindow(previewWindow);
 			PreviewWindows.Remove(previewableDocument);
-			QueuePreviewWindowClose(previewWindow);
-			PaintTimingLog.Write("Previewer: remove shutdown={0}ms, queueClose={1}ms",
+			PaintTimingLog.Write("Previewer: remove shutdown={0}ms, close={1}ms",
 				shutdown, sw.ElapsedMilliseconds - shutdown);
 		}
-	}
-
-	private void QueuePreviewWindowClose(IPreviewWindow previewWindow)
-	{
-		UiIdleCleanupQueue.Enqueue("PreviewWindow", () => AssetPreviewer.CloseWindow(previewWindow));
 	}
 
 	private void Application_ApplicationExit(object sender, EventArgs e)

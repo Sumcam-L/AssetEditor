@@ -141,11 +141,11 @@ public class PropertyEditingControl : Control, IWindowsFormsEditorService, IType
 
 		protected override void OnDeactivate(EventArgs e)
 		{
-			if (base.Visible)
-			{
-				m_parent.CloseDropDown();
-			}
-			base.OnDeactivate(e);
+            if (base.Visible)
+            {
+                m_parent.CloseDropDown();
+            }
+            base.OnDeactivate(e);
 		}
 
 		public void SetControl(Control control)
@@ -361,6 +361,9 @@ public class PropertyEditingControl : Control, IWindowsFormsEditorService, IType
 	{
 		m_editButton = new EditButton();
 		m_textBox = new TextBox();
+		IntPtr handle = m_editButton.Handle;
+		handle = m_textBox.Handle;
+		SuspendLayout();
 		m_editButton.Left = base.Right - 18;
 		m_editButton.Size = new Size(18, 18);
 		m_editButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;

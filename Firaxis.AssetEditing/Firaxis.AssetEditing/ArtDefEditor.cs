@@ -165,12 +165,10 @@ public class ArtDefEditor : IDocumentClient, IControlHostClient, IInitializable,
 		Outputs.WriteLine(OutputMessageType.Info, "Opening art def file \"{0}\"", uri.LocalPath);
 		string localPath = uri.LocalPath;
 		string fileName = Path.GetFileName(localPath);
-		bool templateReadOnly = false;
 		IArtDef artDef;
 		if (File.Exists(localPath))
 		{
 			artDef = global::DatabaseWrapper.DatabaseWrapper.LoadArtDef(uri, m_civTechService.PrimaryProject.Config);
-			templateReadOnly = true;
 		}
 		else
 		{
@@ -227,7 +225,7 @@ public class ArtDefEditor : IDocumentClient, IControlHostClient, IInitializable,
 		{
 			artDefContext.GUI = new ArtDefSetTreeLister(m_commandService, document, artDefContext.Commands, document.FileDialogService, document.CivTechService);
 			artDefContext.GUI.MainControl.Tag = document;
-			artDefContext.GUI.MainControl.TemplateReadOnly = templateReadOnly;
+			artDefContext.GUI.MainControl.TemplateReadOnly = document.IsReadOnly;
 			artDefContext.GUI.MainControl.Bind(artDefSetAdapter);
 			m_controlHostService?.RegisterControl(artDefContext.GUI.MainControl, controlInfo, this);
 		}
@@ -264,7 +262,7 @@ public class ArtDefEditor : IDocumentClient, IControlHostClient, IInitializable,
 		ArtDefContext artDefContext = document.As<ArtDefContext>();
 		if (artDefContext.GUI != null)
 		{
-			artDefContext.GUI.MainControl.TemplateReadOnly = true;
+			artDefContext.GUI.MainControl.TemplateReadOnly = document.IsReadOnly;
 		}
 		if (num)
 		{

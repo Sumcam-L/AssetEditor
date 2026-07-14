@@ -621,6 +621,15 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		hostedControl.Dock = DockStyle.Fill;
 		var tAdd = Stopwatch.StartNew();
 		dockContent.Controls.Add(hostedControl);
+		if (info.IsDocument == true)
+		{
+			DocumentHostControl documentHost = GetDocumentHost(hostedControl);
+			if (documentHost != null)
+			{
+				documentHost.AttachLogicalControl();
+				PaintTimingLog.Write("RegisterControl: document attached before host show control={0}", control.GetType().Name);
+			}
+		}
 		tAdd.Stop();
 		dockContent.FormClosing += dockContent_FormClosing;
 		if (control is IControlHostPreShowClient preShowClient)

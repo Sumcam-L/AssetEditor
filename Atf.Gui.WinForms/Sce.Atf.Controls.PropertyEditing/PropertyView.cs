@@ -216,8 +216,6 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 
 	private bool m_editingContextRendered;
 
-	protected readonly Queue<Control> m_reusableControls = new Queue<Control>();
-
 	private Category[] m_categories = EmptyArray<Category>.Instance;
 
 	private readonly List<Property> m_activeProperties = new List<Property>();
@@ -284,7 +282,6 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 					selectionContext.SelectionChanged -= subSelectionContext_SelectionChanged;
 				}
 			}
-			System.ComponentModel.PropertyDescriptor[] oldPropertyDescriptors = m_propertyDescriptors;
 			OnEditingContextChanging();
 			if (value == null || value.Is<FilteringContext>())
 			{
@@ -322,27 +319,16 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 					selectionContext2.SelectionChanged += subSelectionContext_SelectionChanged;
 				}
 			}
-			if (HasSamePropertyDescriptors(oldPropertyDescriptors, m_propertyDescriptors))
+			var sw = Stopwatch.StartNew();
+			UpdateEditingContext();
+			sw.Stop();
+			PaintTimingLog.Write("PropertyView.BuildProperties: {0}ms ({1} props)", sw.ElapsedMilliseconds, m_propertyDescriptors?.Length ?? 0);
 			{
-				SuspendLayout();
-				RefreshEditingControls();
-				ResumeLayout(performLayout: true);
-				Invalidate();
-				this.EditingContextUpdated.Raise(this, EventArgs.Empty);
-			}
-			else
-			{
-				var sw = Stopwatch.StartNew();
-				UpdateEditingContext();
-				sw.Stop();
-				PaintTimingLog.Write("PropertyView.BuildProperties: {0}ms ({1} props)", sw.ElapsedMilliseconds, m_propertyDescriptors?.Length ?? 0);
-			}
-			{
-				var sw = Stopwatch.StartNew();
+				var changedSw = Stopwatch.StartNew();
 				OnEditingContextChanged();
-				sw.Stop();
-				if (sw.ElapsedMilliseconds > 5)
-					PaintTimingLog.Write("OnEditingContextChanged: {0}ms", sw.ElapsedMilliseconds);
+				changedSw.Stop();
+				if (changedSw.ElapsedMilliseconds > 5)
+					PaintTimingLog.Write("OnEditingContextChanged: {0}ms", changedSw.ElapsedMilliseconds);
 			}
 			this.EditingContextChanged.Raise(this, EventArgs.Empty);
 		}
@@ -554,10 +540,6 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 			{
 				BoldFont.Dispose();
 			}
-			while (m_reusableControls.Count > 0)
-			{
-				m_reusableControls.Dequeue().Dispose();
-			}
 			EditingContext = null;
 		}
 		base.Dispose(disposing);
@@ -655,11 +637,6 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 		ClearCurrentProperties();
 		if ((base.Visible || BuildPropertiesWhenHidden) && m_editingContext != null)
 		{
-			int needed = m_propertyDescriptors.Length - m_reusableControls.Count;
-			for (int i = 0; i < needed; i++)
-			{
-				m_reusableControls.Enqueue(new PropertyEditingControl());
-			}
 			BuildProperties();
 		}
 		UpdatePropertySorting();
@@ -668,26 +645,6 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 		RefreshEditingControls();
 		Invalidate();
 		this.EditingContextUpdated.Raise(this, EventArgs.Empty);
-	}
-
-	private static bool HasSamePropertyDescriptors(System.ComponentModel.PropertyDescriptor[] oldDescriptors, System.ComponentModel.PropertyDescriptor[] newDescriptors)
-	{
-		if (oldDescriptors == null || newDescriptors == null)
-		{
-			return false;
-		}
-		if (oldDescriptors.Length != newDescriptors.Length)
-		{
-			return false;
-		}
-		for (int i = 0; i < oldDescriptors.Length; i++)
-		{
-			if (oldDescriptors[i].Name != newDescriptors[i].Name || oldDescriptors[i].ComponentType != newDescriptors[i].ComponentType)
-			{
-				return false;
-			}
-		}
-		return true;
 	}
 
 	private void BeginUpdate()
@@ -1139,13 +1096,7 @@ public abstract class PropertyView : Control, IPropertyEditingControlOwner
 			Control control = activeProperty.Control;
 			if (control != null)
 			{
-				if (control is PropertyEditingControl)
-				{
-					base.Controls.Remove(control);
-					control.Visible = false;
-					m_reusableControls.Enqueue(control);
-				}
-				else if (!activeProperty.Cacheable || activeProperty.Descriptor is INonCacheableDescriptor)
+				if (!activeProperty.Cacheable || activeProperty.Descriptor is INonCacheableDescriptor)
 				{
 					base.Controls.Remove(control);
 					control.Font = null;
