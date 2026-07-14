@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -13,6 +13,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using DatabaseWrapper;
 using Firaxis.CivTech;
 using Firaxis.CivTech.AssetObjects;
@@ -24,21 +25,26 @@ using Sce.Atf;
 
 namespace Firaxis.AssetBrowser.ViewModels;
 
-public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
+public class AssetBrowserViewModel : BaseViewModel
 {
 	private class AssetBrowserFilterRequest
 	{
 		public IEntityFilterSet FilterSet { get; private set; }
 
-		public AssetBrowserFilterRequest(IEntityFilterSet entityFilteringContext)
+		public long Generation { get; private set; }
+
+		public AssetBrowserFilterRequest(IEntityFilterSet entityFilteringContext, long generation)
 		{
 			FilterSet = entityFilteringContext;
+			Generation = generation;
 		}
 	}
 
-	private const int _itemsPerPage = 100;
+	private const int InitialBatchSize = 30;
 
-	private int currentPageIndex;
+	private const int BatchSize = 100;
+
+	private const int FilterDebounceMilliseconds = 150;
 
 	private readonly object _filteredEntitiesLock = new object();
 
@@ -46,9 +52,15 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 
 	private PerforceUpdateBacklog _perforceQueue = new PerforceUpdateBacklog();
 
-	private readonly Dictionary<int, IList<EntityID>> _loadedEntities = new Dictionary<int, IList<EntityID>>();
-
 	private IList<EntityID> _filterResults = new List<EntityID>();
+
+	private long _filterGeneration;
+
+	private long _pendingFilterGeneration;
+
+	private IEntityFilterSet _pendingFilterSet;
+
+	private readonly DispatcherTimer _filterDebounceTimer;
 
 	private static readonly byte[] _VersionBytes = Encoding.Default.GetBytes("Version1");
 
@@ -60,7 +72,7 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 
 	private InstanceEntityViewModel _selectedEntity;
 
-	private IList<InstanceEntityViewModel> _filteredEntities = new List<InstanceEntityViewModel>();
+	private IList<InstanceEntityViewModel> _filteredEntities = new ObservableCollection<InstanceEntityViewModel>();
 
 	private bool _allowMultipleSelection = true;
 
@@ -260,7 +272,7 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 				if (_filterVM != null)
 				{
 					_filterVM.FilterChanged += HandleFilterChanged;
-					EnqueueFilterRequest(_filterVM.GetFilterSet());
+					ScheduleFilterRequest(_filterVM.GetFilterSet());
 				}
 				OnPropertyChanged("FilterVM");
 			}
@@ -333,14 +345,17 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 		}
 	}
 
-	public event NotifyCollectionChangedEventHandler CollectionChanged;
-
 	public AssetBrowserViewModel(ICivTechService civTechSvc, IEntityFilteringService filteringService, Action dialogAction = null, bool allowMultipleSelection = true, bool startFocused = true)
 	{
 		CivTechService = civTechSvc;
 		EntityFilteringService = filteringService;
 		BrowserStatePath = civTechSvc.GetBrowserDataPath();
 		StartFocused = startFocused;
+		_filterDebounceTimer = new DispatcherTimer(DispatcherPriority.Background)
+		{
+			Interval = TimeSpan.FromMilliseconds(FilterDebounceMilliseconds)
+		};
+		_filterDebounceTimer.Tick += FilterDebounceTimer_Tick;
 		FilterVM = new FilterStyleCollectionViewModel
 		{
 			Filters = 
@@ -357,78 +372,49 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 		Messenger.RegisterByToken("PerforceRefresh", QueueFilteredEntityPerforceUpdate);
 	}
 
-	protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-	{
-		currentPageIndex++;
-		if (currentPageIndex < _loadedEntities.Count)
-		{
-			LoadPage(_loadedEntities[currentPageIndex]);
-		}
-		if (_filterResults.Count == _filteredEntities.Count)
-		{
-			OnPropertyChanged("FilteredEntities");
-			QueueFilteredEntityPerforceUpdate();
-		}
-	}
-
 	private void HandleFilterChanged(object sender, EventArgs e)
 	{
-		EnqueueFilterRequest(FilterVM.GetFilterSet());
+		ScheduleFilterRequest(FilterVM.GetFilterSet());
 	}
 
-	private void LoadPage(object args)
+	private void ScheduleFilterRequest(IEntityFilterSet filterSet)
 	{
-		IList<EntityID> state = (IList<EntityID>)args;
-		ThreadPool.QueueUserWorkItem(LoadPageWork, state);
+		if (filterSet == null || !m_filterThreadRunning)
+		{
+			return;
+		}
+		long generation = Interlocked.Increment(ref _filterGeneration);
+		Firaxis.MVVMBase.Helpers.ApplicationHelper.BeginInvokeIfNeeded(delegate
+		{
+			if (!m_filterThreadRunning || generation != Interlocked.Read(ref _filterGeneration))
+			{
+				return;
+			}
+			lock (locker)
+			{
+				_pendingFilterSet = filterSet;
+				_pendingFilterGeneration = generation;
+			}
+			_filterDebounceTimer.Stop();
+			_filterDebounceTimer.Start();
+		});
 	}
 
-	private void LoadPageWork(object args)
+	private void FilterDebounceTimer_Tick(object sender, EventArgs e)
 	{
+		_filterDebounceTimer.Stop();
+		IEntityFilterSet filterSet;
+		long generation;
 		lock (locker)
 		{
-			IList<EntityID> inputEntities = (IList<EntityID>)args;
-			try
-			{
-				lock (_filteredEntitiesLock)
-				{
-					_filteredEntities.AddRange(BuildFilteredEntityCollection(inputEntities));
-				}
-			}
-			finally
-			{
-				FireCollectionReset();
-			}
+			filterSet = _pendingFilterSet;
+			generation = _pendingFilterGeneration;
+			_pendingFilterSet = null;
 		}
-	}
-
-	private void FireCollectionReset()
-	{
-		NotifyCollectionChangedEventArgs e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-		OnCollectionChanged(e);
-	}
-
-	private void PopulateEntities()
-	{
-		_loadedEntities.Clear();
-		currentPageIndex = 0;
-		int num = _filterResults.Count / 100;
-		int count = _filterResults.Count % 100;
-		for (int i = 0; i < num; i++)
+		if (filterSet != null && IsCurrentGeneration(generation))
 		{
-			_loadedEntities.Add(i, null);
-			_loadedEntities[i] = FetchRange(i * 100, 100);
+			EnqueueFilterRequest(filterSet, generation);
 		}
-		_loadedEntities[num] = FetchRange(num * 100, count);
-	}
-
-	private IList<EntityID> FetchRange(int startIndex, int count)
-	{
-		List<EntityID> list = new List<EntityID>();
-		for (int i = startIndex; i < startIndex + count; i++)
-		{
-			list.Add(_filterResults[i]);
-		}
-		return list;
 	}
 
 	private void InitializeFilterThread()
@@ -486,17 +472,23 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 
 	public void QueueFilteredEntityPerforceUpdate()
 	{
+		InstanceEntityViewModel[] entities;
+		lock (_filteredEntitiesLock)
+		{
+			entities = FilteredEntities.ToArray();
+		}
+		QueueEntityPerforceUpdate(entities);
+	}
+
+	private void QueueEntityPerforceUpdate(IEnumerable<InstanceEntityViewModel> entities)
+	{
 		if (_perforceQueue == null)
 		{
 			return;
 		}
-		EntityFileInfo[] infos;
-		lock (_filteredEntitiesLock)
-		{
-			infos = (from e in FilteredEntities
-				where !string.IsNullOrWhiteSpace(e.Name)
-				select new EntityFileInfo(e.InstanceType, e.Name)).ToArray();
-		}
+		EntityFileInfo[] infos = (from e in entities
+			where !string.IsNullOrWhiteSpace(e.Name)
+			select new EntityFileInfo(e.InstanceType, e.Name)).ToArray();
 		_perforceQueue.AddPendingInfos(infos);
 		if (_perforceUpdaterThread == null || _perforceUpdaterThread.ThreadState == ThreadState.Stopped)
 		{
@@ -578,11 +570,11 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 		});
 	}
 
-	private void EnqueueFilterRequest(IEntityFilterSet filterSet)
+	private void EnqueueFilterRequest(IEntityFilterSet filterSet, long generation)
 	{
 		if (filterSet != null)
 		{
-			AssetBrowserFilterRequest item = new AssetBrowserFilterRequest(filterSet);
+			AssetBrowserFilterRequest item = new AssetBrowserFilterRequest(filterSet, generation);
 			FilterRequests.Enqueue(item);
 			FilterThreadSignal.Set();
 		}
@@ -598,34 +590,123 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 			{
 				assetBrowserFilterRequest = result;
 			}
-			if (assetBrowserFilterRequest?.FilterSet != null)
+			if (assetBrowserFilterRequest?.FilterSet != null && IsCurrentGeneration(assetBrowserFilterRequest.Generation))
 			{
 				IList<EntityID> entities = CivTechRegistry.EntityCacheService.GetAllEntities().ToList();
 				List<EntityID> source = assetBrowserFilterRequest.FilterSet.FilterEntities(entities).ToList();
-				_filterResults = source.OrderBy((EntityID x) => x).ToList();
-				PopulateEntities();
-				lock (_filteredEntitiesLock)
+				if (!IsCurrentGeneration(assetBrowserFilterRequest.Generation))
 				{
-					FilteredEntities = new List<InstanceEntityViewModel>();
-					OnPropertyChanged("FilteredEntities");
+					continue;
 				}
-				if (_loadedEntities.Count > 0)
+				_filterResults = source.OrderBy((EntityID x) => x).ToList();
+				int startIndex = 0;
+				bool initialBatch = true;
+				while (startIndex < _filterResults.Count && IsCurrentGeneration(assetBrowserFilterRequest.Generation))
 				{
-					ThreadPool.QueueUserWorkItem(LoadPage, _loadedEntities[0]);
+					int batchSize = initialBatch ? InitialBatchSize : BatchSize;
+					IList<EntityID> entityBatch = _filterResults.Skip(startIndex).Take(batchSize).ToList();
+					IList<InstanceEntityViewModel> viewModelBatch = BuildFilteredEntityCollection(entityBatch, assetBrowserFilterRequest.Generation);
+					if (!IsCurrentGeneration(assetBrowserFilterRequest.Generation))
+					{
+						DisposeViewModels(viewModelBatch);
+						break;
+					}
+					if (initialBatch)
+					{
+						PublishInitialBatch(assetBrowserFilterRequest.Generation, viewModelBatch);
+					}
+					else
+					{
+						PublishAdditionalBatch(assetBrowserFilterRequest.Generation, viewModelBatch);
+					}
+					startIndex += entityBatch.Count;
+					initialBatch = false;
+				}
+				if (initialBatch && IsCurrentGeneration(assetBrowserFilterRequest.Generation))
+				{
+					PublishInitialBatch(assetBrowserFilterRequest.Generation, new List<InstanceEntityViewModel>());
 				}
 			}
 		}
 	}
 
-	private IList<InstanceEntityViewModel> BuildFilteredEntityCollection(IList<EntityID> inputEntities)
+	private bool IsCurrentGeneration(long generation)
+	{
+		return m_filterThreadRunning && generation == Interlocked.Read(ref _filterGeneration);
+	}
+
+	private IList<InstanceEntityViewModel> BuildFilteredEntityCollection(IList<EntityID> inputEntities, long generation)
 	{
 		IList<InstanceEntityViewModel> list = new List<InstanceEntityViewModel>();
-		foreach (EntityID item2 in inputEntities.OrderBy((EntityID x) => x))
+		foreach (EntityID item2 in inputEntities)
 		{
+			if (!IsCurrentGeneration(generation))
+			{
+				break;
+			}
 			InstanceEntityViewModel item = InstanceEntityViewModel.Create(item2.Type, CivTechService, item2.Name, Instances.LoadEntityByName);
 			list.Add(item);
 		}
 		return list;
+	}
+
+	private void PublishInitialBatch(long generation, IList<InstanceEntityViewModel> batch)
+	{
+		_filterDebounceTimer.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)delegate
+		{
+			if (!IsCurrentGeneration(generation))
+			{
+				DisposeViewModels(batch);
+				return;
+			}
+			IList<InstanceEntityViewModel> previous;
+			lock (_filteredEntitiesLock)
+			{
+				previous = _filteredEntities;
+				FilteredEntities = new ObservableCollection<InstanceEntityViewModel>(batch);
+				OnPropertyChanged("FilteredEntities");
+			}
+			DisposeViewModels(previous);
+			QueueEntityPerforceUpdate(batch);
+		});
+	}
+
+	private void PublishAdditionalBatch(long generation, IList<InstanceEntityViewModel> batch)
+	{
+		_filterDebounceTimer.Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)delegate
+		{
+			if (!IsCurrentGeneration(generation))
+			{
+				DisposeViewModels(batch);
+				return;
+			}
+			lock (_filteredEntitiesLock)
+			{
+				ObservableCollection<InstanceEntityViewModel> collection = _filteredEntities as ObservableCollection<InstanceEntityViewModel>;
+				if (collection == null)
+				{
+					DisposeViewModels(batch);
+					return;
+				}
+				foreach (InstanceEntityViewModel item in batch)
+				{
+					collection.Add(item);
+				}
+			}
+			QueueEntityPerforceUpdate(batch);
+		});
+	}
+
+	private static void DisposeViewModels(IEnumerable<InstanceEntityViewModel> viewModels)
+	{
+		if (viewModels == null)
+		{
+			return;
+		}
+		foreach (InstanceEntityViewModel viewModel in viewModels)
+		{
+			viewModel.Dispose();
+		}
 	}
 
 	public void ClearUnselectedEntities()
@@ -648,6 +729,16 @@ public class AssetBrowserViewModel : BaseViewModel, INotifyCollectionChanged
 	protected override void Dispose(bool disposeManaged)
 	{
 		m_filterThreadRunning = false;
+		Interlocked.Increment(ref _filterGeneration);
+		Firaxis.MVVMBase.Helpers.ApplicationHelper.InvokeIfNeeded(delegate
+		{
+			_filterDebounceTimer.Stop();
+			_filterDebounceTimer.Tick -= FilterDebounceTimer_Tick;
+		});
+		lock (locker)
+		{
+			_pendingFilterSet = null;
+		}
 		if (disposeManaged && !FilterThreadSignal.SafeWaitHandle.IsClosed)
 		{
 			FilterThreadSignal.Set();
