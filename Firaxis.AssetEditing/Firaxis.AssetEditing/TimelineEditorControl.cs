@@ -72,7 +72,7 @@ public class TimelineEditorControl : UserControl
 		m_themeService.ThemeChanged += ThemeService_ThemeChanged;
 		m_dockContent = new Dictionary<Control, Firaxis.ATF.DockContent>();
 		m_dockPanel = new DockPanel();
-		m_dockPanel.Theme = new VS2005Theme();
+		m_dockPanel.Theme = m_themeService.ActiveTheme;
 		m_dockPanel.Dock = DockStyle.Fill;
 		m_dockPanel.ShowDocumentIcon = false;
 		m_dockPanel.LargeDocumentIcon = false;
