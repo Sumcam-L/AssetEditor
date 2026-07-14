@@ -214,6 +214,8 @@ internal class FiraxisDockPaneStrip : DockPaneStripBase
 
 	private bool m_suspendDrag = false;
 
+	private IDockContent m_pressedCloseContent;
+
 	private bool m_alwaysShowDocOverflow;
 
 	private const int TAB_CLOSE_BUTTON_WIDTH = 30;
@@ -1314,7 +1316,8 @@ internal class FiraxisDockPaneStrip : DockPaneStripBase
 	protected override void OnMouseDown(MouseEventArgs e)
 	{
 		base.OnMouseDown(e);
-		m_suspendDrag = ActiveCloseHitTest(e.Location);
+		m_pressedCloseContent = GetCloseButtonContent(e.Location);
+		m_suspendDrag = m_pressedCloseContent != null;
 		if (!IsMouseDown)
 		{
 			IsMouseDown = true;
@@ -1375,14 +1378,35 @@ internal class FiraxisDockPaneStrip : DockPaneStripBase
 	protected override void OnMouseClick(MouseEventArgs e)
 	{
 		base.OnMouseClick(e);
-		if (e.Button == MouseButtons.Left && base.Appearance == DockPane.AppearanceStyle.Document)
+		IDockContent pressedCloseContent = m_pressedCloseContent;
+		m_pressedCloseContent = null;
+		if (e.Button == MouseButtons.Left && pressedCloseContent != null && base.Appearance == DockPane.AppearanceStyle.Document)
 		{
-			int num = HitTest();
-			if (num > -1)
+			int num = HitTest(e.Location);
+			if (num > -1 && ReferenceEquals(base.Tabs[num].Content, pressedCloseContent) && GetCloseButtonRect(GetTabRectangle(num)).Contains(e.Location))
 			{
-				TabCloseButtonHit(num);
+				TryCloseTab(num);
 			}
 		}
+	}
+
+	private IDockContent GetCloseButtonContent(Point location)
+	{
+		if (base.Appearance != DockPane.AppearanceStyle.Document)
+		{
+			return null;
+		}
+		int index = HitTest(location);
+		if (index < 0)
+		{
+			return null;
+		}
+		Tab tab = base.Tabs[index];
+		if (!tab.Content.DockHandler.CloseButtonVisible || !GetCloseButtonRect(GetTabRectangle(index)).Contains(location))
+		{
+			return null;
+		}
+		return tab.Content;
 	}
 
 	private void TabCloseButtonHit(int index)
