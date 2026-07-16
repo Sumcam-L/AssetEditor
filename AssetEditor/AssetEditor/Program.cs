@@ -34,6 +34,22 @@ namespace AssetEditor;
 
 internal static class Program
 {
+	private const int GWL_EXSTYLE = -20;
+
+	private const int WS_EX_TOOLWINDOW = 0x00000080;
+
+	private const int WS_EX_APPWINDOW = 0x00040000;
+
+	private const uint SWP_NOSIZE = 0x0001;
+
+	private const uint SWP_NOMOVE = 0x0002;
+
+	private const uint SWP_NOZORDER = 0x0004;
+
+	private const uint SWP_NOACTIVATE = 0x0010;
+
+	private const uint SWP_FRAMECHANGED = 0x0020;
+
 	[ComImport]
 	[Guid("56FDF344-FD6D-11D0-958A-006097C9A090")]
 	[ClassInterface(ClassInterfaceType.None)]
@@ -59,15 +75,36 @@ internal static class Program
 
 	private static string kNoAssetPreviewer = "--no-asset-previewer";
 
-	private static void RegisterMainWindowTaskbarButton(Form form)
+	[DllImport("user32.dll")]
+	private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+	[DllImport("user32.dll")]
+	private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint flags);
+
+	private static void RefreshMainWindowTaskbarRegistration(Form form)
 	{
+		if (form == null || form.IsDisposed || form.Disposing)
+		{
+			return;
+		}
+		IntPtr handle = form.Handle;
+		int exStyle = GetWindowLong(handle, GWL_EXSTYLE);
+		int taskbarStyle = (exStyle | WS_EX_APPWINDOW) & ~WS_EX_TOOLWINDOW;
+		if (taskbarStyle != exStyle)
+		{
+			SetWindowLong(handle, GWL_EXSTYLE, taskbarStyle);
+			SetWindowPos(handle, IntPtr.Zero, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+		}
 		object taskbarList = null;
 		try
 		{
 			taskbarList = new TaskbarList();
 			ITaskbarList taskbar = (ITaskbarList)taskbarList;
 			taskbar.HrInit();
-			taskbar.AddTab(form.Handle);
+			taskbar.AddTab(handle);
 		}
 		catch (COMException)
 		{
@@ -510,8 +547,15 @@ internal static class Program
 			{
 				assetEditorForm.WindowState = FormWindowState.Normal;
 			}
-			RegisterMainWindowTaskbarButton(assetEditorForm);
 			splash.Close();
+			assetEditorForm.BeginInvoke((Action)delegate
+			{
+				if (assetEditorForm.IsDisposed || assetEditorForm.Disposing)
+				{
+					return;
+				}
+				RefreshMainWindowTaskbarRegistration(assetEditorForm);
+			});
 			StringBuilder stringBuilder = new StringBuilder();
 			ReaderWriterStatistics.DumpStatistics(stringBuilder);
 			Outputs.Write(OutputMessageType.Info, OutputMessageVerbosity.ExtremelyVerbose, stringBuilder.ToString());

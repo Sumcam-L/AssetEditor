@@ -15,29 +15,43 @@ internal static class Program
             return 1;
         }
 
-        int addTabIndex = source.IndexOf("RegisterMainWindowTaskbarButton(assetEditorForm)", StringComparison.Ordinal);
-        int closeIndex = source.LastIndexOf("splash.Close();", StringComparison.Ordinal);
+        int shownIndex = source.IndexOf("assetEditorForm.Shown +=", StringComparison.Ordinal);
+        int closeIndex = shownIndex >= 0 ? source.IndexOf("splash.Close();", shownIndex, StringComparison.Ordinal) : -1;
+        int beginInvokeIndex = closeIndex >= 0 ? source.IndexOf("assetEditorForm.BeginInvoke", closeIndex, StringComparison.Ordinal) : -1;
         int runIndex = source.IndexOf("Application.Run(assetEditorForm)", StringComparison.Ordinal);
-        if (addTabIndex < 0)
+
+        if (shownIndex < 0 || closeIndex < shownIndex || beginInvokeIndex < closeIndex ||
+            runIndex < beginInvokeIndex)
         {
-            Console.Error.WriteLine("FAIL: main window is not explicitly registered with the Windows taskbar.");
+            Console.Error.WriteLine("FAIL: splash does not hand off to a deferred taskbar registration after close.");
             return 1;
         }
 
-        if (closeIndex < addTabIndex || runIndex < closeIndex)
+        string shownHandler = source.Substring(shownIndex, runIndex - shownIndex);
+        int registrationIndex = shownHandler.IndexOf("RefreshMainWindowTaskbarRegistration", StringComparison.Ordinal);
+        if (registrationIndex < 0 ||
+            shownHandler.IndexOf("RefreshMainWindowTaskbarRegistration", registrationIndex + 1, StringComparison.Ordinal) >= 0)
         {
-            Console.Error.WriteLine("FAIL: splash closes before the main taskbar button is registered.");
+            Console.Error.WriteLine("FAIL: Shown handler must perform exactly one taskbar registration.");
             return 1;
         }
 
-        if (source.Contains("assetEditorForm.ShowInTaskbar = false") ||
-            source.Contains("RefreshMainWindowTaskbarRegistration(assetEditorForm"))
+        if (source.Contains("forceReregister") ||
+            !source.Contains("WS_EX_APPWINDOW") ||
+            !source.Contains("WS_EX_TOOLWINDOW") ||
+            !source.Contains("SWP_FRAMECHANGED") ||
+            source.Contains("form.ShowInTaskbar = false") ||
+            source.Contains("form.ShowInTaskbar = true") ||
+            source.Contains("SetForegroundWindow(") ||
+            source.Contains("BringToFront()") ||
+            source.Contains("assetEditorForm.Activate()") ||
+            source.Contains("assetEditorForm.Focus()"))
         {
-            Console.Error.WriteLine("FAIL: startup repairs taskbar state after the main form is visible.");
+            Console.Error.WriteLine("FAIL: taskbar repair toggles ShowInTaskbar (causes flash) or uses focus stealing.");
             return 1;
         }
 
-        Console.WriteLine("PASS: main taskbar button is registered before the splash taskbar button closes.");
+        Console.WriteLine("PASS: splash closes before deferred, non-flashing taskbar re-registration.");
         return 0;
     }
 }

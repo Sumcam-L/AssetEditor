@@ -657,7 +657,10 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		{
 			BringClientToFront(client);
 		}
-		ActivateClient(control);
+		if (info.IsDocument != true)
+		{
+			ActivateClient(control);
+		}
 	}
 
 	public void UnregisterControl(Control control)
@@ -735,7 +738,7 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 				}
 				if (dockContent.Visible && (dockContent == m_activeDockContent || m_dockPanel.ActiveContent == dockContent) && dockContent.Controls.Count > 0 && GetDocumentHost(dockContent.Controls[0]) != null)
 				{
-					AttachDocumentHostIfNeeded(dockContent);
+					AttachVisibleDocumentHost(dockContent);
 				}
 				this.ControlVisibilityChanged.Raise(control, EventArgs.Empty);
 			}
@@ -1083,15 +1086,18 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 
 	private void ActivateClientIfStillActive(DockContent dockContent, long traceGeneration = 0)
 	{
-		if (!m_dockPanel.IsDisposed && dockContent == m_activeDockContent && dockContent.Controls.Count > 0)
+		if (!m_dockPanel.IsDisposed && dockContent == m_activeDockContent &&
+			dockContent == m_dockPanel.ActiveDocument && dockContent.Controls.Count > 0)
 		{
-			var sw = Stopwatch.StartNew();
-			bool attachedLogicalControl;
-			Control logicalControl = AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl);
-			if (attachedLogicalControl)
+			Control pendingControl = m_pendingRegisteredDocumentControl;
+			Control requestedControl = GetLogicalControl(dockContent.Controls[0]);
+			if (pendingControl != null && requestedControl != pendingControl)
 			{
-				FlushDocumentPaint(dockContent);
+				return;
 			}
+			var sw = Stopwatch.StartNew();
+			Control logicalControl = AttachDocumentHostIfNeeded(dockContent);
+			RenderPendingDocumentFirstFrame(dockContent, "active-content");
 			ActivateClient(logicalControl);
 			if (sw.ElapsedMilliseconds > 0)
 				PaintTimingLog.Write("DeferredActivateClient: {0}ms", sw.ElapsedMilliseconds);
@@ -1139,7 +1145,7 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 
 	private void ActivateCurrentDockContent()
 	{
-		DockContent dockContent = m_dockPanel.ActiveContent as DockContent;
+		DockContent dockContent = m_dockPanel.ActiveDocument as DockContent;
 		if (dockContent != null && dockContent == m_activeDockContent)
 		{
 			ActivateClientIfStillActive(dockContent);
@@ -1155,12 +1161,8 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			return;
 		}
 
-		bool attachedLogicalControl;
-		Control logicalControl = AttachDocumentHostIfNeeded(dockContent, out attachedLogicalControl);
-		if (attachedLogicalControl)
-		{
-			FlushDocumentPaint(dockContent);
-		}
+		Control logicalControl = AttachDocumentHostIfNeeded(dockContent);
+		RenderPendingDocumentFirstFrame(dockContent, "visible-host");
 		ActivateClient(logicalControl);
 	}
 
@@ -1200,13 +1202,13 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 
 	private void AttachVisibleDocumentHosts()
 	{
-		foreach (DockContent dockContent in m_dockContent.Values.ToArray())
+		DockContent activeContent = m_dockPanel.ActiveDocument as DockContent;
+		if (activeContent != null && activeContent.DockState == DockState.Document &&
+			activeContent.Visible && !activeContent.IsHidden && activeContent.Controls.Count > 0 &&
+			GetDocumentHost(activeContent.Controls[0]) != null)
 		{
-			if (dockContent.DockState == DockState.Document && dockContent.Visible && !dockContent.IsHidden && dockContent.Controls.Count > 0 && GetDocumentHost(dockContent.Controls[0]) != null)
-			{
-				PaintTimingLog.Write("AttachVisibleDocumentHosts: " + dockContent.Name);
-				AttachVisibleDocumentHost(dockContent);
-			}
+			PaintTimingLog.Write("AttachVisibleDocumentHosts: " + activeContent.Name);
+			AttachVisibleDocumentHost(activeContent);
 		}
 	}
 
@@ -1251,52 +1253,39 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		return documentHost.LogicalControl;
 	}
 
-	private void FlushDocumentPaint(DockContent dockContent)
+	private bool RenderPendingDocumentFirstFrame(DockContent dockContent, string reason)
 	{
-		if (dockContent.DockState != DockState.Document || !dockContent.Visible)
+		if (dockContent == null || dockContent.DockState != DockState.Document ||
+			!dockContent.Visible || dockContent.Controls.Count == 0)
 		{
-			return;
+			return false;
 		}
+
+		DocumentHostControl documentHost = GetDocumentHost(dockContent.Controls[0]);
+		if (documentHost == null || !documentHost.NeedsFirstFrame ||
+			!documentHost.HasAttachedLogicalControl || !documentHost.Visible)
+		{
+			return false;
+		}
+
+		Control logicalControl = documentHost.LogicalControl;
+		Rectangle displayBounds = documentHost.DisplayRectangle;
+		if (displayBounds.Width <= 0 || displayBounds.Height <= 0)
+		{
+			documentHost.MarkFirstFrameRendered();
+			logicalControl.Invalidate(invalidateChildren: true);
+			PaintTimingLog.Write("DocumentFirstFrame: deferred reason={0}, bounds={1}", reason, displayBounds);
+			return true;
+		}
+
+		logicalControl.Bounds = displayBounds;
 		var sw = Stopwatch.StartNew();
-		var stats = new VisibleTreeUpdateStats();
-		UpdateVisibleTree(dockContent, 0, stats);
+		documentHost.Refresh();
+		documentHost.MarkFirstFrameRendered();
 		PaintTimingLog.Write(
-			"FlushDocumentPaint: total={0}ms, controls={1}, depth={2}, update={3}ms, slowest={4}:{5}ms",
-			sw.ElapsedMilliseconds, stats.ControlCount, stats.MaxDepth, stats.UpdateMilliseconds,
-			stats.SlowestControlType ?? "null", stats.SlowestUpdateMilliseconds);
-	}
-
-	private sealed class VisibleTreeUpdateStats
-	{
-		public int ControlCount;
-		public int MaxDepth;
-		public long UpdateMilliseconds;
-		public long SlowestUpdateMilliseconds;
-		public string SlowestControlType;
-	}
-
-	private void UpdateVisibleTree(Control control, int depth, VisibleTreeUpdateStats stats)
-	{
-		if (control == null || !control.Visible)
-		{
-			return;
-		}
-		stats.ControlCount++;
-		stats.MaxDepth = Math.Max(stats.MaxDepth, depth);
-		control.Invalidate(invalidateChildren: true);
-		var sw = Stopwatch.StartNew();
-		control.Update();
-		long updateMilliseconds = sw.ElapsedMilliseconds;
-		stats.UpdateMilliseconds += updateMilliseconds;
-		if (updateMilliseconds > stats.SlowestUpdateMilliseconds)
-		{
-			stats.SlowestUpdateMilliseconds = updateMilliseconds;
-			stats.SlowestControlType = control.GetType().Name;
-		}
-		foreach (Control child in control.Controls)
-		{
-			UpdateVisibleTree(child, depth + 1, stats);
-		}
+			"DocumentFirstFrame: reason={0}, total={1}ms, control={2}, bounds={3}",
+			reason, sw.ElapsedMilliseconds, logicalControl.GetType().Name, displayBounds);
+		return true;
 	}
 
 	private DockPaneStripBase GetDockPaneStripBase(DockContent dockContent)

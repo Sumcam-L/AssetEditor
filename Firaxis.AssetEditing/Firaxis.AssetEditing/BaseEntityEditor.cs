@@ -289,6 +289,8 @@ public abstract class BaseEntityEditor : IDocumentClient, IControlHostClient, II
 		ControlInfo controlInfo = new ControlInfo(instanceEntity.Name + instanceEntity.XMLExtension + "(" + CivTechService.GetProjectName(uri) + ")", localPath, StandardControlGroup.Center, ResourceUtil.GetIcon(value), null);
 		controlInfo.IsDocument = true;
 		BaseInstanceEntityDocument document = InitializeDocument(domNode, uri, instanceEntity, instanceSet);
+		controlInfo.IsDirtyDocument = () => document.Dirty;
+		controlInfo.IsReadOnlyDocument = () => document.IsReadOnly;
 		tInit.Stop();
 		var tAdapter = Stopwatch.StartNew();
 		InitializeAdapter(domNode, instanceEntity);

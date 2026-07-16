@@ -47,6 +47,9 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 
 	private long m_previewActivateGeneration;
 
+	private readonly DeferredPreviewDocumentQueue<IPreviewableDocument> m_pendingPreviewDocuments =
+		new DeferredPreviewDocumentQueue<IPreviewableDocument>();
+
 	private bool m_shuttingDown;
 
 	private ICivTechService CivTechService { get; set; }
@@ -95,12 +98,44 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 	private void DocumentRegistry_DocumentAdded(object sender, ItemInsertedEventArgs<IDocument> e)
 	{
 		IPreviewableDocument previewableDocument = e.Item.As<IPreviewableDocument>();
-		if (previewableDocument != null)
+		if (previewableDocument == null)
 		{
-			IPreviewWindow previewWindow = (PreviewWindows[previewableDocument] = AssetPreviewer.OpenWindow(PreviewerControlHost.PreviewerControl.Handle, PreviewerEntityLoadingService.InstanceSet));
-			IPreviewWindow previewWnd = (previewableDocument.PreviewWindow = previewWindow);
-			InitializeDocumentPreviewing(previewableDocument, previewWnd);
+			return;
 		}
+
+		Control dispatcher = PreviewerControlHost?.PreviewerControl;
+		if (m_pendingPreviewDocuments.Enqueue(dispatcher, previewableDocument, InitializeAddedDocumentPreviewing))
+		{
+			PaintTimingLog.Write("Previewer: deferred document add path={0}", previewableDocument.Uri?.LocalPath ?? "null");
+			return;
+		}
+		if (m_pendingPreviewDocuments.PendingItems.Contains(previewableDocument))
+		{
+			return;
+		}
+
+		InitializeAddedDocumentPreviewing(previewableDocument);
+	}
+
+	private void InitializeAddedDocumentPreviewing(IPreviewableDocument previewableDocument)
+	{
+		Control previewerControl = PreviewerControlHost?.PreviewerControl;
+		if (m_shuttingDown || previewableDocument == null ||
+			!DocumentRegistry.Documents.Contains(previewableDocument) ||
+			PreviewWindows.ContainsKey(previewableDocument) ||
+			previewerControl == null || previewerControl.IsDisposed || !previewerControl.IsHandleCreated)
+		{
+			return;
+		}
+
+		var sw = Stopwatch.StartNew();
+		IPreviewWindow previewWindow = AssetPreviewer.OpenWindow(
+			previewerControl.Handle,
+			PreviewerEntityLoadingService.InstanceSet);
+		PreviewWindows[previewableDocument] = previewWindow;
+		previewableDocument.PreviewWindow = previewWindow;
+		InitializeDocumentPreviewing(previewableDocument, previewWindow);
+		PaintTimingLog.Write("Previewer: deferred document add complete={0}ms", sw.ElapsedMilliseconds);
 	}
 
 	private void DocumentRegistry_DocumentRemoved(object sender, ItemRemovedEventArgs<IDocument> e)
@@ -112,6 +147,13 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 		IPreviewableDocument previewableDocument = e.Item.As<IPreviewableDocument>();
 		if (previewableDocument != null)
 		{
+			if (m_pendingPreviewDocuments.Cancel(previewableDocument))
+			{
+				previewableDocument.PreviewWindow = null;
+				PaintTimingLog.Write("Previewer: canceled deferred document add");
+				return;
+			}
+
 			if (!PreviewWindows.ContainsKey(previewableDocument))
 			{
 				BugSubmitter.SilentAssert(condition: false, $"Removing untracked preview window associated with \"{previewableDocument.Uri.LocalPath}\" @summary Removing untracked preview window!");
@@ -143,6 +185,7 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 		m_shuttingDown = true;
 		Application.ApplicationExit -= Application_ApplicationExit;
 		m_previewActivateGeneration++;
+		m_pendingPreviewDocuments.Clear();
 		UiIdleCleanupQueue.Drain();
 		foreach (KeyValuePair<IPreviewableDocument, IPreviewWindow> pair in PreviewWindows.ToArray())
 		{
@@ -444,7 +487,9 @@ public class PreviewerDocumentService : IPreviewerDocumentService, ISequencedPro
 		UiIdleCleanupQueue.Drain();
 		BugSubmitter.Assert(ProjectChangeCache.Count == 0, "Dirty project change cache");
 		statusMessagePrinter?.Invoke("Cleaning up entities being previewed...");
-		ProjectChangeCache.AddRange(PreviewWindows.Keys);
+		ProjectChangeCache.AddRange(m_pendingPreviewDocuments.PendingItems);
+		m_pendingPreviewDocuments.Clear();
+		ProjectChangeCache.AddRange(PreviewWindows.Keys.Where(doc => !ProjectChangeCache.Contains(doc)));
 		PreviewWindows.ForEach(delegate(KeyValuePair<IPreviewableDocument, IPreviewWindow> dwp)
 		{
 			ShutdownDocumentPreviewing(dwp.Key, dwp.Value);

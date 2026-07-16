@@ -485,6 +485,7 @@ public class AssetBrowserFileCommands : IDocumentService, ICommandClient, IIniti
 
 	private void OpenExistingDocumentFromAssets(IDocumentClient client, string fallbackDirectory)
 	{
+		var openTimer = System.Diagnostics.Stopwatch.StartNew();
 		if (client == null)
 		{
 			throw new ArgumentNullException("client");
@@ -496,15 +497,21 @@ public class AssetBrowserFileCommands : IDocumentService, ICommandClient, IIniti
 		{
 			FileDialogService.ForcedInitialDirectory = initialDirectory;
 			string[] pathNames = null;
-			if (FileDialogService.OpenFileNames(ref pathNames, filter) == FileDialogResult.OK && pathNames != null)
+			FileDialogResult dialogResult = FileDialogService.OpenFileNames(ref pathNames, filter);
+			PaintTimingLog.Write("OpenFromAssets: dialog={0}ms, result={1}, files={2}", openTimer.ElapsedMilliseconds, dialogResult, pathNames?.Length ?? 0);
+			if (dialogResult == FileDialogResult.OK && pathNames != null)
 			{
 				foreach (string pathName in pathNames)
 				{
+					long resolveStart = openTimer.ElapsedMilliseconds;
 					IDocumentClient firstClientForPath = m_documentClients.Select((Lazy<IDocumentClient> lazy) => lazy.Value).GetFirstClientForPath(pathName);
+					PaintTimingLog.Write("OpenFromAssets: client={0}ms, path={1}, found={2}", openTimer.ElapsedMilliseconds - resolveStart, pathName, firstClientForPath != null);
 					if (firstClientForPath != null)
 					{
+						long openStart = openTimer.ElapsedMilliseconds;
 						Uri docUri = new Uri(pathName, UriKind.RelativeOrAbsolute);
 						FindOrOpenExistingDocument(firstClientForPath, docUri);
+						PaintTimingLog.Write("OpenFromAssets: open={0}ms, elapsed={1}ms, path={2}", openTimer.ElapsedMilliseconds - openStart, openTimer.ElapsedMilliseconds, pathName);
 					}
 				}
 			}
@@ -512,6 +519,7 @@ public class AssetBrowserFileCommands : IDocumentService, ICommandClient, IIniti
 		finally
 		{
 			FileDialogService.ForcedInitialDirectory = previousForcedInitialDirectory;
+			PaintTimingLog.Write("OpenFromAssets: complete={0}ms", openTimer.ElapsedMilliseconds);
 		}
 	}
 

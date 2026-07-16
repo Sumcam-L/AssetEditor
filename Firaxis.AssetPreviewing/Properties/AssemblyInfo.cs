@@ -15,3 +15,4 @@ using System.Runtime.Versioning;
 [assembly: Guid("1B02EC78-E43B-4233-A58E-C6DA821815EA")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyVersion("1.0.0.0")]
+[assembly: InternalsVisibleTo("PreviewerDeferredDocumentWorkRepro")]

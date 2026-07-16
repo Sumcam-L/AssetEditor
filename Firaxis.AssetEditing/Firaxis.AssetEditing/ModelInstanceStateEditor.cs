@@ -77,6 +77,22 @@ public class ModelInstanceStateEditor : UserControl
 
 	public void Bind(IModelInstanceStateContext context)
 	{
+		if (m_selectionContext != null)
+		{
+			m_selectionContext.SelectionChanged -= Context_SelectionChanged;
+		}
+
+		if (context == null)
+		{
+			m_context = null;
+			CommandClient = null;
+			Commands = null;
+			m_stateEditor.Bind(null);
+			m_modelListEditor.View = null;
+			m_selectionContext = null;
+			return;
+		}
+
 		m_context = context;
 		CommandClient = m_context;
 		Commands = m_context.Commands;
@@ -270,9 +286,18 @@ public class ModelInstanceStateEditor : UserControl
 
 	protected override void Dispose(bool disposing)
 	{
-		if (disposing && components != null)
+		if (disposing)
 		{
-			components.Dispose();
+			Application.Idle -= Application_Idle;
+			if (m_selectionContext != null)
+			{
+				m_selectionContext.SelectionChanged -= Context_SelectionChanged;
+				m_selectionContext = null;
+			}
+			if (components != null)
+			{
+				components.Dispose();
+			}
 		}
 		base.Dispose(disposing);
 	}

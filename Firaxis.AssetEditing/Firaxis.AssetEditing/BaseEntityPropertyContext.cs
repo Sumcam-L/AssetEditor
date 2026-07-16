@@ -143,6 +143,17 @@ public class BaseEntityPropertyContext : EditingContext, IEntityEditorContext, I
 		this.ItemRemoved.Raise(this, new ItemRemovedEventArgs<object>(e.Index, e.Child, e.Parent));
 	}
 
+	protected override void OnBeginning()
+	{
+		if (Doc != null && Doc.IsReadOnly)
+		{
+			string message = "Can not modify assets that are not part of the active project \"" + Doc.CivTechService.PrimaryProject.Name + "\"";
+			MessageBoxes.Show(message, "File not changed", MessageBoxButton.OK, MessageBoxImage.Error);
+			throw new InvalidTransactionException(message);
+		}
+		base.OnBeginning();
+	}
+
 	protected override void OnEnded()
 	{
 		IDisposable disposable = null;

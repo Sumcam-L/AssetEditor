@@ -8,6 +8,7 @@ namespace Sce.Atf.Applications;
 internal sealed class DocumentHostControl : UserControl
 {
 	private readonly IDisposable m_logicalControlObserver;
+	private bool m_needsFirstFrame = true;
 
     public DocumentHostControl(Control logicalControl)
     {
@@ -24,6 +25,13 @@ internal sealed class DocumentHostControl : UserControl
     public Control LogicalControl { get; }
 
     public bool HasAttachedLogicalControl => !LogicalControl.IsDisposed && LogicalControl.Parent == this;
+
+	public bool NeedsFirstFrame => m_needsFirstFrame;
+
+	public void MarkFirstFrameRendered()
+	{
+		m_needsFirstFrame = false;
+	}
 
     public bool AttachLogicalControl()
     {
@@ -61,6 +69,7 @@ internal sealed class DocumentHostControl : UserControl
 
         phase.Restart();
         LogicalControl.Visible = true;
+		m_needsFirstFrame = true;
         long show = phase.ElapsedMilliseconds;
 
         phase.Restart();

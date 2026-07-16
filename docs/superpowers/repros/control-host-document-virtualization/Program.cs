@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Firaxis.ATF;
 using Firaxis.Theme;
@@ -140,9 +141,64 @@ internal static class Program
 
             Application.DoEvents();
 
+            typeof(ControlHostService)
+                .GetMethod("AttachVisibleDocumentHosts", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .Invoke(service, null);
+
             if (second.Parent != null && second.Visible)
             {
-                Console.Error.WriteLine("FAIL: showing first document left second real control attached and visible in the same pane.");
+                Console.Error.WriteLine("FAIL: visible-host sweep attached an inactive document after the active document.");
+                return 1;
+            }
+
+            typeof(ControlHostService)
+                .GetField("m_pendingRegisteredDocumentControl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .SetValue(service, first);
+            typeof(ControlHostService)
+                .GetField("m_activeDockContent", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .SetValue(service, secondContent);
+            typeof(ControlHostService)
+                .GetMethod("ActivateClientIfStillActive", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .Invoke(service, new object[] { secondContent, 0L });
+            if (second.Parent != null || first.Parent == null)
+            {
+                Console.Error.WriteLine("FAIL: stale activation attached the old document while a new document registration was pending.");
+                return 1;
+            }
+            typeof(ControlHostService)
+                .GetField("m_pendingRegisteredDocumentControl", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .SetValue(service, null);
+
+            using (var tool = new WeifenLuo.WinFormsUI.Docking.DockContent())
+            {
+                firstContent.Controls[0].GetType()
+                    .GetMethod("DetachLogicalControl")
+                    .Invoke(firstContent.Controls[0], null);
+                tool.Show(firstContent.DockPanel, DockState.DockRight);
+                tool.Activate();
+                Application.DoEvents();
+                typeof(ControlHostService)
+                    .GetField("m_activeDockContent", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .SetValue(service, firstContent);
+                typeof(ControlHostService)
+                    .GetMethod("ActivateClientIfStillActive", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .Invoke(service, new object[] { firstContent, 0L });
+                if (first.Parent == null || !first.Visible)
+                {
+                    Console.Error.WriteLine("FAIL: active document was not attached while a tool window held active content.");
+                    return 1;
+                }
+            }
+
+            typeof(ControlHostService)
+                .GetField("m_activeDockContent", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .SetValue(service, secondContent);
+            typeof(ControlHostService)
+                .GetMethod("ActivateClientIfStillActive", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .Invoke(service, new object[] { secondContent, 0L });
+            if (second.Parent != null || first.Parent == null)
+            {
+                Console.Error.WriteLine("FAIL: stale activation attached the old document after pending registration completed.");
                 return 1;
             }
 
@@ -165,6 +221,38 @@ internal static class Program
             service.UnregisterControl(first);
             Application.DoEvents();
 
+            PaintTrackingPanel baselineChild;
+            PaintTrackingPanel targetChild;
+            using (PaintTrackingPanel baseline = NewPaintDocumentPanel("visibleBaseline", out baselineChild))
+            using (PaintTrackingPanel target = NewPaintDocumentPanel("visibleTarget", out targetChild))
+            {
+                service.RegisterControl(baseline, NewDocumentInfo("Visible Baseline"), client);
+                Application.DoEvents();
+
+                bool targetPaintedBeforeActivation = false;
+                client.Activating = control =>
+                {
+                    if (control == target)
+                    {
+                        targetPaintedBeforeActivation = target.PaintCount > 0 && targetChild.PaintCount > 0;
+                        Thread.Sleep(250);
+                    }
+                };
+
+                service.RegisterControl(target, NewDocumentInfo("Visible Target"), client);
+                client.Activating = null;
+
+                if (!targetPaintedBeforeActivation)
+                {
+                    Console.Error.WriteLine("FAIL: visible registered document reached slow activation before its first complete paint.");
+                    return 1;
+                }
+
+                service.UnregisterControl(target);
+                service.UnregisterControl(baseline);
+                Application.DoEvents();
+            }
+
             Console.WriteLine("PASS: document virtualization routes lifecycle to logical controls and attaches only the active real control.");
             return 0;
         }
@@ -178,6 +266,35 @@ internal static class Program
             Tag = name,
             BackColor = Color.FromArgb(20, 40, 60)
         };
+    }
+
+    private sealed class PaintTrackingPanel : Panel
+    {
+        public int PaintCount { get; private set; }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            PaintCount++;
+            base.OnPaint(e);
+        }
+    }
+
+    private static PaintTrackingPanel NewPaintDocumentPanel(string name, out PaintTrackingPanel child)
+    {
+        var root = new PaintTrackingPanel
+        {
+            Name = name,
+            Tag = name,
+            BackColor = Color.FromArgb(24, 48, 72)
+        };
+        child = new PaintTrackingPanel
+        {
+            Name = name + "Child",
+            Dock = DockStyle.Fill,
+            BackColor = Color.FromArgb(72, 48, 24)
+        };
+        root.Controls.Add(child);
+        return root;
     }
 
     private static ControlInfo NewDocumentInfo(string name)
@@ -196,8 +313,11 @@ internal static class Program
 
         public List<Control> ActivationHistory { get; } = new List<Control>();
 
+        public Action<Control> Activating { get; set; }
+
         public void Activate(Control control)
         {
+            Activating?.Invoke(control);
             LastActivated = control;
             ActivationHistory.Add(control);
         }

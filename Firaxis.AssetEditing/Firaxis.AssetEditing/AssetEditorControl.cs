@@ -19,6 +19,26 @@ namespace Firaxis.AssetEditing;
 
 public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowClient, IControlHostUnregisteringClient
 {
+	private readonly struct PageCapabilities
+	{
+		public PageCapabilities(IAssetEditorContext context)
+		{
+			CookParameters = context?.HasCookParameters == true;
+			Geometries = context?.HasGeometries == true;
+			Animations = context?.HasAnimations == true;
+			Particles = context?.HasParticleEffects == true;
+			Behaviors = context?.HasBehaviors == true;
+			Splines = context?.HasSplines == true;
+		}
+
+		public bool CookParameters { get; }
+		public bool Geometries { get; }
+		public bool Animations { get; }
+		public bool Particles { get; }
+		public bool Behaviors { get; }
+		public bool Splines { get; }
+	}
+
 	private struct SubControlInfo
 	{
 		public string Label;
@@ -77,6 +97,20 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 	private bool m_controlHostUnregistering;
 
 	private Firaxis.ATF.DockContent m_lastActiveInnerContent;
+
+	private readonly AssetPageBindingCoordinator m_pageBindings = new AssetPageBindingCoordinator();
+
+	private PageCapabilities m_pageCapabilities;
+
+	private bool m_configuringPageBindings;
+
+	private bool m_firstPaintCompleted;
+
+	private bool m_pagePrewarmIdleSubscribed;
+
+	private int m_pagePrewarmGeneration;
+
+	private Timer m_pagePrewarmTimer;
 
 	private string TracePrefix => "EntityEditorUI: AssetEditorControl#" + RuntimeHelpers.GetHashCode(this).ToString("X");
 
@@ -171,6 +205,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 	public void BeforeControlHostUnregister()
 	{
 		m_controlHostUnregistering = true;
+		CancelPagePrewarm("unregister");
 		PaintTimingLog.Write("{0} before control host unregister", TracePrefix);
 	}
 
@@ -324,10 +359,17 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 	{
 		PaintTimingLog.Write("{0} Paint visible={1}, {2}", TracePrefix, Visible, GetInnerDockState());
 		base.OnPaint(e);
+		if (!m_firstPaintCompleted)
+		{
+			m_firstPaintCompleted = true;
+			SchedulePagePrewarmAfterFirstPaint();
+		}
 	}
 
 	private void InnerDockPanel_ActiveContentChanged(object sender, EventArgs e)
 	{
+		Firaxis.ATF.DockContent active = m_dockPanel.ActiveContent as Firaxis.ATF.DockContent;
+		BindPendingPageForUser(active);
 		PaintTimingLog.Write("{0} InnerActiveContentChanged {1}", TracePrefix, GetInnerDockState());
 		if (HasValidActiveInnerContent())
 		{
@@ -345,7 +387,24 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		PaintTimingLog.Write("{0} InnerDockContentVisible name={1}, visible={2}, {3}", TracePrefix, dockContent?.Name ?? "null", dockContent?.Visible ?? false, GetInnerDockState());
 		if (dockContent != null && dockContent.Visible && dockContent.DockState == DockState.Document && dockContent.DockHandler.Pane?.ActiveContent == dockContent)
 		{
+			BindPendingPageForUser(dockContent);
 			m_lastActiveInnerContent = dockContent;
+		}
+	}
+
+	private void BindPendingPageForUser(Firaxis.ATF.DockContent dockContent)
+	{
+		if (m_configuringPageBindings || dockContent == null || dockContent.Controls.Count == 0 ||
+			m_disposing || m_controlHostUnregistering || IsDisposed)
+		{
+			return;
+		}
+
+		m_pageBindings.BindForUser(dockContent.Controls[0]);
+		if (!m_pageBindings.HasPending)
+		{
+			m_pagePrewarmTimer?.Stop();
+			UnsubscribePagePrewarmIdle();
 		}
 	}
 
@@ -488,13 +547,289 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 	private void RestoreDefaultDockStates()
 	{
 		m_dockContent[m_propertyEditor].DockState = DockState.DockTop;
-		m_dockContent[m_cookParameterSetEditor].DockState = m_context != null && m_context.HasCookParameters ? DockState.Document : DockState.Hidden;
-		m_dockContent[m_geometrySetEditor].DockState = m_context != null && m_context.HasGeometries ? DockState.Document : DockState.Hidden;
+		m_dockContent[m_cookParameterSetEditor].DockState = m_pageCapabilities.CookParameters ? DockState.Document : DockState.Hidden;
+		m_dockContent[m_geometrySetEditor].DockState = m_pageCapabilities.Geometries ? DockState.Document : DockState.Hidden;
 		m_dockContent[m_attachmentEditor].DockState = DockState.Document;
-		m_dockContent[m_animationSetEditor].DockState = m_context != null && m_context.HasAnimations ? DockState.Document : DockState.Hidden;
-		m_dockContent[m_particleEffectSetEditor].DockState = m_context != null && m_context.HasParticleEffects ? DockState.Document : DockState.Hidden;
-		m_dockContent[m_behaviorSetEditor].DockState = m_context != null && m_context.HasBehaviors ? DockState.Document : DockState.Hidden;
-		m_dockContent[m_splineSetEditor].DockState = m_context != null && m_context.HasSplines ? DockState.Document : DockState.Hidden;
+		m_dockContent[m_animationSetEditor].DockState = m_pageCapabilities.Animations ? DockState.Document : DockState.Hidden;
+		m_dockContent[m_particleEffectSetEditor].DockState = m_pageCapabilities.Particles ? DockState.Document : DockState.Hidden;
+		m_dockContent[m_behaviorSetEditor].DockState = m_pageCapabilities.Behaviors ? DockState.Document : DockState.Hidden;
+		m_dockContent[m_splineSetEditor].DockState = m_pageCapabilities.Splines ? DockState.Document : DockState.Hidden;
+	}
+
+	private void ApplyPageCapabilities(PageCapabilities capabilities)
+	{
+		SetPageAvailable(m_cookParameterSetEditor, capabilities.CookParameters);
+		SetPageAvailable(m_geometrySetEditor, capabilities.Geometries);
+		SetPageAvailable(m_attachmentEditor, available: true);
+		SetPageAvailable(m_animationSetEditor, capabilities.Animations);
+		SetPageAvailable(m_particleEffectSetEditor, capabilities.Particles);
+		SetPageAvailable(m_behaviorSetEditor, capabilities.Behaviors);
+		SetPageAvailable(m_splineSetEditor, capabilities.Splines);
+	}
+
+	private void SetPageAvailable(Control control, bool available)
+	{
+		if (available)
+		{
+			ShowInnerDocument(control);
+		}
+		else
+		{
+			HideInnerDocument(control);
+		}
+	}
+
+	private Control GetInitialPage(PageCapabilities capabilities)
+	{
+		if (capabilities.Geometries)
+		{
+			return m_geometrySetEditor;
+		}
+		if (capabilities.CookParameters)
+		{
+			return m_cookParameterSetEditor;
+		}
+		return m_attachmentEditor;
+	}
+
+	private IEnumerable<AssetPageBindingCoordinator.Page> CreatePageBindings(PageCapabilities capabilities)
+	{
+		if (capabilities.Geometries)
+		{
+			yield return CreatePageBinding("Geometries", m_geometrySetEditor, BindGeometrySet);
+		}
+		if (capabilities.CookParameters)
+		{
+			yield return CreatePageBinding("Cook Params", m_cookParameterSetEditor, BindCookParameters);
+		}
+		yield return CreatePageBinding("Attachments", m_attachmentEditor, BindAttachments);
+		if (capabilities.Animations)
+		{
+			yield return CreatePageBinding("Animations", m_animationSetEditor, BindAnimationSet);
+		}
+		if (capabilities.Behaviors)
+		{
+			yield return CreatePageBinding("Behaviors", m_behaviorSetEditor, BindBehaviorSet);
+		}
+		if (capabilities.Particles)
+		{
+			yield return CreatePageBinding("Particles", m_particleEffectSetEditor, BindParticleEffectSet);
+		}
+		if (capabilities.Splines)
+		{
+			yield return CreatePageBinding("Splines", m_splineSetEditor, BindSplineEditor);
+		}
+	}
+
+	private AssetPageBindingCoordinator.Page CreatePageBinding(string name, Control control, Action bind)
+	{
+		return new AssetPageBindingCoordinator.Page(name, control, trigger => BindPage(name, trigger, bind));
+	}
+
+	private void BindPage(string name, string trigger, Action bind)
+	{
+		var timer = Stopwatch.StartNew();
+		int generation = m_pageBindings.Generation;
+		PaintTimingLog.Write("AssetPageBind begin page={0} trigger={1} generation={2}", name, trigger, generation);
+		try
+		{
+			bind();
+		}
+		finally
+		{
+			PaintTimingLog.Write("AssetPageBind end page={0} trigger={1} generation={2} elapsed={3}ms",
+				name, trigger, generation, timer.ElapsedMilliseconds);
+		}
+	}
+
+	private void BindAttachments()
+	{
+		m_attachmentEditor.Bind(m_context?.AttachmentsContext);
+	}
+
+	private void ClearOptionalPageBindings()
+	{
+		UnsubscribeCookParameterSelection();
+		m_cookParameterSetEditor.Bind(null);
+		m_cookParameterPropertyEditor.Bind(null);
+		m_geometrySetEditor.Bind(null);
+		m_attachmentEditor.Bind(null);
+		m_animationSetEditor.Bind(null);
+		m_particleEffectSetEditor.Bind(null);
+		m_behaviorSetEditor.Bind(null);
+		m_splineSetEditor.Bind(null);
+	}
+
+	private void ConfigurePageBindings(bool preserveActivePage)
+	{
+		m_configuringPageBindings = true;
+		try
+		{
+			ClearOptionalPageBindings();
+			CancelPagePrewarm("configure");
+			m_firstPaintCompleted = false;
+			m_pageCapabilities = new PageCapabilities(m_context);
+			ApplyPageCapabilities(m_pageCapabilities);
+			if (m_context != null)
+			{
+				Control initialPage = preserveActivePage ? GetCurrentSupportedPage() : null;
+				initialPage ??= GetInitialPage(m_pageCapabilities);
+				m_pageBindings.BeginGeneration(CreatePageBindings(m_pageCapabilities), initialPage);
+				ActivateInitialPage(initialPage);
+			}
+		}
+		finally
+		{
+			m_configuringPageBindings = false;
+		}
+
+		if (IsHandleCreated && Visible)
+		{
+			Invalidate(invalidateChildren: true);
+		}
+	}
+
+	private Control GetCurrentSupportedPage()
+	{
+		Firaxis.ATF.DockContent active = m_dockPanel.ActiveContent as Firaxis.ATF.DockContent;
+		if (active == null || active.Controls.Count == 0)
+		{
+			return null;
+		}
+
+		Control control = active.Controls[0];
+		return IsSupportedPage(control) ? control : null;
+	}
+
+	private bool IsSupportedPage(Control control)
+	{
+		return control == m_attachmentEditor ||
+			(control == m_geometrySetEditor && m_pageCapabilities.Geometries) ||
+			(control == m_cookParameterSetEditor && m_pageCapabilities.CookParameters) ||
+			(control == m_animationSetEditor && m_pageCapabilities.Animations) ||
+			(control == m_particleEffectSetEditor && m_pageCapabilities.Particles) ||
+			(control == m_behaviorSetEditor && m_pageCapabilities.Behaviors) ||
+			(control == m_splineSetEditor && m_pageCapabilities.Splines);
+	}
+
+	private void ActivateInitialPage(Control initialPage)
+	{
+		if (initialPage == null || !m_dockContent.TryGetValue(initialPage, out Firaxis.ATF.DockContent content))
+		{
+			return;
+		}
+
+		if (content.DockHandler.Pane != null)
+		{
+			if (content.DockHandler.Pane.ActiveContent != content)
+			{
+				content.DockHandler.Pane.ActiveContent = content;
+			}
+			content.Activate();
+		}
+		else
+		{
+			content.Show(m_dockPanel, DockState.Document);
+		}
+		m_lastActiveInnerContent = content;
+	}
+
+	private bool BindNextIdle()
+	{
+		return m_pageBindings.BindNextIdle();
+	}
+
+	private void SchedulePagePrewarmAfterFirstPaint()
+	{
+		if (!m_firstPaintCompleted || m_pagePrewarmIdleSubscribed || !m_pageBindings.HasPending ||
+			m_disposing || m_controlHostUnregistering || IsDisposed)
+		{
+			return;
+		}
+
+		m_pagePrewarmGeneration = m_pageBindings.Generation;
+		Application.Idle += PagePrewarm_Idle;
+		m_pagePrewarmIdleSubscribed = true;
+		PaintTimingLog.Write("AssetPagePrewarm scheduled generation={0} pending={1}",
+			m_pagePrewarmGeneration, m_pageBindings.PendingCount);
+	}
+
+	private void PagePrewarm_Idle(object sender, EventArgs e)
+	{
+		UnsubscribePagePrewarmIdle();
+		if (m_disposing || m_controlHostUnregistering || IsDisposed)
+		{
+			return;
+		}
+		if (m_pagePrewarmGeneration != m_pageBindings.Generation)
+		{
+			PaintTimingLog.Write("AssetPagePrewarm stale generation={0} currentGeneration={1}",
+				m_pagePrewarmGeneration, m_pageBindings.Generation);
+			return;
+		}
+		int generation = m_pagePrewarmGeneration;
+
+		try
+		{
+			BindNextIdle();
+		}
+		catch (System.Exception ex)
+		{
+			PaintTimingLog.Write("AssetPagePrewarm failed generation={0} error={1}: {2}",
+				generation, ex.GetType().Name, ex.Message);
+		}
+		if (generation != m_pageBindings.Generation)
+		{
+			PaintTimingLog.Write("AssetPagePrewarm stale generation={0} currentGeneration={1}",
+				generation, m_pageBindings.Generation);
+			return;
+		}
+
+		if (!m_pageBindings.HasPending)
+		{
+			return;
+		}
+
+		if (m_pagePrewarmTimer == null)
+		{
+			m_pagePrewarmTimer = new Timer { Interval = 150 };
+			m_pagePrewarmTimer.Tick += PagePrewarmTimer_Tick;
+		}
+		m_pagePrewarmTimer.Stop();
+		m_pagePrewarmGeneration = generation;
+		m_pagePrewarmTimer.Start();
+	}
+
+	private void PagePrewarmTimer_Tick(object sender, EventArgs e)
+	{
+		m_pagePrewarmTimer.Stop();
+		if (m_pagePrewarmGeneration != m_pageBindings.Generation)
+		{
+			PaintTimingLog.Write("AssetPagePrewarm timer stale generation={0} currentGeneration={1}",
+				m_pagePrewarmGeneration, m_pageBindings.Generation);
+			return;
+		}
+		SchedulePagePrewarmAfterFirstPaint();
+	}
+
+	private void UnsubscribePagePrewarmIdle()
+	{
+		if (!m_pagePrewarmIdleSubscribed)
+		{
+			return;
+		}
+		Application.Idle -= PagePrewarm_Idle;
+		m_pagePrewarmIdleSubscribed = false;
+	}
+
+	private void CancelPagePrewarm(string reason)
+	{
+		m_pagePrewarmTimer?.Stop();
+		UnsubscribePagePrewarmIdle();
+		m_pageBindings.Cancel();
+		m_pagePrewarmGeneration = 0;
+		PaintTimingLog.Write("AssetPagePrewarm canceled generation={0} reason={1}",
+			m_pageBindings.Generation, reason);
 	}
 
 	private void SetAssetEditorLayoutState(string value)
@@ -519,6 +854,49 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		return m_dockPanel.GetLayoutState();
 	}
 
+	private void ResetFailedBinding()
+	{
+		System.Exception firstCleanupException = null;
+		void TryCleanup(Action cleanup)
+		{
+			try
+			{
+				cleanup();
+			}
+			catch (System.Exception ex)
+			{
+				firstCleanupException ??= ex;
+			}
+		}
+
+		m_configuringPageBindings = true;
+		try
+		{
+			TryCleanup(() =>
+			{
+				if (m_context != null)
+				{
+					m_context.Reloaded -= AssetContext_Reloaded;
+				}
+			});
+			TryCleanup(() => CancelPagePrewarm("bind-failed"));
+			TryCleanup(ClearOptionalPageBindings);
+			TryCleanup(() => m_propertyEditor.Bind(null));
+			m_context = null;
+			m_pageCapabilities = default;
+			TryCleanup(() => ApplyPageCapabilities(m_pageCapabilities));
+		}
+		finally
+		{
+			m_configuringPageBindings = false;
+		}
+
+		if (firstCleanupException != null)
+		{
+			throw firstCleanupException;
+		}
+	}
+
 	public override void Bind(IEntityEditorContext context)
 	{
 		PaintTimingLog.Write("{0} Bind begin handle={1}, visible={2}, parent={3}, {4}", TracePrefix, IsHandleCreated, Visible, Parent?.GetType().Name ?? "null", GetInnerDockState());
@@ -530,55 +908,34 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		try
 		{
 			var bindTimer = Stopwatch.StartNew();
-			long previousStep = 0;
 			if (m_context != null)
 			{
 				m_context.Reloaded -= AssetContext_Reloaded;
-				m_context = null;
 			}
 			m_context = (IAssetEditorContext)context;
 			PaintTimingLog.Write("{0} Bind step property editor", TracePrefix);
 			m_propertyEditor.Bind(m_context?.EntityContext);
-			PaintTimingLog.Write("{0} Bind timing property={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
-			m_attachmentEditor.Bind(m_context?.AttachmentsContext);
-			PaintTimingLog.Write("{0} Bind timing attachments={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
-			BindCookParameters();
-			PaintTimingLog.Write("{0} Bind timing cookParameters={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
-			BindGeometrySet();
-			PaintTimingLog.Write("{0} Bind timing geometry={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
-			BindAnimationSet();
-			PaintTimingLog.Write("{0} Bind timing animations={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
-			BindParticleEffectSet();
-			PaintTimingLog.Write("{0} Bind timing particles={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
-			BindBehaviorSet();
-			PaintTimingLog.Write("{0} Bind timing behaviors={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
-			BindSplineEditor();
-			PaintTimingLog.Write("{0} Bind timing splines={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
-			if (m_dockContent[m_geometrySetEditor].DockHandler.Pane != null && m_dockContent[m_geometrySetEditor].DockState != DockState.Hidden)
-			{
-				m_dockContent[m_geometrySetEditor].Activate();
-			}
-			PaintTimingLog.Write("{0} Bind timing activateGeometry={1}ms", TracePrefix, bindTimer.ElapsedMilliseconds - previousStep);
-			previousStep = bindTimer.ElapsedMilliseconds;
+			ConfigurePageBindings(preserveActivePage: false);
 			ScheduleEnsureActiveInnerContent();
 			if (m_context != null)
 			{
 				m_context.Reloaded += AssetContext_Reloaded;
 			}
-			PaintTimingLog.Write("{0} Bind end total={1}ms, finalize={2}ms, handle={3}, visible={4}, parent={5}, {6}", TracePrefix,
-				bindTimer.ElapsedMilliseconds, bindTimer.ElapsedMilliseconds - previousStep, IsHandleCreated, Visible, Parent?.GetType().Name ?? "null", GetInnerDockState());
+			PaintTimingLog.Write("{0} Bind end total={1}ms, handle={2}, visible={3}, parent={4}, {5}", TracePrefix,
+				bindTimer.ElapsedMilliseconds, IsHandleCreated, Visible, Parent?.GetType().Name ?? "null", GetInnerDockState());
 		}
 		catch (System.Exception ex)
 		{
 			PaintTimingLog.Write("{0} Bind exception {1}: {2}\n{3}", TracePrefix, ex.GetType().FullName, ex.Message, ex.StackTrace);
+			try
+			{
+				ResetFailedBinding();
+			}
+			catch (System.Exception cleanupEx)
+			{
+				PaintTimingLog.Write("{0} Bind cleanup exception {1}: {2}\n{3}", TracePrefix,
+					cleanupEx.GetType().FullName, cleanupEx.Message, cleanupEx.StackTrace);
+			}
 			throw;
 		}
 	}
@@ -590,13 +947,26 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			ShowInnerDocument(m_cookParameterSetEditor);
 			m_cookParameterSetEditor.Bind(m_context.CookParametersContext);
 			m_cookParameterPropertyEditor.Bind(m_context.CookParametersContext);
-			m_cookParameterPropertyEditor.PropertyGridView.SelectedPropertyChanged -= PropertyGridView_SelectedPropertyChanged;
-			m_cookParameterPropertyEditor.PropertyGridView.SelectedPropertyChanged += PropertyGridView_SelectedPropertyChanged;
+			UnsubscribeCookParameterSelection();
+			var propertyGridView = m_cookParameterPropertyEditor?.PropertyGridView;
+			if (propertyGridView != null)
+			{
+				propertyGridView.SelectedPropertyChanged += PropertyGridView_SelectedPropertyChanged;
+			}
 		}
 		else
 		{
-			m_cookParameterPropertyEditor.PropertyGridView.SelectedPropertyChanged -= PropertyGridView_SelectedPropertyChanged;
+			UnsubscribeCookParameterSelection();
 			HideInnerDocument(m_cookParameterSetEditor);
+		}
+	}
+
+	private void UnsubscribeCookParameterSelection()
+	{
+		var propertyGridView = m_cookParameterPropertyEditor?.PropertyGridView;
+		if (propertyGridView != null)
+		{
+			propertyGridView.SelectedPropertyChanged -= PropertyGridView_SelectedPropertyChanged;
 		}
 	}
 
@@ -607,7 +977,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		{
 			dockContent.Show(m_dockPanel, DockState.Document);
 		}
-		else
+		else if (dockContent.DockState != DockState.Document)
 		{
 			dockContent.DockState = DockState.Document;
 		}
@@ -705,13 +1075,31 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void AssetContext_Reloaded(object sender, EventArgs e)
 	{
-		BindCookParameters();
-		BindGeometrySet();
-		BindAnimationSet();
-		BindParticleEffectSet();
-		BindBehaviorSet();
-		BindSplineEditor();
-		ScheduleEnsureActiveInnerContent();
+		if (m_context == null || m_disposing || m_controlHostUnregistering || IsDisposed)
+		{
+			return;
+		}
+
+		try
+		{
+			ConfigurePageBindings(preserveActivePage: true);
+			ScheduleEnsureActiveInnerContent();
+		}
+		catch (System.Exception ex)
+		{
+			PaintTimingLog.Write("{0} Reload exception {1}: {2}\n{3}", TracePrefix,
+				ex.GetType().FullName, ex.Message, ex.StackTrace);
+			try
+			{
+				ResetFailedBinding();
+			}
+			catch (System.Exception cleanupEx)
+			{
+				PaintTimingLog.Write("{0} Reload cleanup exception {1}: {2}\n{3}", TracePrefix,
+					cleanupEx.GetType().FullName, cleanupEx.Message, cleanupEx.StackTrace);
+			}
+			throw;
+		}
 	}
 
 	public void ResetControlLayout()
@@ -725,7 +1113,14 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		if (disposing)
 		{
 			m_disposing = true;
-			m_cookParameterPropertyEditor.PropertyGridView.SelectedPropertyChanged -= PropertyGridView_SelectedPropertyChanged;
+			CancelPagePrewarm("dispose");
+			if (m_pagePrewarmTimer != null)
+			{
+				m_pagePrewarmTimer.Tick -= PagePrewarmTimer_Tick;
+				m_pagePrewarmTimer.Dispose();
+				m_pagePrewarmTimer = null;
+			}
+			UnsubscribeCookParameterSelection();
 			if (m_context != null)
 			{
 				m_context.Reloaded -= AssetContext_Reloaded;

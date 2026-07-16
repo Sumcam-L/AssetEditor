@@ -17,6 +17,19 @@ internal static class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
+        using (var geometryEditor = new ModelInstanceStateEditor())
+        {
+            try
+            {
+                geometryEditor.Bind(null);
+            }
+            catch (NullReferenceException)
+            {
+                Console.Error.WriteLine("FAIL: ModelInstanceStateEditor.Bind(null) threw NullReferenceException.");
+                return 1;
+            }
+        }
+
         using (Form host = new Form())
         {
             PaintTimingLog.Clear();
@@ -32,6 +45,68 @@ internal static class Program
                         Console.Error.WriteLine("FAIL: constructor explicitly activated inner page {0}.", page);
                         return 1;
                     }
+                }
+
+                string sourcePath = Path.GetFullPath(Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "..", "..",
+                    "Firaxis.AssetEditing", "Firaxis.AssetEditing", "AssetEditorControl.cs"));
+                string source = File.ReadAllText(sourcePath);
+                if (source.IndexOf("AssetPageBindingCoordinator", StringComparison.Ordinal) < 0 ||
+                    source.IndexOf("BindNextIdle", StringComparison.Ordinal) < 0 ||
+                    source.IndexOf("BindPendingPageForUser", StringComparison.Ordinal) < 0 ||
+                    source.IndexOf("ClearOptionalPageBindings", StringComparison.Ordinal) < 0 ||
+                    source.IndexOf("m_firstPaintCompleted = IsHandleCreated && Visible", StringComparison.Ordinal) >= 0)
+                {
+                    Console.Error.WriteLine("FAIL: AssetEditorControl does not use deferred page binding boundaries.");
+                    return 1;
+                }
+
+                string configureBody = GetMethodBody(source, "private void ConfigurePageBindings(bool preserveActivePage)");
+                string bindBody = GetMethodBody(source, "public override void Bind(IEntityEditorContext context)");
+                string reloadBody = GetMethodBody(source, "private void AssetContext_Reloaded(object sender, EventArgs e)");
+                int configuringGuard = configureBody.IndexOf("m_configuringPageBindings = true;", StringComparison.Ordinal);
+                int guardedClear = configureBody.IndexOf("ClearOptionalPageBindings();", StringComparison.Ordinal);
+                if (configuringGuard < 0 || guardedClear <= configuringGuard ||
+                    bindBody.IndexOf("ClearOptionalPageBindings();", StringComparison.Ordinal) >= 0 ||
+                    reloadBody.IndexOf("ClearOptionalPageBindings();", StringComparison.Ordinal) >= 0 ||
+                    source.IndexOf("ResetFailedBinding", StringComparison.Ordinal) < 0 ||
+                    source.IndexOf("bind-failed", StringComparison.Ordinal) < 0)
+                {
+                    Console.Error.WriteLine("FAIL: optional page clearing and failed Bind cleanup are not guarded.");
+                    return 1;
+                }
+                if (reloadBody.IndexOf("catch (System.Exception ex)", StringComparison.Ordinal) < 0 ||
+                    reloadBody.IndexOf("ResetFailedBinding();", StringComparison.Ordinal) < 0 ||
+                    reloadBody.IndexOf("throw;", StringComparison.Ordinal) < 0)
+                {
+                    Console.Error.WriteLine("FAIL: failed reload reconfiguration does not reset partial page bindings before rethrowing.");
+                    return 1;
+                }
+
+                string pagePrewarmIdleBody = GetMethodBody(source, "private void PagePrewarm_Idle(object sender, EventArgs e)");
+                if (source.IndexOf("int m_pagePrewarmGeneration", StringComparison.Ordinal) < 0 ||
+                    pagePrewarmIdleBody.IndexOf("m_pagePrewarmGeneration != m_pageBindings.Generation", StringComparison.Ordinal) < 0)
+                {
+                    Console.Error.WriteLine("FAIL: page prewarm callbacks are not guarded by their scheduled generation.");
+                    return 1;
+                }
+
+                string clearOptionalBody = GetMethodBody(source, "private void ClearOptionalPageBindings()");
+                if (source.IndexOf("private void UnsubscribeCookParameterSelection()", StringComparison.Ordinal) < 0 ||
+                    clearOptionalBody.IndexOf(".PropertyGridView.SelectedPropertyChanged -=", StringComparison.Ordinal) >= 0)
+                {
+                    Console.Error.WriteLine("FAIL: cook parameter selection cleanup is not null-safe and centralized.");
+                    return 1;
+                }
+
+                string geometrySourcePath = Path.GetFullPath(Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "..", "..",
+                    "Firaxis.AssetEditing", "Firaxis.AssetEditing", "ModelInstanceStateEditor.cs"));
+                string geometrySource = File.ReadAllText(geometrySourcePath);
+                if (geometrySource.IndexOf("Application.Idle -= Application_Idle", StringComparison.Ordinal) < 0)
+                {
+                    Console.Error.WriteLine("FAIL: ModelInstanceStateEditor does not unsubscribe its static Idle handler.");
+                    return 1;
                 }
 
                 host.Controls.Add(control);
@@ -136,6 +211,24 @@ internal static class Program
 
         Console.WriteLine("PASS: active inner content was restored synchronously and saved layout is skipped during initial AST display.");
         return 0;
+    }
+
+    private static string GetMethodBody(string source, string signature)
+    {
+        int signatureIndex = source.IndexOf(signature, StringComparison.Ordinal);
+        if (signatureIndex < 0)
+            return string.Empty;
+
+        int bodyStart = source.IndexOf('{', signatureIndex);
+        int depth = 0;
+        for (int i = bodyStart; i < source.Length; i++)
+        {
+            if (source[i] == '{')
+                depth++;
+            else if (source[i] == '}' && --depth == 0)
+                return source.Substring(bodyStart, i - bodyStart + 1);
+        }
+        return string.Empty;
     }
 
     private static string WrapClassLayout(string className, string layout)
