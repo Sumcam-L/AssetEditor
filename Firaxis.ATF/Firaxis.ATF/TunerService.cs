@@ -100,6 +100,8 @@ public class TunerService : SocketConnection, IInitializable, ITunerService, IHo
 
 	private readonly ISettingsService m_settingsService;
 
+	private readonly ICivTechService m_civTechService;
+
 	private const int kTunerCommunicationPort = 4318;
 
 	private const int kCommunicationPort = 4319;
@@ -165,6 +167,7 @@ public class TunerService : SocketConnection, IInitializable, ITunerService, IHo
 			m_routingTimer = new System.Threading.Timer(RouteMessages);
 			m_routingTimer.Change(-1, -1);
 			m_settingsService = settingsService;
+			m_civTechService = civTechService;
 			string gameLogFolder = GetGameLogFolder(civTechService.PrimaryProject.Config.Name);
 			try
 			{
@@ -237,11 +240,56 @@ public class TunerService : SocketConnection, IInitializable, ITunerService, IHo
 	public void EndHotLoadRequest()
 	{
 		BugSubmitter.SilentAssert(IsHotLoading, "Called EndHotLoadRequest without ever calling BeginHotLoadRequest!  @assign bwhitman");
-		string text = BuildHotLoadMessage(m_hotLoadDataCollection);
-		Outputs.WriteLine(OutputMessageType.Info, "Hot load requested: {0}", text);
-		RequestListener listener = OnHotLoadRequestComplete;
-		Request(text, listener);
+		List<IHotLoadData> list = m_hotLoadDataCollection.ToList();
+		ISet<string> set = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+		ISet<string> set2 = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+		foreach (IHotLoadData item in list)
+		{
+			set.UnionWith(item.RelativeArtDefPaths);
+			set2.UnionWith(item.RelativePackagePaths);
+		}
+		string text = BuildHotLoadMessage(list);
 		m_hotLoadDataCollection.Clear();
+		ProjectEnvironment primaryProject = m_civTechService.PrimaryProject;
+		string projectName = primaryProject?.Name ?? "<unknown>";
+		bool flag;
+		try
+		{
+			flag = HotLoadStagingGate.StageThenSend(delegate
+			{
+				if (Firaxis.CivTech.Properties.Resources.ModTools && (set.Count != 0 || set2.Count != 0))
+				{
+					if (primaryProject == null)
+					{
+						throw new InvalidOperationException("There is no active project to stage for Hotload.");
+					}
+					ProjectPaths paths = primaryProject.Paths;
+					string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+					HotLoadFileStager hotLoadFileStager = new HotLoadFileStager(projectName, paths.GamePantry, paths.ArtDefOutputRoot, paths.XLPOutputRoot, folderPath);
+					hotLoadFileStager.Stage(set, set2, delegate(string source, string destination)
+					{
+						Outputs.WriteLine(OutputMessageType.Info, "Deployed hotload file: {0} -> {1}", source, destination);
+					});
+				}
+			}, delegate
+			{
+				Outputs.WriteLine(OutputMessageType.Info, "Hot load requested: {0}", text);
+				RequestListener listener = OnHotLoadRequestComplete;
+				Request(text, listener);
+			}, delegate(System.Exception ex)
+			{
+				Outputs.WriteLine(OutputMessageType.Error, "Hot load staging failed for project '{0}': {1}", projectName, ex.ToString());
+			});
+		}
+		catch (System.Exception ex2)
+		{
+			Outputs.WriteLine(OutputMessageType.Error, "Hot load request failed for project '{0}': {1}", projectName, ex2.ToString());
+			flag = false;
+		}
+		if (!flag)
+		{
+			OnHotLoadCompleted();
+		}
 	}
 
 	public virtual void RequestHotLoad(IDocument doc)
