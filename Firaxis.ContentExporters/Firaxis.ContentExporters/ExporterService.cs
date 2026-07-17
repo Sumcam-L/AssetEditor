@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Firaxis.CivTech.AssetObjects;
-using Firaxis.CivTech.Properties;
 using Firaxis.ContentExporters.Implementations;
 
 namespace Firaxis.ContentExporters;
@@ -50,13 +49,10 @@ public static class ExporterService
 		RegisterCreatedExporter(new LooseTextureExporter());
 		RegisterCreatedExporter(new EnvironmentLightExporter());
 		RegisterCreatedExporter(new FiraxisGeometryExporter());
-		if (!Resources.ModTools)
-		{
-			RegisterCreatedExporter(new PhotoshopExporter());
-			RegisterCreatedExporter(new MaxExporter());
-			RegisterCreatedExporter(new MayaExporter());
-			RegisterCreatedExporter(new ParticleExporter());
-		}
+		RegisterCreatedExporter(new PhotoshopExporter());
+		RegisterCreatedExporter(new MaxExporter());
+		RegisterCreatedExporter(new MayaExporter());
+		RegisterCreatedExporter(new ParticleExporter());
 	}
 
 	public static IEnumerable<string> GetSupportedSourceFileExtensions(InstanceType entityType)

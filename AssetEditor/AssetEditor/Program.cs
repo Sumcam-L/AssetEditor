@@ -218,6 +218,8 @@ internal static class Program
 				typeof(GameArtSpecificationSchemaLoader),
 				typeof(ModVersionControlSelectionService)
 			});
+			parts.Add(typeof(ProjectSelectionCommands));
+			parts.Add(typeof(ProjectChangeMediator));
 		}
 	}
 

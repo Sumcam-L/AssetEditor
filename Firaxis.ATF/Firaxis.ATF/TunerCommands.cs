@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Firaxis.CivTech;
 using Firaxis.CivTech.Properties;
 using Firaxis.Utility;
@@ -137,7 +140,15 @@ public class TunerCommands : ICommandClient, IInitializable
 		}
 		else if (tunerCommandTag.Command == Command.StartGame && FindGameExePath())
 		{
-			Process.Start(GameExecPath);
+			try
+			{
+				Process.Start(GameExecPath, "-Tuner");
+			}
+			catch (System.Exception ex)
+			{
+				Outputs.WriteLine(OutputMessageType.Error, "Failed to start Civilization VI at \"{0}\": {1}", GameExecPath, ex.Message);
+				MessageBoxes.Show("Failed to start Civilization VI.\n\n" + GameExecPath + "\n\n" + ex.Message, "Start Civ 6 Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
 		}
 	}
 
@@ -166,7 +177,51 @@ public class TunerCommands : ICommandClient, IInitializable
 
 	private bool FindGameExePath()
 	{
-		if (!Firaxis.CivTech.Properties.Resources.ModTools)
+		if (Firaxis.CivTech.Properties.Resources.ModTools)
+		{
+			List<string> list = new List<string>();
+			using (RegistryKey registryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 289070"))
+			{
+				string text = registryKey?.GetValue("InstallLocation") as string;
+				if (!string.IsNullOrWhiteSpace(text))
+				{
+					list.Add(text);
+				}
+			}
+			using (RegistryKey registryKey2 = Registry.CurrentUser.OpenSubKey("Software\\Valve\\Steam"))
+			{
+				string text2 = registryKey2?.GetValue("SteamPath") as string;
+				if (!string.IsNullOrWhiteSpace(text2))
+				{
+					list.Add(Path.Combine(text2, "steamapps", "common", "Sid Meier's Civilization VI"));
+					string path = Path.Combine(text2, "steamapps", "libraryfolders.vdf");
+					if (File.Exists(path))
+					{
+						Regex regex = new Regex("^\\s*\"path\"\\s*\"(?<path>.*)\"\\s*$", RegexOptions.IgnoreCase);
+						foreach (string item in File.ReadLines(path))
+						{
+							Match match = regex.Match(item);
+							if (match.Success)
+							{
+								string path2 = match.Groups["path"].Value.Replace("\\\\", "\\");
+								list.Add(Path.Combine(path2, "steamapps", "common", "Sid Meier's Civilization VI"));
+							}
+						}
+					}
+				}
+			}
+			foreach (string item2 in list.Distinct(StringComparer.OrdinalIgnoreCase))
+			{
+				string text3 = Path.Combine(item2, "Base", "Binaries", "Win64Steam", "CivilizationVI.exe");
+				if (File.Exists(text3))
+				{
+					GameExecPath = text3;
+					return true;
+				}
+			}
+			return false;
+		}
+		else
 		{
 			RegistryKey toolsRegistryKey = CivTechService.AssetCloudSettings.GetToolsRegistryKey("Civ6", "ContentTools");
 			if (toolsRegistryKey != null)

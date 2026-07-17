@@ -84,11 +84,8 @@ public class ProjectSelectionCommands : ICommandClient, IInitializable, IProject
 	{
 		foreach (ProjectInfo item in m_projectSelectionService.Projects.ProjectInfos.OrderBy((ProjectInfo pi) => pi.Name))
 		{
-			if (item.ProjectType != ProjectType.eNormal || !Firaxis.CivTech.Properties.Resources.ModTools)
-			{
-				CommandInfo info = new CommandInfo(item, ProjectSelectionService.SelectProjectTag, ProjectSelectionService.SelectProjectTag, item.Name, "Change to the " + item.Name + " project");
-				m_commandService.RegisterCommand(info, this);
-			}
+			CommandInfo info = new CommandInfo(item, ProjectSelectionService.SelectProjectTag, ProjectSelectionService.SelectProjectTag, item.Name, "Change to the " + item.Name + " project");
+			m_commandService.RegisterCommand(info, this);
 		}
 	}
 

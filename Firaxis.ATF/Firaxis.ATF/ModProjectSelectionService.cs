@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Firaxis.CivTech;
 using Firaxis.Utility;
+using Sce.Atf;
 
 namespace Firaxis.ATF;
 
@@ -23,7 +24,12 @@ public class ModProjectSelectionService : IProjectSelectionService
 		}
 		set
 		{
+			if (value == m_activeProject)
+			{
+				return;
+			}
 			m_activeProject = value;
+			this.ProjectChanged.Raise(this, null);
 		}
 	}
 

@@ -119,20 +119,12 @@ public class CivTechService : IInitializable, ICivTechService, IDisposable
 
 	public bool IsFromModDependencies(Uri uri)
 	{
-		if (AssetCloudSettings.ModTools)
-		{
-			return !ProjectMapService.IsFromActiveProject(uri);
-		}
 		return false;
 	}
 
 	public bool IsFromPrimaryModProject(Uri uri)
 	{
-		if (!AssetCloudSettings.ModTools)
-		{
-			return true;
-		}
-		return ProjectMapService.IsFromPrimaryProject(uri);
+		return true;
 	}
 
 	public bool IsFromActiveProject(EntityID entId)

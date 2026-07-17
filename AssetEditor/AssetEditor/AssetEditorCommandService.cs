@@ -25,7 +25,6 @@ public class AssetEditorCommandService : CommandService
 		ProjectSelector = pss;
 		ProjectSelector.ProjectChanged += ProjectChanged;
 		SelectProject = new MenuInfo(ProjectSelectionService.SelectProjectTag, "Project: " + pss.ActiveProject, "Change the currently active project");
-		SelectProject.Alignment = MenuInfo.MenuAlignment.Right;
 		RegisterMenuInfo(SelectProject);
 	}
 
