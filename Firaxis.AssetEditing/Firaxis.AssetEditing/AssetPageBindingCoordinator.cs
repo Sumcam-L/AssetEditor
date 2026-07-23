@@ -75,6 +75,19 @@ internal sealed class AssetPageBindingCoordinator
             Bind(page, "user", allowFailedRetry: true);
     }
 
+    public bool AddPage(Page page)
+    {
+        if (page == null)
+            throw new ArgumentNullException(nameof(page));
+        if (m_pages.ContainsKey(page.Key))
+            return false;
+        page.State = AssetPageBindingState.Pending;
+        m_pages.Add(page.Key, page);
+        m_orderedPages.Add(page);
+        m_pending.Enqueue(page);
+        return true;
+    }
+
     public bool BindNextIdle()
     {
         while (m_pending.Count != 0)

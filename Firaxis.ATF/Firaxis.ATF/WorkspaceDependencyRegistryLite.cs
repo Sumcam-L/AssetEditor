@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,6 +9,7 @@ using Firaxis.CivTech;
 using Firaxis.Threading;
 using Firaxis.Utility;
 using Sce.Atf;
+using Sce.Atf.Applications;
 
 namespace Firaxis.ATF;
 
@@ -45,11 +47,14 @@ public class WorkspaceDependencyRegistryLite : IWorkspaceDependencyRegistry
 
 	public void Initialize(string targetProject)
 	{
+		var liteTimer = Stopwatch.StartNew();
 		TargetProject = targetProject;
 		m_projectEnvironment = m_projectMapService.AllProjectsMap[targetProject];
 		m_workspaceRoot = EnsureTrailingSlash(m_projectEnvironment.VersionControl.WorkspaceRoot).ToLower().Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 		InitializeDependencyInfo(targetProject);
+		PaintTimingLog.Write("Startup: deps-lite depinfo-done project={0} elapsed={1}ms", targetProject, liteTimer.ElapsedMilliseconds);
 		SetupPantryRoots();
+		PaintTimingLog.Write("Startup: deps-lite pantry-done project={0} elapsed={1}ms", targetProject, liteTimer.ElapsedMilliseconds);
 	}
 
 	public DateTime GetLastChangeTime(Uri fileUri)
@@ -257,6 +262,7 @@ public class WorkspaceDependencyRegistryLite : IWorkspaceDependencyRegistry
 
 	private void InitializeDependencyInfo(string targetProject)
 	{
+		var depTimer = Stopwatch.StartNew();
 		using (new ScopedWriterLock(m_depedencyRegistryLock))
 		{
 			using (new ScopedStopwatch(targetProject + ": Initializing dependency information took {0} seconds", delegate(string str)
@@ -267,6 +273,7 @@ public class WorkspaceDependencyRegistryLite : IWorkspaceDependencyRegistry
 				m_dependencies = new DatabaseDependencies();
 				if (m_dependencyUpdater.UpdateDependencies(m_dependencies))
 				{
+					PaintTimingLog.Write("Startup: deps-lite load-done project={0} elapsed={1}ms", targetProject, depTimer.ElapsedMilliseconds);
 					IList<DepotFileInfo> badEntities = new List<DepotFileInfo>();
 					m_dependencies.Files.ForEachValue((DepotFileInfo predicate) => predicate.EntityType == 2 && predicate.Timestamp == 0, delegate(DepotFileInfo visitor)
 					{
@@ -274,6 +281,7 @@ public class WorkspaceDependencyRegistryLite : IWorkspaceDependencyRegistry
 					});
 					ReportIncorrectProjectFiles(badEntities);
 					m_dependencies.GenerateDependants();
+					PaintTimingLog.Write("Startup: deps-lite dependants-done project={0} elapsed={1}ms", targetProject, depTimer.ElapsedMilliseconds);
 				}
 				else
 				{

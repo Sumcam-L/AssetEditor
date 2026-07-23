@@ -309,6 +309,7 @@ public class MainForm : Form, IMainWindow
 
 	protected override void OnLoad(EventArgs e)
 	{
+		PaintTimingLog.Write("Startup: main-form OnLoad begin");
 		if (m_settingsService != null)
 		{
 			m_settingsService.RegisterSettings(this, new BoundPropertyDescriptor(this, () => MainFormBounds, "MainFormBounds", null, null), new BoundPropertyDescriptor(this, () => MainFormWindowState, "MainFormWindowState", null, null));
@@ -324,6 +325,7 @@ public class MainForm : Form, IMainWindow
 			base.WindowState = FormWindowState.Maximized;
 		}
 		this.Loading.Raise(this, e);
+		PaintTimingLog.Write("Startup: main-form OnLoad end");
 	}
 
 	protected override void OnActivated(EventArgs e)

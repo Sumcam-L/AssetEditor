@@ -128,8 +128,10 @@ public class WorkspaceDependencyRegistry : IWorkspaceDependencyRegistry, IWorksp
 		m_projectEnvironment = m_projectMapService.AllProjectsMap[targetProject];
 		m_workspaceRoot = EnsureTrailingSlash(m_projectEnvironment.VersionControl.WorkspaceRoot).ToLower().Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 		InitializeDependencyInfo(targetProject);
+		PaintTimingLog.Write("Startup: deps-init depinfo-done project={0}", targetProject);
 		SetupPantryRoots();
 		SetupFileWatchers();
+		PaintTimingLog.Write("Startup: deps-init watchers-done project={0}", targetProject);
 	}
 
 	public virtual void DisableFileWatches()
@@ -569,6 +571,7 @@ public class WorkspaceDependencyRegistry : IWorkspaceDependencyRegistry, IWorksp
 				string installedDependencyInfoPath = GetInstalledDependencyInfoPath(targetProject);
 				string updatedDepsFiles = GetUpdatedDepedencyInfoPath(targetProject);
 				installedDependencyInfoPath = SelectNewestFile(installedDependencyInfoPath, updatedDepsFiles);
+				var depTimer = Stopwatch.StartNew();
 				Action<string> action = delegate(string message)
 				{
 					timingInfoFmt = message;
@@ -587,6 +590,7 @@ public class WorkspaceDependencyRegistry : IWorkspaceDependencyRegistry, IWorksp
 						flag = m_dependencies.Load(installedDependencyInfoPath);
 					}
 				}
+				PaintTimingLog.Write("Startup: deps-load elapsed={0}ms", depTimer.ElapsedMilliseconds);
 				Stopwatch stopwatch = new Stopwatch();
 				stopwatch.Start();
 				if (flag)
@@ -614,6 +618,7 @@ public class WorkspaceDependencyRegistry : IWorkspaceDependencyRegistry, IWorksp
 					action(targetProject + ": Building dependency information took {0} seconds");
 				}
 				Outputs.WriteLine(OutputMessageType.Info, timingInfoFmt, (double)stopwatch.ElapsedMilliseconds / 1000.0);
+				PaintTimingLog.Write("Startup: deps-update elapsed={0}ms", depTimer.ElapsedMilliseconds);
 				using (new ScopedStopwatch(targetProject + ": Saving dependency information took {0} seconds", delegate(string str)
 				{
 					Outputs.WriteLine(OutputMessageType.Info, str);
@@ -622,6 +627,7 @@ public class WorkspaceDependencyRegistry : IWorkspaceDependencyRegistry, IWorksp
 					EnsureSettingsFolderCreated(updatedDepsFiles);
 					m_dependencies.Save(updatedDepsFiles);
 				}
+				PaintTimingLog.Write("Startup: deps-save elapsed={0}ms", depTimer.ElapsedMilliseconds);
 				using (new ScopedStopwatch(targetProject + ": Generating upward dependency information took {0} seconds", delegate(string str)
 				{
 					Outputs.WriteLine(OutputMessageType.Info, str);
@@ -629,6 +635,7 @@ public class WorkspaceDependencyRegistry : IWorkspaceDependencyRegistry, IWorksp
 				{
 					m_dependencies.GenerateDependants();
 				}
+				PaintTimingLog.Write("Startup: deps-dependants elapsed={0}ms", depTimer.ElapsedMilliseconds);
 				m_changeSaver = new QuietTimeAction(QuietTimeWaitBehavior.ExponentialBackoff, delegate
 				{
 					using (new ScopedReaderLock(m_depedencyRegistryLock))

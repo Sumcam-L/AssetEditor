@@ -16,6 +16,9 @@
   <PropertyGroup />
   <ItemGroup />
   <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Core" />

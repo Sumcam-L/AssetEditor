@@ -288,6 +288,8 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 
 	private Control m_pendingRegisteredDocumentControl;
 
+	private DockContent m_pendingRegisteredDockContent;
+
 	private ToolStripContainer m_toolStripContainer;
 
 	private string m_dockPanelState;
@@ -614,6 +616,7 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		if (info.IsDocument == true)
 		{
 			m_pendingRegisteredDocumentControl = control;
+			m_pendingRegisteredDockContent = dockContent;
 		}
 		info.HostControl = dockContent;
 		Control hostedControl = GetHostedRegistrationControl(control, info);
@@ -1099,6 +1102,17 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			Control logicalControl = AttachDocumentHostIfNeeded(dockContent);
 			RenderPendingDocumentFirstFrame(dockContent, "active-content");
 			ActivateClient(logicalControl);
+			// Clear the pending-new-document registration deterministically once the
+			// just-registered document has actually been activated and rendered. The
+			// previous design cleared this field from a second nested BeginInvoke,
+			// which raced against stale activation callbacks targeting older
+			// DockContents; if the nested clear ran first, the stale guard let the
+			// old callback through and it detached the new document's host.
+			if (pendingControl != null && logicalControl == pendingControl)
+			{
+				m_pendingRegisteredDocumentControl = null;
+				m_pendingRegisteredDockContent = null;
+			}
 			if (sw.ElapsedMilliseconds > 0)
 				PaintTimingLog.Write("DeferredActivateClient: {0}ms", sw.ElapsedMilliseconds);
 			if (traceGeneration != 0 && !m_dockPanel.IsDisposed && m_dockPanel.IsHandleCreated)
@@ -1192,11 +1206,6 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 			PaintTimingLog.Write("ActivateCurrentDockContent: " + reason);
 			ActivateCurrentDockContent();
 			AttachVisibleDocumentHosts();
-			m_mainForm.BeginInvoke((Action)delegate
-			{
-				AttachVisibleDocumentHosts();
-				m_pendingRegisteredDocumentControl = null;
-			});
 		});
 	}
 
@@ -1234,9 +1243,28 @@ public class ControlHostService : IControlHostService, IControlRegistry, IComman
 		DocumentHostControl activeDocumentHost;
 		if (pane != null && m_activeDocumentHostsByPane.TryGetValue(pane, out activeDocumentHost) && activeDocumentHost != documentHost)
 		{
-			var swDetach = Stopwatch.StartNew();
-			activeDocumentHost.DetachLogicalControl();
-			tDetach = swDetach.ElapsedMilliseconds;
+			// Protect the just-registered document's host from being detached by a stale
+			// activation callback that targets a different (older) DockContent. Without
+			// this guard, an asynchronous ActiveContentChanged callback running after a
+			// new document registration can detach the new logical control and replace
+			// it with the older document's contents, leaving the new tab showing only
+			// the host's background.
+			if (m_pendingRegisteredDocumentControl != null &&
+				m_pendingRegisteredDockContent != null &&
+				m_pendingRegisteredDockContent != dockContent &&
+				activeDocumentHost.LogicalControl == m_pendingRegisteredDocumentControl)
+			{
+				PaintTimingLog.Write(
+					"AttachDetach: skipped detaching pending host control={0}, requestedDock={1}",
+					activeDocumentHost.LogicalControl?.GetType().Name,
+					GetDocumentTraceIdentity(dockContent));
+			}
+			else
+			{
+				var swDetach = Stopwatch.StartNew();
+				activeDocumentHost.DetachLogicalControl();
+				tDetach = swDetach.ElapsedMilliseconds;
+			}
 		}
 
 		var swAttach = Stopwatch.StartNew();

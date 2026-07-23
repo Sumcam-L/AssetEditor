@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -332,6 +333,7 @@ internal static class Program
 	private static void MainImpl(string[] args)
 	{
 		PaintTimingLog.Clear();
+		var startupTimer = Stopwatch.StartNew();
 		if (PauseForDebugAttach())
 		{
 			System.Windows.Forms.MessageBox.Show("Attach Debugger Now");
@@ -345,6 +347,14 @@ internal static class Program
 			new App();
 		}
 		Firaxis.MVVMBase.Helpers.ApplicationHelper.ImportResourceDictionary(typeof(AssetBrowserView), "Shared.xaml");
+		PaintTimingLog.Write("Startup: app+resources elapsed={0}ms", startupTimer.ElapsedMilliseconds);
+		Firaxis.ATF.SplashScreen splash = new Firaxis.ATF.SplashScreen("Asset Editor");
+		splash.ShowInTaskbar = true;
+		splash.Message = "Constructing components...";
+		splash.CaptionImage = ResourceUtil.GetIcon(Resources.AssetEditorIcon);
+		splash.ShowOutputWindow();
+		splash.Show();
+		PaintTimingLog.Write("Startup: splash-shown elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		List<Type> list = new List<Type>();
 		list.AddRange(GetCoreTypes());
 		list.AddRange(GetToolAppTypes());
@@ -360,15 +370,11 @@ internal static class Program
 		EmbeddedCollectionEditor.RemoveImage = ResourceUtil.GetImage16(Firaxis.AssetEditing.Resources.RemoveItemIcon);
 		EmbeddedCollectionEditor.UpImage = ResourceUtil.GetImage16(Firaxis.AssetEditing.Resources.ArrowUpIcon);
 		EmbeddedCollectionEditor.DownImage = ResourceUtil.GetImage16(Firaxis.AssetEditing.Resources.ArrowDownIcon);
+		PaintTimingLog.Write("Startup: type-list elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		using CompositionContainer compositionContainer = new CompositionContainer(new TypeCatalog(list));
+		PaintTimingLog.Write("Startup: type-catalog elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		Thread.CurrentThread.CurrentUICulture = CultureInfo.CurrentCulture;
 		Localizer.SetStringLocalizer(new EmbeddedResourceStringLocalizer());
-		Firaxis.ATF.SplashScreen splash = new Firaxis.ATF.SplashScreen("Asset Editor");
-		splash.ShowInTaskbar = true;
-		splash.Message = "Constructing components...";
-		splash.CaptionImage = ResourceUtil.GetIcon(Resources.AssetEditorIcon);
-		splash.ShowOutputWindow();
-		splash.Show();
 		_ = compositionContainer.GetExport<IMessageBoxService>().Value;
 		_ = compositionContainer.GetExport<MessageBoxes>().Value;
 		compositionContainer.GetExport<LogOutputWriter>().Value.AddFrameNumber = true;
@@ -376,6 +382,7 @@ internal static class Program
 		{
 			return;
 		}
+		PaintTimingLog.Write("Startup: compose-env elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		ICrashSubmissionService value = compositionContainer.GetExport<ICrashSubmissionService>().Value;
 		_ = compositionContainer.GetExport<CrashHandlerService>().Value;
 		DomNodeType.BaseOfAllTypes.AddAdapterCreator(new AdapterCreator<CustomTypeDescriptorNodeAdapter>());
@@ -418,6 +425,7 @@ internal static class Program
 			}
 			throw ex2;
 		}
+		PaintTimingLog.Write("Startup: form-composed elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		_ = compositionContainer.GetExport<ISingleInstanceService>().Value;
 		_ = compositionContainer.GetExport<ColumnarOutputService>().Value;
 		_ = compositionContainer.GetExport<Outputs>().Value;
@@ -426,7 +434,9 @@ internal static class Program
 		splash.Message = "Initializing asset cloud settings...";
 		Lazy<IAssetCloudSettingService> export = compositionContainer.GetExport<IAssetCloudSettingService>();
 		_ = export.Value;
+		PaintTimingLog.Write("Startup: asset-cloud elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		CivTechContext civTechContext = Context.EnsureCreated<CivTechContext>(new object[1] { export.Value.AssetCloudSettings.ShowAssertions ? AssertionConfiguration.eDialog : AssertionConfiguration.eOff });
+		PaintTimingLog.Write("Startup: civtech-context elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		Outputs.WriteLine(OutputMessageType.Info, "Using Firaxis.CivTech.Impl from {0}", civTechContext.CivTechPath);
 		Lazy<IProjectSelectionService> export2 = compositionContainer.GetExport<IProjectSelectionService>();
 		Lazy<IVersionControlSelectionService> export3 = compositionContainer.GetExport<IVersionControlSelectionService>();
@@ -480,6 +490,7 @@ internal static class Program
 			}
 			throw ex5;
 		}
+		PaintTimingLog.Write("Startup: project-selection elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		Lazy<IProjectMapService> export5 = compositionContainer.GetExport<IProjectMapService>();
 		Lazy<IWorkspaceDependencyRegistryService> export6 = compositionContainer.GetExport<IWorkspaceDependencyRegistryService>();
 		try
@@ -488,6 +499,7 @@ internal static class Program
 			_ = export5.Value;
 			value.EnableBugHelper(export5.Value.PrimaryProject.Paths.GameDirectory);
 			splash.Message = "Updating dependency information...";
+			PaintTimingLog.Write("Startup: project-map elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 			_ = export6.Value;
 		}
 		catch (CompositionException ex7)
@@ -508,8 +520,10 @@ internal static class Program
 			}
 			throw ex7;
 		}
+		PaintTimingLog.Write("Startup: project-map+deps elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		splash.Message = "Initializing all components...";
 		ICivTechService value4 = compositionContainer.GetExport<ICivTechService>().Value;
+		PaintTimingLog.Write("Startup: civtech-service elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		string toolHostDllPath = value4.ToolHostLoader.ToolHostDllPath;
 		if (!File.Exists(toolHostDllPath))
 		{
@@ -525,6 +539,7 @@ internal static class Program
 		}
 		_ = compositionContainer.GetExport<AutoDocumentService>().Value;
 		compositionContainer.InitializeAll();
+		PaintTimingLog.Write("Startup: initialize-all elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		splash.Message = "Initialization complete";
 		civTechContext.CivTechLogger.EngineLog += delegate(LogEventType evtType, string source, string text)
 		{
@@ -545,6 +560,7 @@ internal static class Program
 		}
 		assetEditorForm.Shown += delegate
 		{
+			PaintTimingLog.Write("Startup: main window shown elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 			if (assetEditorForm.WindowState == FormWindowState.Minimized)
 			{
 				assetEditorForm.WindowState = FormWindowState.Normal;
@@ -562,6 +578,7 @@ internal static class Program
 			ReaderWriterStatistics.DumpStatistics(stringBuilder);
 			Outputs.Write(OutputMessageType.Info, OutputMessageVerbosity.ExtremelyVerbose, stringBuilder.ToString());
 		};
+		PaintTimingLog.Write("Startup: before-run elapsed={0}ms", startupTimer.ElapsedMilliseconds);
 		System.Windows.Forms.Application.Run(assetEditorForm);
 	}
 

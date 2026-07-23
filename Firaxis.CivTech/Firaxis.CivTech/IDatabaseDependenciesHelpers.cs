@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -19,6 +20,27 @@ public static class IDatabaseDependenciesHelpers
 		public IDictionary<string, IList<string>> Dependencies = new Dictionary<string, IList<string>>();
 
 		public IList<DepotFileInfo> Files = new List<DepotFileInfo>();
+	}
+
+	private class DepotFileInfoDto
+	{
+		public string Filename { get; set; }
+		public long Timestamp { get; set; }
+		public int Status { get; set; }
+		public int Type { get; set; }
+		public int EntityType { get; set; }
+		public string EntityClass { get; set; }
+		public long Filesize { get; set; }
+		public List<string> Tags { get; set; }
+		public Dictionary<string, int> Stats { get; set; }
+	}
+
+	private class DepInfoDto
+	{
+		public long Timestamp { get; set; }
+		public uint Changelist { get; set; }
+		public Dictionary<string, List<string>> Dependencies { get; set; }
+		public List<DepotFileInfoDto> Files { get; set; }
 	}
 
 	private const int kMaxFileSize = 52428800;
@@ -39,51 +61,72 @@ public static class IDatabaseDependenciesHelpers
 	{
 		try
 		{
-			string input = string.Empty;
-			using (TextReader textReader = File.OpenText(filePath))
+			var options = new JsonSerializerOptions
 			{
-				input = textReader.ReadToEnd();
+				PropertyNameCaseInsensitive = true
+			};
+			DepInfoDto dto;
+			using (var stream = File.OpenRead(filePath))
+			{
+				dto = JsonSerializer.Deserialize<DepInfoDto>(stream, options);
 			}
-			JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
-			javaScriptSerializer.MaxJsonLength = 52428800;
-			DepotDependencyInfoDeserializer deserializer = null;
-			try
+			if (dto == null)
 			{
-				deserializer = javaScriptSerializer.Deserialize<DepotDependencyInfoDeserializer>(input);
-				if (deserializer == null)
-				{
-					return false;
-				}
-			}
-			catch (Exception)
-			{
+				LogDiagnostic("deps-load FAILED null-dto file=" + filePath);
 				return false;
 			}
-			dbDeps.Timestamp = deserializer.Timestamp;
-			dbDeps.Changelist = deserializer.Changelist;
+			dbDeps.Timestamp = dto.Timestamp;
+			dbDeps.Changelist = dto.Changelist;
 			Task task = Task.Factory.StartNew(delegate
 			{
-				Parallel.ForEach(deserializer.Files, delegate(DepotFileInfo infoFromDisk)
+				if (dto.Files != null)
 				{
-					string filename = infoFromDisk.Filename;
-					dbDeps.Files.AddOrUpdate(filename, infoFromDisk);
-				});
+					Parallel.ForEach(dto.Files, delegate(DepotFileInfoDto infoDto)
+					{
+						var info = new DepotFileInfo
+						{
+							Filename = infoDto.Filename,
+							Timestamp = infoDto.Timestamp,
+							Status = infoDto.Status,
+							Type = infoDto.Type,
+							EntityType = infoDto.EntityType,
+							EntityClass = infoDto.EntityClass,
+							Filesize = infoDto.Filesize,
+							Tags = infoDto.Tags ?? new List<string>(),
+							Stats = infoDto.Stats ?? new Dictionary<string, int>()
+						};
+						dbDeps.Files.AddOrUpdate(info.Filename, info);
+					});
+				}
 			});
 			Task task2 = Task.Factory.StartNew(delegate
 			{
-				Parallel.ForEach(deserializer.Dependencies, delegate(KeyValuePair<string, IList<string>> dep)
+				if (dto.Dependencies != null)
 				{
-					dbDeps.Dependencies.AddChildren(dep.Key, dep.Value);
-				});
+					Parallel.ForEach(dto.Dependencies, delegate(KeyValuePair<string, List<string>> dep)
+					{
+						dbDeps.Dependencies.AddChildren(dep.Key, dep.Value);
+					});
+				}
 			});
 			Task.WaitAll(task, task2);
 			return true;
 		}
-		catch (IOException ex2)
+		catch (Exception ex)
 		{
-			Console.WriteLine(ex2.Message);
+			LogDiagnostic("deps-load EXCEPTION file=" + filePath + " type=" + ex.GetType().Name + " msg=" + ex.Message);
 			return false;
 		}
+	}
+
+	private static void LogDiagnostic(string message)
+	{
+		try
+		{
+			string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "paint_timing.log");
+			File.AppendAllText(path, string.Format("{0:O} Startup: {1}{2}", DateTime.Now, message, Environment.NewLine));
+		}
+		catch { }
 	}
 
 	public static bool Save(this IDatabaseDependencies dbDeps, string filePath)

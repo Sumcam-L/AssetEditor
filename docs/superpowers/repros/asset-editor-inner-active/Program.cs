@@ -47,6 +47,17 @@ internal static class Program
                     }
                 }
 
+                if (constructionLog.IndexOf("AssetPageCreate", StringComparison.Ordinal) >= 0)
+                {
+                    Console.Error.WriteLine("FAIL: constructor created optional pages during construction; expected lazy creation.");
+                    return 1;
+                }
+                if (FindInnerDockContent(control, "Geometries") != null || FindInnerDockContent(control, "Attachments") != null)
+                {
+                    Console.Error.WriteLine("FAIL: optional inner pages exist immediately after construction; expected lazy creation.");
+                    return 1;
+                }
+
                 string sourcePath = Path.GetFullPath(Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "..", "..", "..",
                     "Firaxis.AssetEditing", "Firaxis.AssetEditing", "AssetEditorControl.cs"));
@@ -108,6 +119,9 @@ internal static class Program
                     Console.Error.WriteLine("FAIL: ModelInstanceStateEditor does not unsubscribe its static Idle handler.");
                     return 1;
                 }
+
+                EnsurePageCreated(control, "Geometries");
+                EnsurePageCreated(control, "Attachments");
 
                 host.Controls.Add(control);
                 control.Dock = DockStyle.Fill;
@@ -268,6 +282,15 @@ internal static class Program
 			}
 		}
 		return null;
+	}
+
+	private static void EnsurePageCreated(AssetEditorControl control, string pageKindName)
+	{
+		Type pageKindType = typeof(AssetEditorControl).GetNestedType("PageKind", BindingFlags.NonPublic);
+		object kind = Enum.Parse(pageKindType, pageKindName);
+		typeof(AssetEditorControl)
+			.GetMethod("EnsurePageCreated", BindingFlags.Instance | BindingFlags.NonPublic)
+			.Invoke(control, new[] { kind });
 	}
 
     private static DockPanel GetInnerDockPanel(AssetEditorControl control)

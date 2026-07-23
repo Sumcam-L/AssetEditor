@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Firaxis.CivTech;
 using Firaxis.CivTech.AssetObjects;
 using Firaxis.Utility;
 using Sce.Atf;
+using Sce.Atf.Applications;
 
 namespace DatabaseWrapper;
 
@@ -44,6 +46,7 @@ public class WorkspaceDependencyUpdater : WorkspaceDependencyBase
 
 	public override bool UpdateDependencies(IDatabaseDependencies workspaceDependencies)
 	{
+		var updTimer = Stopwatch.StartNew();
 		using (new ScopedStopwatch(base.TargetProject + ": Evaluating environment took {0} seconds", delegate(string str)
 		{
 			Outputs.WriteLine(OutputMessageType.Info, OutputMessageVerbosity.Verbose, str);
@@ -69,6 +72,7 @@ public class WorkspaceDependencyUpdater : WorkspaceDependencyBase
 				}
 			});
 		}
+		PaintTimingLog.Write("Startup: deps-eval-env elapsed={0}ms", updTimer.ElapsedMilliseconds);
 		Outputs.WriteLine(OutputMessageType.Info, OutputMessageVerbosity.Verbose, "{0}: Discovered {1} new files, {2} modified files, {3} deleted files, and {4} invalid file infos", base.TargetProject, m_addedFiles.Count, m_modifiedFiles.Count, m_deletedFiles.Count, m_invalidFiles.Count);
 		IInstanceSet entitySet = Context.EnsureCreated<CivTechContext>().CreateInstance<IInstanceSet>(new object[1] { base.PantryRoots });
 		try
@@ -119,6 +123,7 @@ public class WorkspaceDependencyUpdater : WorkspaceDependencyBase
 					}
 				});
 			}
+			PaintTimingLog.Write("Startup: deps-update-info elapsed={0}ms", updTimer.ElapsedMilliseconds);
 			using (new ScopedStopwatch(base.TargetProject + ": Repairing entity classes for " + m_invalidFiles.Count + " entities took {0} seconds", delegate(string str)
 			{
 				Outputs.WriteLine(OutputMessageType.Info, OutputMessageVerbosity.Verbose, str);
@@ -129,6 +134,7 @@ public class WorkspaceDependencyUpdater : WorkspaceDependencyBase
 					UpdateEntityFileInfo(entitySet, workspaceDependencies, item.Filename);
 				});
 			}
+			PaintTimingLog.Write("Startup: deps-repair elapsed={0}ms", updTimer.ElapsedMilliseconds);
 		}
 		finally
 		{
