@@ -30,3 +30,6 @@ Civilization VI SDK Asset Editor 增强版，基于 Firaxis 官方 SDK 工具逆
 ---
 
 UI性能优化全是AI做的，我完全看不懂，AI真是太强了喵。
+
+## 使用方法
+下载[Release](https://github.com/Sumcam-L/AssetEditor/releases)，替换原始AssetEditor文件
