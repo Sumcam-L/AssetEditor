@@ -121,12 +121,14 @@ public static class IDatabaseDependenciesHelpers
 
 	private static void LogDiagnostic(string message)
 	{
+#if DEBUG
 		try
 		{
 			string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "paint_timing.log");
 			File.AppendAllText(path, string.Format("{0:O} Startup: {1}{2}", DateTime.Now, message, Environment.NewLine));
 		}
 		catch { }
+#endif
 	}
 
 	public static bool Save(this IDatabaseDependencies dbDeps, string filePath)

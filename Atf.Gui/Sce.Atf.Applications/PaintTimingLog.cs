@@ -7,6 +7,7 @@ namespace Sce.Atf.Applications;
 
 public static class PaintTimingLog
 {
+#if DEBUG
 	private static readonly object s_lock = new object();
 	private static readonly object s_flushLock = new object();
 	private static readonly string s_path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "paint_timing.log");
@@ -21,9 +22,11 @@ public static class PaintTimingLog
 			Flush();
 		};
 	}
+#endif
 
 	public static void Clear()
 	{
+#if DEBUG
 		try
 		{
 			lock (s_flushLock)
@@ -42,15 +45,19 @@ public static class PaintTimingLog
 		{
 			// Timing diagnostics should never affect editor behavior.
 		}
+#endif
 	}
 
 	public static void Write(string format, params object[] args)
 	{
+#if DEBUG
 		Write(args == null || args.Length == 0 ? format : string.Format(format, args));
+#endif
 	}
 
 	public static void Write(string message)
 	{
+#if DEBUG
 		try
 		{
 			string line = string.Format("{0:O} {1}{2}", DateTime.Now, message, Environment.NewLine);
@@ -63,10 +70,12 @@ public static class PaintTimingLog
 		{
 			// Timing diagnostics should never affect editor behavior.
 		}
+#endif
 	}
 
 	public static void Flush()
 	{
+#if DEBUG
 		try
 		{
 			lock (s_flushLock)
@@ -88,5 +97,6 @@ public static class PaintTimingLog
 		{
 			// Timing diagnostics should never affect editor behavior.
 		}
+#endif
 	}
 }

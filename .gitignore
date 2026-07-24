@@ -1,7 +1,9 @@
 # Visual Studio user state
 .vs/
 *.suo
+*.zip
 *.user
+*.ps1
 *.csproj.user
 *.sln.docstates
 *.slnLaunch.user

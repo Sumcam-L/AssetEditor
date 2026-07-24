@@ -55,6 +55,7 @@ public static class MefUtil
 
 	private static void LogTiming(string format, params object[] args)
 	{
+#if DEBUG
 		try
 		{
 			string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "paint_timing.log");
@@ -62,5 +63,6 @@ public static class MefUtil
 			File.AppendAllText(path, string.Format("{0:O} {1}{2}", DateTime.Now, message, Environment.NewLine));
 		}
 		catch { }
+#endif
 	}
 }
