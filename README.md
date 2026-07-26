@@ -14,18 +14,19 @@ Civilization VI SDK Asset Editor 增强版，基于 Firaxis 官方 SDK 工具逆
 
 ### 功能开放
 
-6. 开放了 FbxImporter 的导入设置界面
-7. 开放了音频预览功能
+1. 开放了 FbxImporter 的导入设置界面
+2. 开放了音频预览功能
    - 需要在 Assets 包里面新建 `LooseAssets` 文件夹，需要加载的 bnk 放到里面（可以复制，也可以使用链接功能）
    - **注意**：`Banks.ini`、`Init.bnk`、`Init.xml`、`Init.txt` 这几个文件必须要在 `LooseAssets` 目录下，否则 bnk 无法正常加载
    - Mod 的 bnk 放在 `Platforms\Windows\Audio` 下即可，无需额外操作
-8. 开放了 AssetEditor 中的 Hot Load 和 Start Civ6 功能
+3. 开放了 AssetEditor 中的 Hot Load 和 Start Civ6 功能
    - AE 里修改 ast 可以热更，不需要热更就把 Tuner 功能关闭
+4. 新增 Copy Timeline 命令：将当前 Timeline 的所有轨道和触发器一键复制到所有绑定了相同动画的其他 Timeline
 
 ### 性能优化
 
-9. 优化了程序启动、文档打开、文档切换、Asset Browser 加载的速度
-10. 优化了 Artdef 的 UI 性能
+1. 优化了程序启动、文档打开、文档切换、Asset Browser 加载的速度
+2. 优化了 Artdef 的 UI 性能
 
 ---
 
