@@ -43,6 +43,8 @@ public class MainForm : Form, IMainWindow
 
 	private FormWindowState m_previousWindoState;
 
+	private int m_lastMinimizedTick;
+
 	private bool m_maximizeWindow;
 
 	private bool m_mainFormLoaded;
@@ -369,6 +371,25 @@ public class MainForm : Form, IMainWindow
 
 	protected override void WndProc(ref Message m)
 	{
+		if (m.Msg == 0x0005) // WM_SIZE
+		{
+			if (m.WParam.ToInt32() == 1) // SIZE_MINIMIZED
+			{
+				m_lastMinimizedTick = Environment.TickCount;
+			}
+		}
+		else if (m.Msg == 0x0112) // WM_SYSCOMMAND
+		{
+			int c = m.WParam.ToInt32() & 0xFFF0;
+			// On a fast taskbar toggle, OnActivated restores the window to Maximized before this
+			// delayed SC_RESTORE arrives; letting it through would wrongly un-maximize to Normal.
+			if (c == 0xF120 // SC_RESTORE
+				&& base.WindowState == FormWindowState.Maximized
+				&& unchecked(Environment.TickCount - m_lastMinimizedTick) < 1000)
+			{
+				return;
+			}
+		}
 		switch ((uint)m.Msg)
 		{
 		case 0x0231u:

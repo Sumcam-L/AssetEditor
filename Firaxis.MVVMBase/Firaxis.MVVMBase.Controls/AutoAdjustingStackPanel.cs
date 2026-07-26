@@ -260,6 +260,10 @@ public class AutoAdjustingStackPanel : Panel
 			list.Add(measureInfo);
 			(item as AutoAdjustingStackPanelSplitter)?.UpdateCursor();
 		}
+		if (num2 < 0.0)
+		{
+			num2 = 0.0;
+		}
 		Size result = default(Size);
 		foreach (MeasureInfo item2 in list)
 		{
