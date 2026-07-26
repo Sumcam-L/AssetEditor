@@ -28,7 +28,8 @@ public class TimelineTrackCommands : ITimelineTrackCommands, ICommandClient, IIn
 	{
 		AddTimeline,
 		DeleteTimeline,
-		AddTimelineForAllBoundAnimations,
+        CopyTimelineToAllSameAnim,
+        AddTimelineForAllBoundAnimations,
 		AddTrack,
 		DeleteTrack
 	}
@@ -41,7 +42,9 @@ public class TimelineTrackCommands : ITimelineTrackCommands, ICommandClient, IIn
 
 	public static CommandInfo DeleteTimeline = new CommandInfo(TimelineCommands.DeleteTimeline, StandardMenu.Edit, TimelineCommandGroup.TimelineCommands, "Delete Time&line".Localize(), "Delete timeline for a slot".Localize("Delete Timeline"), Sce.Atf.Input.Keys.None, Resources.DeleteIcon, CommandVisibility.ControlDefault);
 
-	public static CommandInfo AddTimelineForAllBoundAnimations = new CommandInfo(TimelineCommands.AddTimelineForAllBoundAnimations, StandardMenu.Edit, TimelineCommandGroup.TimelineCommands, "Add All Bound &Animations".Localize(), "Add a timeline for all bound animation slots that do not already have an existing timeline".Localize(), Sce.Atf.Input.Keys.None, Resources.AnimationFileIcon, CommandVisibility.ControlDefault);
+	public static CommandInfo CopyTimelineToAllSameAnim = new CommandInfo(TimelineCommands.CopyTimelineToAllSameAnim, StandardMenu.Edit, TimelineCommandGroup.TimelineCommands, "Copy this timeline's tracks to all other timeline with the same animation binding".Localize(), " Copy this timeline's data to all other timeline with the same animation binding.".Localize(), Sce.Atf.Input.Keys.None, Resources.CopyIcon, CommandVisibility.ControlDefault);
+
+    public static CommandInfo AddTimelineForAllBoundAnimations = new CommandInfo(TimelineCommands.AddTimelineForAllBoundAnimations, StandardMenu.Edit, TimelineCommandGroup.TimelineCommands, "Add All Bound &Animations".Localize(), "Add a timeline for all bound animation slots that do not already have an existing timeline".Localize(), Sce.Atf.Input.Keys.None, Resources.AnimationFileIcon, CommandVisibility.ControlDefault);
 
 	public static CommandInfo AddTrack = new CommandInfo(TimelineCommands.AddTrack, StandardMenu.Edit, TimelineCommandGroup.TimelineCommands, "Add Trac&k".Localize(), "Add track to timeline".Localize("Add Track"), Sce.Atf.Input.Keys.None, Resources.AddTrackTimelineIcon, CommandVisibility.ControlDefault);
 
@@ -68,7 +71,7 @@ public class TimelineTrackCommands : ITimelineTrackCommands, ICommandClient, IIn
 
 	public float TargetTime { get; set; }
 
-	public IEnumerable<CommandInfo> Commands { get; } = new CommandInfo[7] { AddTrigger, PasteTriggersHere, AddTimeline, AddTimelineForAllBoundAnimations, AddTrack, DeleteTimeline, DeleteTrack };
+	public IEnumerable<CommandInfo> Commands { get; } = new CommandInfo[8] { AddTrigger, PasteTriggersHere, AddTimeline, AddTimelineForAllBoundAnimations, AddTrack, DeleteTimeline, CopyTimelineToAllSameAnim, DeleteTrack };
 
 	private IEnumerable<string> AvailableAnimationSlotNames
 	{
@@ -114,9 +117,11 @@ public class TimelineTrackCommands : ITimelineTrackCommands, ICommandClient, IIn
 	{
 		CommandService.RegisterCommand(AddTrigger, this);
 		CommandService.RegisterCommand(PasteTriggersHere, this);
-		CommandService.RegisterCommand(AddTimeline, this);
-		CommandService.RegisterCommand(DeleteTimeline, this);
-		CommandService.RegisterCommand(AddTimelineForAllBoundAnimations, this);
+		CommandService.RegisterCommand(AddTimeline, this); 
+
+        CommandService.RegisterCommand(DeleteTimeline, this);
+        CommandService.RegisterCommand(CopyTimelineToAllSameAnim, this);
+        CommandService.RegisterCommand(AddTimelineForAllBoundAnimations, this);
 		CommandService.RegisterCommand(AddTrack, this);
 		CommandService.RegisterCommand(DeleteTrack, this);
 		CommandService.UnregisterCommand(StandardCommand.EditDelete, this);
@@ -293,10 +298,21 @@ public class TimelineTrackCommands : ITimelineTrackCommands, ICommandClient, IIn
 				}
 				return true;
 			}
-			return false;
-		case TimelineCommands.DeleteTimeline:
+			return false; 
+
+        case TimelineCommands.DeleteTimeline:
 			return EditCommands.CanDelete();
-		case TimelineCommands.AddTimelineForAllBoundAnimations:
+        case TimelineCommands.CopyTimelineToAllSameAnim:
+		{
+			TimelineAdapter source = GetSelectedTimeline();
+			if (source == null || string.IsNullOrEmpty(source.AnimationName))
+			{
+				return false;
+			}
+			return BehaviorAdapter.TimelineSet.Timelines.Any(
+				(TimelineAdapter t) => t != source && t.AnimationName == source.AnimationName);
+		}
+        case TimelineCommands.AddTimelineForAllBoundAnimations:
 			return AnyBoundAnimationsWithoutTimelines();
 		case TimelineCommands.AddTrack:
 			if (!IsTimelineSelected() && !IsTrackSelected())
@@ -401,6 +417,85 @@ public class TimelineTrackCommands : ITimelineTrackCommands, ICommandClient, IIn
 		}, "Add Track (Like)".Localize());
 	}
 
+	private TimelineAdapter GetSelectedTimeline()
+	{
+		if (Selection == null || BehaviorAdapter == null)
+		{
+			return null;
+		}
+		AnimationBindingAdapter aba = Selection.As<AnimationBindingAdapter>();
+		if (aba != null)
+		{
+			return BehaviorAdapter.TimelineSet.FindTimeline(aba.SlotName);
+		}
+		TimelineBindingAdapter tba = Selection.As<TimelineBindingAdapter>();
+		if (tba != null)
+		{
+			return BehaviorAdapter.TimelineSet.FindTimeline(tba.SlotName);
+		}
+		TrackAdapter track = Selection.As<TrackAdapter>();
+		if (track != null)
+		{
+			return track.Timeline;
+		}
+		TriggerAdapter trigger = Selection.As<TriggerAdapter>();
+		if (trigger != null)
+		{
+			return trigger.TrackAdapter?.Timeline;
+		}
+		return null;
+	}
+
+	private void CopyTimelineToSameAnimationTimelines()
+	{
+		TimelineAdapter source = GetSelectedTimeline();
+		if (source == null || string.IsNullOrEmpty(source.AnimationName))
+		{
+			return;
+		}
+		string animName = source.AnimationName;
+		List<TimelineAdapter> targets = BehaviorAdapter.TimelineSet.Timelines
+			.Where((TimelineAdapter t) => t != source && t.AnimationName == animName)
+			.ToList();
+		if (targets.Count == 0)
+		{
+			return;
+		}
+
+		// Snapshot source track/trigger data
+		var sourceData = source.Tracks.Select((TrackAdapter trk) => new
+		{
+			trk.TriggerType,
+			trk.Name,
+			Triggers = trk.Triggers.Select((TriggerAdapter trig) => trig.Trigger).ToList()
+		}).ToList();
+
+		TransactionContext.DoTransaction(delegate
+		{
+			foreach (TimelineAdapter target in targets)
+			{
+				// Clear existing tracks (cascades trigger removal)
+				TrackAdapter[] existingTracks = target.Tracks.ToArray();
+				foreach (TrackAdapter trk in existingTracks)
+				{
+					target.RemoveTrack(trk);
+				}
+				// Copy tracks and triggers from source
+				foreach (var trackData in sourceData)
+				{
+					TrackAdapter newTrack = target.AddTrack(trackData.TriggerType, trackData.Name);
+					foreach (var nativeTrigger in trackData.Triggers)
+					{
+						if (nativeTrigger != null)
+						{
+							newTrack.AddTriggerCopyWithOffset(0f, nativeTrigger);
+						}
+					}
+				}
+			}
+		}, "Copy Timeline To Same Animation".Localize());
+	}
+
 	private void AddTrackForType(TriggerType tt)
 	{
 		ITimelineBindingAdapter timelineBindingAdapter = Selection.As<ITimelineBindingAdapter>();
@@ -427,6 +522,10 @@ public class TimelineTrackCommands : ITimelineTrackCommands, ICommandClient, IIn
 		}
 		case TimelineCommands.DeleteTimeline:
 			EditCommands.Delete();
+			break;
+			case TimelineCommands.CopyTimelineToAllSameAnim:
+			BugSubmitter.Assert(TransactionContext != null, "No transaction context available");
+			CopyTimelineToSameAnimationTimelines();
 			break;
 		case TimelineCommands.AddTimelineForAllBoundAnimations:
 			BugSubmitter.Assert(TransactionContext != null, "No transaction context available");
