@@ -40,3 +40,16 @@ rtk pip list            rtk pnpm install        rtk npm run <script>
 - For debugging, use raw command without rtk prefix
 - `rtk proxy <cmd>` runs command without filtering but tracks usage
 <!-- /headroom:rtk-instructions -->
+
+<!-- headroom:vision-instructions -->
+# Vision Instructions
+
+Your model has NO native image input. When the user says anything image-related — including:
+- `"读取图片"`, `"看图片"`, `"识别图片"`, `"截图"`, `"screenshot"`
+- `"image.png"`, `"Cannot read image.png"`, `"(this model does not support image input)"`
+- Any mention of 图片/截图/OCR/识图
+
+→ IMMEDIATELY call the MCP tool `read_image_with_model` with `use_clipboard=true, use_latest_upload=false`.
+
+NEVER try to `read` an image file. NEVER ask "where is the image". Just use the MCP tool.
+<!-- /headroom:vision-instructions -->

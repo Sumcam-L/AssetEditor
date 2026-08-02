@@ -88,7 +88,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 	private Dictionary<PageKind, PageInfo> m_pageInfos;
 
 	private HashSet<Control> m_boundPages = new HashSet<Control>();
-	private HashSet<PageKind> m_disabledPages = new HashSet<PageKind>();
+	private HashSet<PageKind> m_hiddenPages = new HashSet<PageKind>();
 
 	private IContainer components;
 
@@ -171,6 +171,8 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			m_tabControl = new TabControl();
 			m_tabControl.Dock = DockStyle.Fill;
 			m_tabControl.DrawMode = TabDrawMode.OwnerDrawFixed;
+			m_tabControl.SizeMode = TabSizeMode.Fixed;
+			m_tabControl.ItemSize = new Size(100, 24);
 			m_tabControl.DrawItem += TabControl_DrawItem;
 			m_tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 			m_tabControl.Padding = new Point(16, 6);
@@ -317,12 +319,42 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void UpdateTabVisibility(PageCapabilities capabilities)
 	{
-		m_disabledPages.Clear();
+		m_hiddenPages.Clear();
 		foreach (var kv in m_pageInfos)
 		{
-			if (!IsPageCapable(kv.Key, capabilities))
-				m_disabledPages.Add(kv.Key);
+			bool visible = IsPageCapable(kv.Key, capabilities);
+			var tab = kv.Value.TabPage;
+			bool inCollection = m_tabControl.TabPages.Contains(tab);
+			if (visible && !inCollection)
+			{
+				int insertIndex = GetTabInsertionIndex(kv.Key);
+				m_tabControl.TabPages.Insert(insertIndex, tab);
+			}
+			else if (!visible && inCollection)
+			{
+				bool wasSelected = m_tabControl.SelectedTab == tab;
+				m_tabControl.TabPages.Remove(tab);
+				m_hiddenPages.Add(kv.Key);
+				if (wasSelected)
+					ScheduleEnsureActivePage();
+			}
 		}
+	}
+
+	private int GetTabInsertionIndex(PageKind kind)
+	{
+		int count = 0;
+		foreach (PageKind orderKind in s_pageCreationOrder)
+		{
+			if (orderKind == kind)
+				return count;
+			if (m_pageInfos.TryGetValue(orderKind, out var info))
+			{
+				if (m_tabControl.TabPages.Contains(info.TabPage))
+					count++;
+			}
+		}
+		return m_tabControl.TabPages.Count;
 	}
 
 	private int GetActiveTabIndex()
@@ -403,13 +435,10 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			return;
 
 		TabPage tab = m_tabControl.TabPages[e.Index];
-		PageKind kind = GetPageKindForTab(tab);
-		bool disabled = m_disabledPages.Contains(kind);
-		bool selected = !disabled && e.State.HasFlag(DrawItemState.Selected);
+		bool selected = e.State.HasFlag(DrawItemState.Selected);
 
-		Color backColor = disabled ? Color.FromArgb(45, 45, 45) :
-			selected ? Color.FromArgb(85, 85, 85) : Color.FromArgb(60, 60, 60);
-		Color foreColor = disabled ? Color.FromArgb(110, 110, 110) : Color.White;
+		Color backColor = selected ? Color.FromArgb(85, 85, 85) : Color.FromArgb(60, 60, 60);
+		Color foreColor = Color.White;
 
 		using (Brush backBrush = new SolidBrush(backColor))
 		{
@@ -425,16 +454,6 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
 	{
-		// If selected tab is disabled, switch to a valid one
-		if (m_tabControl.SelectedTab != null)
-		{
-			PageKind kind = GetPageKindForTab(m_tabControl.SelectedTab);
-			if (m_disabledPages.Contains(kind))
-			{
-				EnsureActivePage();
-				return;
-			}
-		}
 		BindPendingPage();
 	}
 
@@ -476,24 +495,16 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		if (m_disposing || IsDisposed || m_tabControl == null || m_tabControl.IsDisposed)
 			return;
 
-		// If current selection is valid and enabled, keep it
-		if (m_tabControl.SelectedTab != null)
-		{
-			PageKind currentKind = GetPageKindForTab(m_tabControl.SelectedTab);
-			if (!m_disabledPages.Contains(currentKind))
-				return;
-		}
+		if (m_tabControl.SelectedTab != null && m_tabControl.TabPages.Contains(m_tabControl.SelectedTab))
+			return;
 
-		// Try preferred page order, skipping disabled ones
 		PageKind[] preferred = { PageKind.Attachments, PageKind.Geometries, PageKind.CookParams,
 			PageKind.Animations, PageKind.Behaviors, PageKind.Particles, PageKind.Splines };
 
 		foreach (PageKind kind in preferred)
 		{
-			if (m_disabledPages.Contains(kind))
-				continue;
 			var tab = GetPageTab(kind);
-			if (tab != null)
+			if (tab != null && m_tabControl.TabPages.Contains(tab))
 			{
 				m_tabControl.SelectedTab = tab;
 				return;
