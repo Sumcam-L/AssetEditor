@@ -87,6 +87,8 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private Dictionary<PageKind, PageInfo> m_pageInfos;
 
+	private HashSet<Control> m_boundPages = new HashSet<Control>();
+
 	private IContainer components;
 
 	private string m_appliedEditorLayoutState = string.Empty;
@@ -167,7 +169,10 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		{
 			m_tabControl = new TabControl();
 			m_tabControl.Dock = DockStyle.Fill;
+			m_tabControl.DrawMode = TabDrawMode.OwnerDrawFixed;
+			m_tabControl.DrawItem += TabControl_DrawItem;
 			m_tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
+			m_tabControl.Padding = new Point(16, 6);
 			m_splitContainer.Panel2.Controls.Add(m_tabControl);
 		});
 
@@ -391,6 +396,19 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		m_propertyEditor?.PropertyGridView?.Invalidate();
 	}
 
+	private void TabControl_DrawItem(object sender, DrawItemEventArgs e)
+	{
+		TabPage tab = m_tabControl.TabPages[e.Index];
+		Brush backBrush = new SolidBrush(Color.FromArgb(60, 60, 60));
+		Brush foreBrush = new SolidBrush(Color.White);
+		e.Graphics.FillRectangle(backBrush, e.Bounds);
+		StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+		e.Graphics.DrawString(tab.Text, e.Font, foreBrush, e.Bounds, sf);
+		backBrush.Dispose();
+		foreBrush.Dispose();
+		sf.Dispose();
+	}
+
 	private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		BindPendingPage();
@@ -408,6 +426,11 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void BindPageForControl(Control control)
 	{
+		if (control == null || m_boundPages.Contains(control))
+			return;
+
+		m_boundPages.Add(control);
+
 		if (control == m_geometrySetEditor)
 			BindGeometrySet();
 		else if (control == m_cookParameterSetEditor)
@@ -549,6 +572,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void ClearOptionalPageBindings()
 	{
+		m_boundPages.Clear();
 		UnsubscribeCookParameterSelection();
 		m_cookParameterSetEditor?.Bind(null);
 		m_cookParameterPropertyEditor?.Bind(null);
