@@ -747,18 +747,18 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		try
 		{
 			var doc = new XmlDocument();
-			var root = doc.CreateElement("layout");
-			doc.AppendChild(root);
+			var dockPanel = doc.CreateElement("DockPanel");
+			doc.AppendChild(dockPanel);
 
 			var splitterAttr = doc.CreateAttribute("splitterDistance");
 			splitterAttr.Value = m_splitContainer.SplitterDistance.ToString();
-			root.Attributes.Append(splitterAttr);
+			dockPanel.Attributes.Append(splitterAttr);
 
 			if (m_tabControl.SelectedTab != null)
 			{
 				var tabAttr = doc.CreateAttribute("activeTab");
 				tabAttr.Value = m_tabControl.SelectedTab.Text;
-				root.Attributes.Append(tabAttr);
+				dockPanel.Attributes.Append(tabAttr);
 			}
 
 			return doc.OuterXml;

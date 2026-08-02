@@ -104,13 +104,6 @@ public class CrashHandlerService : IInitializable
 
 	private void ExitApplication()
 	{
-		if (Application.MessageLoop)
-		{
-			Application.Exit();
-		}
-		else
-		{
-			Environment.Exit(1);
-		}
+		Environment.Exit(1);
 	}
 }
