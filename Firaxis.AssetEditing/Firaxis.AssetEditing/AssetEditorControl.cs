@@ -89,6 +89,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private HashSet<Control> m_boundPages = new HashSet<Control>();
 	private HashSet<PageKind> m_hiddenPages = new HashSet<PageKind>();
+	private TabPage m_dummyTab;
 
 	private IContainer components;
 
@@ -195,6 +196,11 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void CreateAllPageCores()
 	{
+		// Create dummy tab to keep strip visible even with 1 real tab
+		m_dummyTab = new TabPage("");
+		m_dummyTab.BackColor = Color.FromArgb(60, 60, 60);
+		m_tabControl.TabPages.Add(m_dummyTab);
+
 		foreach (PageKind kind in s_pageCreationOrder)
 		{
 			CreatePageCore(kind);
@@ -320,6 +326,10 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 	private void UpdateTabVisibility(PageCapabilities capabilities)
 	{
 		m_hiddenPages.Clear();
+		// Keep dummy tab always, ensure 2+ tabs prevent strip collapse
+		if (m_dummyTab != null && !m_tabControl.TabPages.Contains(m_dummyTab))
+			m_tabControl.TabPages.Add(m_dummyTab);
+
 		foreach (var kv in m_pageInfos)
 		{
 			bool visible = IsPageCapable(kv.Key, capabilities);
@@ -435,6 +445,15 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			return;
 
 		TabPage tab = m_tabControl.TabPages[e.Index];
+
+		// Dummy tab: invisible (just background fill, no text)
+		if (tab == m_dummyTab)
+		{
+			using (Brush backBrush = new SolidBrush(Color.FromArgb(60, 60, 60)))
+				e.Graphics.FillRectangle(backBrush, e.Bounds);
+			return;
+		}
+
 		bool selected = e.State.HasFlag(DrawItemState.Selected);
 
 		Color backColor = selected ? Color.FromArgb(85, 85, 85) : Color.FromArgb(60, 60, 60);
@@ -454,6 +473,11 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
 	{
+		if (m_tabControl.SelectedTab == m_dummyTab)
+		{
+			EnsureActivePage();
+			return;
+		}
 		BindPendingPage();
 	}
 
@@ -495,7 +519,8 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		if (m_disposing || IsDisposed || m_tabControl == null || m_tabControl.IsDisposed)
 			return;
 
-		if (m_tabControl.SelectedTab != null && m_tabControl.TabPages.Contains(m_tabControl.SelectedTab))
+		if (m_tabControl.SelectedTab != null && m_tabControl.SelectedTab != m_dummyTab
+			&& m_tabControl.TabPages.Contains(m_tabControl.SelectedTab))
 			return;
 
 		PageKind[] preferred = { PageKind.Attachments, PageKind.Geometries, PageKind.CookParams,
