@@ -173,8 +173,6 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			m_tabControl.DrawItem += TabControl_DrawItem;
 			m_tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 			m_tabControl.Padding = new Point(16, 6);
-			m_tabControl.BackColor = Color.FromArgb(60, 60, 60);
-			m_splitContainer.Panel2.BackColor = Color.FromArgb(60, 60, 60);
 			m_splitContainer.Panel2.Controls.Add(m_tabControl);
 		});
 
@@ -270,7 +268,6 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		var tabPage = new TabPage(label);
 		tabPage.Controls.Add(control);
 		tabPage.Text = label;
-		tabPage.BackColor = Color.FromArgb(60, 60, 60);
 		m_tabControl.TabPages.Add(tabPage);
 		m_pageToTab[control] = tabPage;
 		m_pageInfos[kind] = new PageInfo { Label = label, Icon = icon, Ctl = control, TabPage = tabPage };
@@ -401,11 +398,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void TabControl_DrawItem(object sender, DrawItemEventArgs e)
 	{
-		if (e.Index < 0 || e.Index >= m_tabControl.TabPages.Count)
-			return;
 		TabPage tab = m_tabControl.TabPages[e.Index];
-		if (!tab.Visible)
-			return;
 		Brush backBrush = new SolidBrush(Color.FromArgb(60, 60, 60));
 		Brush foreBrush = new SolidBrush(Color.White);
 		e.Graphics.FillRectangle(backBrush, e.Bounds);
