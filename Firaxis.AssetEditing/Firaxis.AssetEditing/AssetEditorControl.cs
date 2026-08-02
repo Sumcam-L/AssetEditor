@@ -836,17 +836,25 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			m_pageCapabilities = new PageCapabilities(m_context);
 			if (m_context != null)
 			{
-				Control initialPage = preserveActivePage ? GetCurrentSupportedPage() : null;
-				if (initialPage == null)
+				m_dockPanel.SuspendLayout(allWindows: true);
+				try
 				{
-					PageKind initialKind = GetInitialPageKind(m_pageCapabilities);
-					EnsurePageCreated(initialKind);
-					initialPage = GetPageControl(initialKind);
+					Control initialPage = preserveActivePage ? GetCurrentSupportedPage() : null;
+					if (initialPage == null)
+					{
+						PageKind initialKind = GetInitialPageKind(m_pageCapabilities);
+						EnsurePageCreated(initialKind);
+						initialPage = GetPageControl(initialKind);
+					}
+					ApplyPageCapabilities(m_pageCapabilities);
+					RebuildUncreatedPageQueue();
+					m_pageBindings.BeginGeneration(CreatePageBindings(m_pageCapabilities), initialPage);
+					ActivateInitialPage(initialPage);
 				}
-				ApplyPageCapabilities(m_pageCapabilities);
-				RebuildUncreatedPageQueue();
-				m_pageBindings.BeginGeneration(CreatePageBindings(m_pageCapabilities), initialPage);
-				ActivateInitialPage(initialPage);
+				finally
+				{
+					m_dockPanel.ResumeLayout(performLayout: true, allWindows: true);
+				}
 			}
 			else
 			{
