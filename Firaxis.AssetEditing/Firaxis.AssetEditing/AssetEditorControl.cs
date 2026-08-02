@@ -173,6 +173,8 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			m_tabControl.DrawItem += TabControl_DrawItem;
 			m_tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 			m_tabControl.Padding = new Point(16, 6);
+			m_tabControl.BackColor = Color.FromArgb(60, 60, 60);
+			m_splitContainer.Panel2.BackColor = Color.FromArgb(60, 60, 60);
 			m_splitContainer.Panel2.Controls.Add(m_tabControl);
 		});
 
@@ -268,6 +270,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		var tabPage = new TabPage(label);
 		tabPage.Controls.Add(control);
 		tabPage.Text = label;
+		tabPage.BackColor = Color.FromArgb(60, 60, 60);
 		m_tabControl.TabPages.Add(tabPage);
 		m_pageToTab[control] = tabPage;
 		m_pageInfos[kind] = new PageInfo { Label = label, Icon = icon, Ctl = control, TabPage = tabPage };
@@ -316,12 +319,39 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		foreach (var kv in m_pageInfos)
 		{
 			bool visible = IsPageCapable(kv.Key, capabilities);
-			kv.Value.TabPage.Visible = visible;
-			if (!visible && kv.Value.TabPage == m_tabControl.SelectedTab)
+			var tab = kv.Value.TabPage;
+			bool inCollection = m_tabControl.TabPages.Contains(tab);
+			if (visible && !inCollection)
 			{
-				// Will be handled by EnsureActivePage
+				int insertIndex = GetTabInsertionIndex(kv.Key);
+				m_tabControl.TabPages.Insert(insertIndex, tab);
+			}
+			else if (!visible && inCollection)
+			{
+				bool wasSelected = m_tabControl.SelectedTab == tab;
+				m_tabControl.TabPages.Remove(tab);
+				if (wasSelected)
+				{
+					ScheduleEnsureActivePage();
+				}
 			}
 		}
+	}
+
+	private int GetTabInsertionIndex(PageKind kind)
+	{
+		int count = 0;
+		foreach (PageKind orderKind in s_pageCreationOrder)
+		{
+			if (orderKind == kind)
+				return count;
+			if (m_pageInfos.TryGetValue(orderKind, out var info))
+			{
+				if (m_tabControl.TabPages.Contains(info.TabPage))
+					count++;
+			}
+		}
+		return m_tabControl.TabPages.Count;
 	}
 
 	private int GetActiveTabIndex()
@@ -398,15 +428,25 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void TabControl_DrawItem(object sender, DrawItemEventArgs e)
 	{
+		if (e.Index < 0 || e.Index >= m_tabControl.TabPages.Count)
+			return;
+
 		TabPage tab = m_tabControl.TabPages[e.Index];
-		Brush backBrush = new SolidBrush(Color.FromArgb(60, 60, 60));
-		Brush foreBrush = new SolidBrush(Color.White);
-		e.Graphics.FillRectangle(backBrush, e.Bounds);
-		StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-		e.Graphics.DrawString(tab.Text, e.Font, foreBrush, e.Bounds, sf);
-		backBrush.Dispose();
-		foreBrush.Dispose();
-		sf.Dispose();
+		bool selected = e.State.HasFlag(DrawItemState.Selected);
+
+		Color backColor = selected ? Color.FromArgb(80, 80, 80) : Color.FromArgb(60, 60, 60);
+		Color foreColor = Color.White;
+
+		using (Brush backBrush = new SolidBrush(backColor))
+		{
+			e.Graphics.FillRectangle(backBrush, e.Bounds);
+		}
+
+		using (Brush foreBrush = new SolidBrush(foreColor))
+		using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+		{
+			e.Graphics.DrawString(tab.Text, e.Font, foreBrush, e.Bounds, sf);
+		}
 	}
 
 	private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -452,7 +492,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		if (m_disposing || IsDisposed || m_tabControl == null || m_tabControl.IsDisposed)
 			return;
 
-		if (m_tabControl.SelectedTab != null && m_tabControl.SelectedTab.Visible)
+		if (m_tabControl.SelectedTab != null && m_tabControl.TabPages.Contains(m_tabControl.SelectedTab))
 			return;
 
 		// Try preferred page order
@@ -462,7 +502,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		foreach (PageKind kind in preferred)
 		{
 			var tab = GetPageTab(kind);
-			if (tab != null && tab.Visible)
+			if (tab != null && m_tabControl.TabPages.Contains(tab))
 			{
 				m_tabControl.SelectedTab = tab;
 				return;
