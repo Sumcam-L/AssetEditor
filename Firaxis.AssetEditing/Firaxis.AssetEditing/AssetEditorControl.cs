@@ -54,7 +54,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		public string Label;
 		public string Icon;
 		public Control Ctl;
-		public TabPage TabPage;
+		public Button TabButton;
 	}
 
 	private IAssetEditorContext m_context;
@@ -81,15 +81,17 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private SplitContainer m_splitContainer;
 
-	private TabControl m_tabControl;
+	private Panel m_tabContainer;
 
-	private Dictionary<Control, TabPage> m_pageToTab;
+	private FlowLayoutPanel m_tabStrip;
+
+	private Panel m_tabContent;
+
+	private Dictionary<PageKind, Button> m_tabButtons;
 
 	private Dictionary<PageKind, PageInfo> m_pageInfos;
 
 	private HashSet<Control> m_boundPages = new HashSet<Control>();
-	private HashSet<PageKind> m_hiddenPages = new HashSet<PageKind>();
-	private TabPage m_dummyTab;
 
 	private IContainer components;
 
@@ -144,7 +146,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		}
 		m_themeService = themeSvc;
 		m_themeService.ThemeChanged += ThemeService_ThemeChanged;
-		m_pageToTab = new Dictionary<Control, TabPage>();
+		m_tabButtons = new Dictionary<PageKind, Button>();
 		m_pageInfos = new Dictionary<PageKind, PageInfo>();
 		m_pageCapabilities = default;
 		TraceCtor("Layout", () =>
@@ -169,17 +171,28 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 		TraceCtor("TabControl", () =>
 		{
-			m_tabControl = new TabControl();
-			m_tabControl.Dock = DockStyle.Fill;
-			m_tabControl.DrawMode = TabDrawMode.OwnerDrawFixed;
-			m_tabControl.SizeMode = TabSizeMode.Fixed;
-			m_tabControl.ItemSize = new Size(100, 24);
-			m_tabControl.DrawItem += TabControl_DrawItem;
-			m_tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
-			m_tabControl.Padding = new Point(16, 6);
-			m_tabControl.BackColor = Color.FromArgb(60, 60, 60);
+			m_tabContainer = new Panel();
+			m_tabContainer.Dock = DockStyle.Fill;
+			m_tabContainer.BackColor = Color.FromArgb(60, 60, 60);
+
+			m_tabStrip = new FlowLayoutPanel();
+			m_tabStrip.Dock = DockStyle.Top;
+			m_tabStrip.Height = 24;
+			m_tabStrip.FlowDirection = FlowDirection.LeftToRight;
+			m_tabStrip.WrapContents = false;
+			m_tabStrip.AutoSize = false;
+			m_tabStrip.BackColor = Color.FromArgb(60, 60, 60);
+			m_tabStrip.Padding = new Padding(0);
+			m_tabStrip.Margin = new Padding(0);
+
+			m_tabContent = new Panel();
+			m_tabContent.Dock = DockStyle.Fill;
+			m_tabContent.BackColor = Color.FromArgb(60, 60, 60);
+
+			m_tabContainer.Controls.Add(m_tabStrip);
+			m_tabContainer.Controls.Add(m_tabContent);
 			m_splitContainer.Panel2.BackColor = Color.FromArgb(60, 60, 60);
-			m_splitContainer.Panel2.Controls.Add(m_tabControl);
+			m_splitContainer.Panel2.Controls.Add(m_tabContainer);
 		});
 
 		CreateAllPageCores();
@@ -196,11 +209,6 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void CreateAllPageCores()
 	{
-		// Create dummy tab to keep strip visible even with 1 real tab
-		m_dummyTab = new TabPage("");
-		m_dummyTab.BackColor = Color.FromArgb(60, 60, 60);
-		m_tabControl.TabPages.Add(m_dummyTab);
-
 		foreach (PageKind kind in s_pageCreationOrder)
 		{
 			CreatePageCore(kind);
@@ -276,13 +284,9 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		if (control == null)
 			return;
 
-		var tabPage = new TabPage(label);
-		tabPage.Controls.Add(control);
-		tabPage.Text = label;
-		tabPage.BackColor = Color.FromArgb(60, 60, 60);
-		m_tabControl.TabPages.Add(tabPage);
-		m_pageToTab[control] = tabPage;
-		m_pageInfos[kind] = new PageInfo { Label = label, Icon = icon, Ctl = control, TabPage = tabPage };
+		control.Visible = false;
+		m_tabContent.Controls.Add(control);
+		m_pageInfos[kind] = new PageInfo { Label = label, Icon = icon, Ctl = control, TabButton = null };
 	}
 
 	private Control GetPageControl(PageKind kind)
@@ -292,12 +296,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		return null;
 	}
 
-	private TabPage GetPageTab(PageKind kind)
-	{
-		if (m_pageInfos.TryGetValue(kind, out var info))
-			return info.TabPage;
-		return null;
-	}
+	
 
 	private bool IsPageCapable(PageKind kind, PageCapabilities capabilities)
 	{
@@ -325,64 +324,67 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void UpdateTabVisibility(PageCapabilities capabilities)
 	{
-		m_hiddenPages.Clear();
-		// Keep dummy tab always, ensure 2+ tabs prevent strip collapse
-		if (m_dummyTab != null && !m_tabControl.TabPages.Contains(m_dummyTab))
-			m_tabControl.TabPages.Add(m_dummyTab);
+		m_tabStrip.Controls.Clear();
+		m_tabButtons.Clear();
 
-		foreach (var kv in m_pageInfos)
+		bool first = true;
+		foreach (PageKind kind in s_pageCreationOrder)
 		{
-			bool visible = IsPageCapable(kv.Key, capabilities);
-			var tab = kv.Value.TabPage;
-			bool inCollection = m_tabControl.TabPages.Contains(tab);
-			if (visible && !inCollection)
+			if (!IsPageCapable(kind, capabilities))
+				continue;
+
+			var btn = new Button();
+			btn.FlatStyle = FlatStyle.Flat;
+			btn.FlatAppearance.BorderSize = 0;
+			btn.BackColor = Color.FromArgb(60, 60, 60);
+			btn.ForeColor = Color.White;
+			btn.AutoSize = false;
+			btn.Size = new Size(100, 24);
+			btn.Padding = new Padding(0);
+			btn.Text = m_pageInfos[kind].Label;
+			btn.Tag = kind;
+			btn.Click += TabButton_Click;
+
+			m_tabStrip.Controls.Add(btn);
+			m_tabButtons[kind] = btn;
+
+			if (first)
 			{
-				int insertIndex = GetTabInsertionIndex(kv.Key);
-				m_tabControl.TabPages.Insert(insertIndex, tab);
-			}
-			else if (!visible && inCollection)
-			{
-				bool wasSelected = m_tabControl.SelectedTab == tab;
-				m_tabControl.TabPages.Remove(tab);
-				m_hiddenPages.Add(kv.Key);
-				if (wasSelected)
-					ScheduleEnsureActivePage();
+				btn.BackColor = Color.FromArgb(85, 85, 85);
+				var ctl = m_pageInfos[kind].Ctl;
+				ctl.Visible = true;
+				ctl.Dock = DockStyle.Fill;
+				ctl.BringToFront();
+				first = false;
 			}
 		}
-	}
-
-	private int GetTabInsertionIndex(PageKind kind)
-	{
-		int count = 0;
-		foreach (PageKind orderKind in s_pageCreationOrder)
-		{
-			if (orderKind == kind)
-				return count;
-			if (m_pageInfos.TryGetValue(orderKind, out var info))
-			{
-				if (m_tabControl.TabPages.Contains(info.TabPage))
-					count++;
-			}
-		}
-		return m_tabControl.TabPages.Count;
 	}
 
 	private int GetActiveTabIndex()
 	{
-		var activeTab = m_tabControl.SelectedTab;
-		if (activeTab == null)
-			return -1;
-		return m_tabControl.TabPages.IndexOf(activeTab);
+		int index = 0;
+		foreach (Control ctl in m_tabStrip.Controls)
+		{
+			if (ctl is Button btn && btn.BackColor == Color.FromArgb(85, 85, 85))
+				return index;
+			index++;
+		}
+		return -1;
 	}
 
 	private string GetActiveTabText()
 	{
-		return m_tabControl.SelectedTab?.Text;
+		foreach (Control ctl in m_tabStrip.Controls)
+		{
+			if (ctl is Button btn && btn.BackColor == Color.FromArgb(85, 85, 85))
+				return btn.Text;
+		}
+		return null;
 	}
 
 	private string GetInnerDockState()
 	{
-		return $"activeTab={GetActiveTabText() ?? "null"}, index={GetActiveTabIndex()}, tabCount={m_tabControl.TabPages.Count}";
+		return $"activeTab={GetActiveTabText() ?? "null"}, index={GetActiveTabIndex()}";
 	}
 
 	public bool IsEditorLayoutStateApplied(string value)
@@ -439,56 +441,52 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		m_propertyEditor?.PropertyGridView?.Invalidate();
 	}
 
-	private void TabControl_DrawItem(object sender, DrawItemEventArgs e)
+	private void TabButton_Click(object sender, EventArgs e)
 	{
-		if (e.Index < 0 || e.Index >= m_tabControl.TabPages.Count)
-			return;
-
-		TabPage tab = m_tabControl.TabPages[e.Index];
-
-		// Dummy tab: invisible (just background fill, no text)
-		if (tab == m_dummyTab)
+		if (sender is Button btn && btn.Tag is PageKind kind)
 		{
-			using (Brush backBrush = new SolidBrush(Color.FromArgb(60, 60, 60)))
-				e.Graphics.FillRectangle(backBrush, e.Bounds);
-			return;
+			// Un-highlight all buttons
+			foreach (Control ctl in m_tabStrip.Controls)
+			{
+				if (ctl is Button b)
+					b.BackColor = Color.FromArgb(60, 60, 60);
+			}
+
+			// Highlight clicked button
+			btn.BackColor = Color.FromArgb(85, 85, 85);
+
+			// Hide all controls, show the selected one
+			foreach (Control ctl in m_tabContent.Controls)
+				ctl.Visible = false;
+
+			var activeControl = m_pageInfos[kind].Ctl;
+			if (activeControl != null)
+			{
+				activeControl.Visible = true;
+				activeControl.Dock = DockStyle.Fill;
+				activeControl.BringToFront();
+			}
+
+			BindPageForControl(activeControl);
 		}
-
-		bool selected = e.State.HasFlag(DrawItemState.Selected);
-
-		Color backColor = selected ? Color.FromArgb(85, 85, 85) : Color.FromArgb(60, 60, 60);
-		Color foreColor = Color.White;
-
-		using (Brush backBrush = new SolidBrush(backColor))
-		{
-			e.Graphics.FillRectangle(backBrush, e.Bounds);
-		}
-
-		using (Brush foreBrush = new SolidBrush(foreColor))
-		using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-		{
-			e.Graphics.DrawString(tab.Text, e.Font, foreBrush, e.Bounds, sf);
-		}
-	}
-
-	private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
-	{
-		if (m_tabControl.SelectedTab == m_dummyTab)
-		{
-			EnsureActivePage();
-			return;
-		}
-		BindPendingPage();
 	}
 
 	private void BindPendingPage()
 	{
-		var activeTab = m_tabControl.SelectedTab;
-		if (activeTab == null || activeTab.Controls.Count == 0)
+		Control activeControl = null;
+		foreach (Control ctl in m_tabContent.Controls)
+		{
+			if (ctl.Visible)
+			{
+				activeControl = ctl;
+				break;
+			}
+		}
+
+		if (activeControl == null)
 			return;
 
-		var control = activeTab.Controls[0];
-		BindPageForControl(control);
+		BindPageForControl(activeControl);
 	}
 
 	private void BindPageForControl(Control control)
@@ -516,35 +514,21 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void EnsureActivePage()
 	{
-		if (m_disposing || IsDisposed || m_tabControl == null || m_tabControl.IsDisposed)
+		if (m_disposing || IsDisposed)
 			return;
 
-		if (m_tabControl.SelectedTab != null && m_tabControl.SelectedTab != m_dummyTab
-			&& m_tabControl.TabPages.Contains(m_tabControl.SelectedTab))
-			return;
-
-		PageKind[] preferred = { PageKind.Attachments, PageKind.Geometries, PageKind.CookParams,
-			PageKind.Animations, PageKind.Behaviors, PageKind.Particles, PageKind.Splines };
-
-		foreach (PageKind kind in preferred)
+		// Find if any button is already highlighted
+		foreach (Control ctl in m_tabStrip.Controls)
 		{
-			var tab = GetPageTab(kind);
-			if (tab != null && m_tabControl.TabPages.Contains(tab))
-			{
-				m_tabControl.SelectedTab = tab;
-				return;
-			}
+			if (ctl is Button btn && btn.BackColor == Color.FromArgb(85, 85, 85))
+				return; // Already have an active page
 		}
-	}
 
-	private PageKind GetPageKindForTab(TabPage tab)
-	{
-		foreach (var kv in m_pageInfos)
+		// No highlighted button; activate the first one
+		if (m_tabStrip.Controls.Count > 0 && m_tabStrip.Controls[0] is Button firstButton)
 		{
-			if (kv.Value.TabPage == tab)
-				return kv.Key;
+			TabButton_Click(firstButton, EventArgs.Empty);
 		}
-		return PageKind.Attachments;
 	}
 
 	private void ScheduleEnsureActivePage()
@@ -552,21 +536,8 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		if (m_disposing || IsDisposed)
 			return;
 		if (!IsHandleCreated)
-		{
-			// Will be handled in OnHandleCreated
 			return;
-		}
-		try
-		{
-			BeginInvoke((Action)(() =>
-			{
-				if (!m_disposing && !IsDisposed)
-					EnsureActivePage();
-			}));
-		}
-		catch (InvalidOperationException)
-		{
-		}
+		EnsureActivePage();
 	}
 
 	public override void Bind(IEntityEditorContext context)
@@ -626,7 +597,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			}
 			UpdateTabVisibility(m_pageCapabilities);
 			EnsureActivePage();
-			BindPageForControl(m_tabControl.SelectedTab?.Controls[0]);
+			BindPageForControl(GetCurrentSupportedPage());
 		}
 		else
 		{
@@ -641,10 +612,12 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private Control GetCurrentSupportedPage()
 	{
-		var activeTab = m_tabControl.SelectedTab;
-		if (activeTab == null || activeTab.Controls.Count == 0)
-			return null;
-		return activeTab.Controls[0];
+		foreach (Control ctl in m_tabContent.Controls)
+		{
+			if (ctl.Visible)
+				return ctl;
+		}
+		return null;
 	}
 
 	private void ClearOptionalPageBindings()
@@ -825,11 +798,11 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			if (root.Attributes["activeTab"] != null)
 			{
 				string activeTabName = root.Attributes["activeTab"].Value;
-				foreach (TabPage tab in m_tabControl.TabPages)
+				foreach (var kv in m_tabButtons)
 				{
-					if (tab.Text == activeTabName && tab.Visible)
+					if (kv.Value.Text == activeTabName)
 					{
-						m_tabControl.SelectedTab = tab;
+						TabButton_Click(kv.Value, EventArgs.Empty);
 						break;
 					}
 				}
@@ -855,10 +828,20 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			splitterAttr.Value = m_splitContainer.SplitterDistance.ToString();
 			dockPanel.Attributes.Append(splitterAttr);
 
-			if (m_tabControl.SelectedTab != null)
+			Button selectedButton = null;
+			foreach (var kv in m_tabButtons)
+			{
+				if (kv.Value.BackColor == Color.FromArgb(85, 85, 85))
+				{
+					selectedButton = kv.Value;
+					break;
+				}
+			}
+
+			if (selectedButton != null)
 			{
 				var tabAttr = doc.CreateAttribute("activeTab");
-				tabAttr.Value = m_tabControl.SelectedTab.Text;
+				tabAttr.Value = selectedButton.Text;
 				dockPanel.Attributes.Append(tabAttr);
 			}
 
@@ -908,11 +891,10 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 				m_themeService.ThemeChanged -= ThemeService_ThemeChanged;
 				m_themeService = null;
 			}
-			if (m_tabControl != null)
+			if (m_tabContainer != null)
 			{
-				m_tabControl.SelectedIndexChanged -= TabControl_SelectedIndexChanged;
-				m_tabControl.Dispose();
-				m_tabControl = null;
+				m_tabContainer.Dispose();
+				m_tabContainer = null;
 			}
 			if (m_splitContainer != null)
 			{
