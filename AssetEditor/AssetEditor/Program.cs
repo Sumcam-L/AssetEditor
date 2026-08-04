@@ -574,6 +574,7 @@ internal static class Program
 				}
 				RefreshMainWindowTaskbarRegistration(assetEditorForm);
 			});
+			UpdateChecker.CheckForUpdatesAsync(assetEditorForm);
 			StringBuilder stringBuilder = new StringBuilder();
 			ReaderWriterStatistics.DumpStatistics(stringBuilder);
 			Outputs.Write(OutputMessageType.Info, OutputMessageVerbosity.ExtremelyVerbose, stringBuilder.ToString());
@@ -676,7 +677,6 @@ internal static class Program
 			typeof(PropertyEditingCommands),
 			typeof(FileDialogService),
 			typeof(FileWatcherService),
-			typeof(FileWatchDockWindow),
 			typeof(FiraxisATFRegistry),
 			typeof(DependencyInfoDockWindow),
 			typeof(BatchEntitySourceControlService),

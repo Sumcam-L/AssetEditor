@@ -242,8 +242,6 @@ public class FileWatchTreeContext : IFileWatchTreeContext, IDisposable
 				m_changingSet.Remove(node);
 			}
 		}
-		RemoveRootNode(node.FileUri);
-		AddRootNode(node.FileUri);
 	}
 
 	private void DoOperation(NodeUpdateOperation operation)

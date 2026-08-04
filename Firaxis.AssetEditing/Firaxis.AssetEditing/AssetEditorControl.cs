@@ -93,6 +93,14 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private HashSet<Control> m_boundPages = new HashSet<Control>();
 
+	private readonly List<PageKind> m_pendingPrewarmPages = new List<PageKind>();
+
+	private bool m_prewarmIdleSubscribed;
+
+	private int m_prewarmGeneration;
+
+	private Timer m_prewarmTimer;
+
 	private IContainer components;
 
 	private string m_appliedEditorLayoutState = string.Empty;
@@ -189,8 +197,11 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 			m_tabContent.Dock = DockStyle.Fill;
 			m_tabContent.BackColor = Color.FromArgb(60, 60, 60);
 
-			m_tabContainer.Controls.Add(m_tabStrip);
+			// Add Fill first, then Top: WinForms docks children in reverse z-order
+			// (last added is laid out first), so Fill must precede Top to avoid
+			// the Top strip overlapping the Fill content's first 24px (which hid the page toolbar).
 			m_tabContainer.Controls.Add(m_tabContent);
+			m_tabContainer.Controls.Add(m_tabStrip);
 			m_splitContainer.Panel2.BackColor = Color.FromArgb(60, 60, 60);
 			m_splitContainer.Panel2.Controls.Add(m_tabContainer);
 		});
@@ -401,6 +412,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 	public void BeforeControlHostUnregister()
 	{
 		m_controlHostUnregistering = true;
+		CancelPagePrewarm("unregister");
 		PaintTimingLog.Write("{0} before control host unregister", TracePrefix);
 	}
 
@@ -585,6 +597,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 
 	private void ConfigurePageBindings(bool preserveActivePage)
 	{
+		CancelPagePrewarm("configure");
 		ClearOptionalPageBindings();
 		m_pageCapabilities = new PageCapabilities(m_context);
 		if (m_context != null)
@@ -608,6 +621,106 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		{
 			Invalidate(invalidateChildren: true);
 		}
+		SchedulePagePrewarm();
+	}
+
+	private void SchedulePagePrewarm()
+	{
+		if (m_disposing || m_controlHostUnregistering || IsDisposed || m_context == null)
+			return;
+
+		m_pendingPrewarmPages.Clear();
+		foreach (PageKind kind in s_pageCreationOrder)
+		{
+			Control ctl = GetPageControl(kind);
+			if (ctl != null && IsPageCapable(kind, m_pageCapabilities) && !m_boundPages.Contains(ctl))
+			{
+				m_pendingPrewarmPages.Add(kind);
+			}
+		}
+		if (m_pendingPrewarmPages.Count == 0)
+			return;
+
+		m_prewarmGeneration++;
+		if (!m_prewarmIdleSubscribed)
+		{
+			m_prewarmIdleSubscribed = true;
+			Application.Idle += PagePrewarm_Idle;
+		}
+		PaintTimingLog.Write("AssetPagePrewarm scheduled generation={0} pending={1}",
+			m_prewarmGeneration, m_pendingPrewarmPages.Count);
+	}
+
+	private void PagePrewarm_Idle(object sender, EventArgs e)
+	{
+		UnsubscribePagePrewarmIdle();
+		if (m_disposing || m_controlHostUnregistering || IsDisposed || m_context == null)
+		{
+			CancelPagePrewarm("invalid");
+			return;
+		}
+
+		int generation = m_prewarmGeneration;
+		while (m_pendingPrewarmPages.Count > 0)
+		{
+			PageKind kind = m_pendingPrewarmPages[0];
+			m_pendingPrewarmPages.RemoveAt(0);
+			Control ctl = GetPageControl(kind);
+			if (ctl != null && !m_boundPages.Contains(ctl))
+			{
+				BindPageForControl(ctl);
+				break;
+			}
+		}
+
+		if (generation != m_prewarmGeneration)
+			return;
+
+		if (m_pendingPrewarmPages.Count == 0)
+		{
+			CancelPagePrewarm("done");
+			return;
+		}
+
+		if (m_prewarmTimer == null)
+		{
+			m_prewarmTimer = new Timer { Interval = 150 };
+			m_prewarmTimer.Tick += PagePrewarmTimer_Tick;
+		}
+		m_prewarmTimer.Stop();
+		m_prewarmTimer.Start();
+	}
+
+	private void PagePrewarmTimer_Tick(object sender, EventArgs e)
+	{
+		m_prewarmTimer?.Stop();
+		if (m_disposing || m_controlHostUnregistering || IsDisposed || m_context == null)
+		{
+			CancelPagePrewarm("invalid");
+			return;
+		}
+		if (!m_prewarmIdleSubscribed)
+		{
+			m_prewarmIdleSubscribed = true;
+			Application.Idle += PagePrewarm_Idle;
+		}
+	}
+
+	private void CancelPagePrewarm(string reason)
+	{
+		m_prewarmGeneration++;
+		m_pendingPrewarmPages.Clear();
+		UnsubscribePagePrewarmIdle();
+		m_prewarmTimer?.Stop();
+		PaintTimingLog.Write("AssetPagePrewarm canceled generation={0} reason={1}", m_prewarmGeneration, reason);
+	}
+
+	private void UnsubscribePagePrewarmIdle()
+	{
+		if (!m_prewarmIdleSubscribed)
+			return;
+		Application.Idle -= PagePrewarm_Idle;
+		m_prewarmIdleSubscribed = false;
 	}
 
 	private Control GetCurrentSupportedPage()
@@ -866,6 +979,7 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		if (Visible)
 		{
 			EnsureActivePage();
+			SchedulePagePrewarm();
 		}
 	}
 
@@ -880,6 +994,13 @@ public class AssetEditorControl : EntityEditorControlBase, IControlHostPreShowCl
 		if (disposing)
 		{
 			m_disposing = true;
+			CancelPagePrewarm("dispose");
+			if (m_prewarmTimer != null)
+			{
+				m_prewarmTimer.Tick -= PagePrewarmTimer_Tick;
+				m_prewarmTimer.Dispose();
+				m_prewarmTimer = null;
+			}
 			UnsubscribeCookParameterSelection();
 			if (m_context != null)
 			{
